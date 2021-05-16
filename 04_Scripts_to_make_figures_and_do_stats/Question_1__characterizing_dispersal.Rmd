@@ -1,0 +1,66 @@
+---
+title: "Question_1__characterizing_dispersal"
+author: "Kendra E. Walters"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    self_contained: no
+    lib_dir: libs
+    code_folding: hide
+    toc: yes
+    toc_float: TRUE
+editor_options: 
+  chunk_output_type: inline
+---
+<style type="text/css">
+.main-container { max-width: 1000px; margin-left: 0; margin-right: auto; }
+img{ max-width:200%; height: auto; }
+td, th { padding : 6px }
+</style>
+
+# Purpose
+
+To answer our first overarching question for the landscape dispersal project: Is the rate and composition of microbial dispersal into the soil surface spatially heterogeneous? 
+
+Because vegetation appears to be a primary route through which bacteria disperse, we hypothesized that the taxa dispersing and their dispersal rate onto the soil surface will differ between two ecosystems. In fact, we know that bacterial abundance and composition in one grassland and CSS plant litter differs.
+
+
+```{r setup, message=FALSE}
+library(tidyverse)
+library(data.table)
+library(knitr)
+library(kableExtra)
+
+knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "../05_output_figures/")
+```
+
+
+
+```{r dispersal_rate_among_ecosystems}
+# Load the data
+flow.data <- load("../03_Processed_data/flow_cytometry_cleaned.rda")
+metadata <- load("../03_Processed_data/metadata_cleaned.rda")
+
+
+# Left join fights me unless both columns are the same data type
+metadata.together$`Random_#_Flow` <- as.character(metadata.together$`Random_#_Flow`)
+
+
+# Set up a key to change time point into # of days
+days.key <- c("0" = 0, "1" = 12, "2" = 26, "3" = 47, "4" = 54)
+
+
+# Clean up our data to just be what we need for this analysis 
+cell.counts.use <- cleaned.cell.counts %>% left_join(metadata.together) %>% # combine with metadata using Random_#_Flow
+  mutate(Treatment = ifelse(is.na(Treatment), "Death", Treatment)) %>% # add metadata for T0 samples that weren't included in the overall metadata file
+  mutate(Time_Point = ifelse(is.na(Time_Point), 0, Time_Point)) %>% 
+  mutate(Ecosystem = ifelse(grepl("^g", `Random_#_Flow`), "Grassland",
+                            ifelse(grepl("^s", `Random_#_Flow`), "Shrubland", Ecosystem))) %>%
+  select(number_cells_on_glass_slide_cleaned, Treatment, Ecosystem, Time_Point) %>% # reduce to only columns we need
+  filter(Treatment != "Closed") %>% # remove this negative control (should have been removed prior to this script)
+  mutate(Time_as_days = days.key[as.character(Time_Point)]) # make column that lists # of days
+
+
+
+
+```
