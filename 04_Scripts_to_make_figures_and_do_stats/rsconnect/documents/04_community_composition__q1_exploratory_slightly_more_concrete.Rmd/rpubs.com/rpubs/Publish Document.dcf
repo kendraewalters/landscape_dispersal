@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/689918/acb61a62923a4aada56e6176454cdddb
+bundleId: https://api.rpubs.com/api/v1/document/689918/acb61a62923a4aada56e6176454cdddb
+url: http://rpubs.com/kendra_walters/689918
+when: 1609720480.35432

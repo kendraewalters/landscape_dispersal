@@ -1,0 +1,43 @@
+PlantID	ArtCal	MalLau	SalMel	LeyCon	MalFas	EriFas	OpuLit	RhusInt	SamCer	DeiFas	ShoGra	BraNig	Steph	Stalk1	CroSet	Total		KeyID	Species Name	Common Name	iNatu_ref_nums	Notes
+Plant1	1															1		MalFas 	Malacothamnus fasciculatus	chaparral bush-mallow	62985065	Keir Morse ided this plant; aka bush1
+Plant2		1														1		LeyCon	Leymus Condensatus	giant wild rye	62985072	litter grass
+Plant3			1													1		SamCer	Sambucus cerulea	blue elder	62985073	aka tree1
+Plant4	1															1		DeiFas	Deinandra fasciculata	clustered tarweed	62985077	
+Plant5	1															1		ShoGra	unknown	unknown	62985079	short grass (not IDed)
+Plant6	0.5	0.5														1		ArtCal	Artemisia californica	California sagebrush	62985080	
+Plant7		1														1		MalLau	Malosma laurina	taco plant; laural sumac	62985086	
+Plant8	1															1		SalMel	Salvia mellifera	black sage	62985082	
+Plant9			1													1		CroSet	Croton setigerus	turkey mullein	62985074	
+Plant10		1														1		Steph	Stephanomeria	wire lettuce	62985078	not IDed to species (4 species & all similar)
+Plant11		1														1		BraNig	Brassica nigra	black mustard	62985076	
+Plant12		1														1		EriFas	Eriogonum fasciculatum	California buckwheat	62985075	
+Plant13			1													1		OpuLit	Opuntia littoralis	coastal prickly pear	62985083	
+Plant14		1														1		RhusInt	Rhus integrifolia	lemonade berry	62985081	
+Plant15	0.5		0.5													1		Stalk1	unknown	unknown	62985085	stalk1 (not IDed)
+Plant16			1													1						
+Plant17				1												1						
+Plant18	0.4				0.6											1						
+Plant19		0.1	0.8		0.1											1						
+Plant20	1															1						
+Plant21			1													1						
+Plant22				1												1						
+Plant23			1													1						
+Plant24	1															1						
+Plant25			1													1						
+Plant26		1														1						
+Plant27		1														1						
+Plant28	0.3		0.7													1						
+Plant29	1															1						
+Plant30									1							1						
+Plant31						1										1						
+Plant32		1														1						
+Plant33							1									1						
+Plant34	1															1						
+Plant35			1													1						
+Plant36								1								1						
+Plant37	0.4		0.5											0.1		1						
+Plant38	0.3		0.7													1						
+PlantA	1															1						
+PlantS			1													1						
+PlantM		1														1						
+Grassland										0.3	0.3	0.1	0.1	0.19	0.01	1						
