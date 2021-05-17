@@ -36,7 +36,8 @@ require(gridExtra)
 knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "../05_output_figures/")
 ```
 
-# Immigration rate calculations
+# Abundance on glass slides
+
 First, we'll look at the abundances on the glass slides over time to see if they are acculumulating or at equilibrium. 
 
 ```{r boxplot_glass_slide_abundance_by_ecosystem}
@@ -69,6 +70,8 @@ ggplot(data = cell.counts.use %>% filter(Treatment == "Open")) +
   geom_boxplot(aes(x = as.factor(Time_Point), y = number_cells_on_glass_slide_cleaned)) + 
   facet_wrap(vars(Ecosystem))
 ```
+
+# Immigration rate calculations assuming population growth
 
 Okay, seems like the immigration rate is faster than the death rate for the first three timepoints, and then a plateau is potentially being reached. We can model this increase and plateau using the integral of our population "growth" equation (with just immigration and death). 
 
@@ -149,7 +152,6 @@ Sweet! Now we can use these death rates to input into our model so we are only a
 
 ```{r scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem}
 # Calculating the death rate and immigration rate coefficients WITH measured death rates
-r.shrub
 (nls.shrub <- nls(number_cells_on_glass_slide_cleaned ~  
                     Im/0.02372169 * (1 - exp(-0.02372169 * Time_as_days)), 
                data = shrub.cells[shrub.cells$Treatment == "Open", ],
@@ -181,10 +183,21 @@ grid.arrange(A,B, nrow = 1)
 
 ```
 
-```{r name}
-# 
-nhat <- cell.counts.use %>% filter(Treatment == "Open" & Time_Point %in% c("3", "4")) %>% 
-  summarize(median = median(number_cells_on_glass_slide_cleaned))
+# Immigration rate calculations assuming equilibrium
+Looking at the first graph of abundance on the glass slides above, it seems that, on and after the third time point, the abundance on the glass slides is at equilibrium. Actually, for the grassland, it looks like abundance dips a little, either driven by higher death rate or lower immigration rate, so we can just use the third timepoint to calculate our immigration rate at equilibrium. 
 
+
+```{r immigration_rate_at_equilibrium}
+# Calculate immigration rate for the grassland 
+imm.grass <- grass.cells %>% filter(Treatment == "Open", Time_Point %in% c("3")) %>% 
+  summarize(mean = mean(number_cells_on_glass_slide_cleaned)) * r.grass
+
+print(paste0("The immigration rate for the grassland is ", imm.grass, " cells / day."))
+
+# Calculate immigration rate for the shrubland 
+imm.shrub <- shrub.cells %>% filter(Treatment == "Open", Time_Point %in% c("3")) %>% 
+  summarize(mean = mean(number_cells_on_glass_slide_cleaned)) * r.shrub
+
+print(paste0("The immigration rate for the shrubland is ", imm.shrub, " cells / day."))
 
 ```

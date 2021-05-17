@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-05-16" />
+<meta name="date" content="2021-05-17" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-05-16</h4>
+<h4 class="date">2021-05-17</h4>
 
 </div>
 
@@ -278,8 +278,8 @@ require(gridExtra)
 
 knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;../05_output_figures/&quot;)</code></pre>
 </div>
-<div id="immigration-rate-calculations" class="section level1">
-<h1>Immigration rate calculations</h1>
+<div id="abundance-on-glass-slides" class="section level1">
+<h1>Abundance on glass slides</h1>
 <p>First, we’ll look at the abundances on the glass slides over time to see if they are acculumulating or at equilibrium.</p>
 <pre class="r"><code># Load the data
 flow.data &lt;- load(&quot;../03_Processed_data/flow_cytometry_cleaned.rda&quot;)
@@ -310,6 +310,9 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;)) +
   geom_boxplot(aes(x = as.factor(Time_Point), y = number_cells_on_glass_slide_cleaned)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
 <p><img src="../05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
+</div>
+<div id="immigration-rate-calculations-assuming-population-growth" class="section level1">
+<h1>Immigration rate calculations assuming population growth</h1>
 <p>Okay, seems like the immigration rate is faster than the death rate for the first three timepoints, and then a plateau is potentially being reached. We can model this increase and plateau using the integral of our population “growth” equation (with just immigration and death).</p>
 <p>dn/dt = i - d*n(t) where n = abundance on glass slides, i = immigration rate, and d = death rate</p>
 <p>So the integral is (when forced to go through the origin): n(t) = i/d * (1 - e^(-d*t))</p>
@@ -398,10 +401,7 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt
 <p><img src="../05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
 <p>Sweet! Now we can use these death rates to input into our model so we are only asking it to find the estimate for the immigration rate. Note how much smaller the standard errors are for these immigration rates!</p>
 <pre class="r"><code># Calculating the death rate and immigration rate coefficients WITH measured death rates
-r.shrub</code></pre>
-<pre><code>Time_as_days 
-  0.02372169 </code></pre>
-<pre class="r"><code>(nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  
+(nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  
                     Im/0.02372169 * (1 - exp(-0.02372169 * Time_as_days)), 
                data = shrub.cells[shrub.cells$Treatment == &quot;Open&quot;, ],
                start = list(Im = 2e5)) %&gt;% summary) </code></pre>
@@ -456,9 +456,22 @@ B &lt;- ggplot(data = shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;) %
 
 grid.arrange(A,B, nrow = 1)</code></pre>
 <p><img src="../05_output_figures/scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem-1.png" width="672" /></p>
-<pre class="r"><code># 
-nhat &lt;- cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot; &amp; Time_Point %in% c(&quot;3&quot;, &quot;4&quot;)) %&gt;% 
-  summarize(median = median(number_cells_on_glass_slide_cleaned))</code></pre>
+</div>
+<div id="immigration-rate-calculations-assuming-equilibrium" class="section level1">
+<h1>Immigration rate calculations assuming equilibrium</h1>
+<p>Looking at the first graph of abundance on the glass slides above, it seems that, on and after the third time point, the abundance on the glass slides is at equilibrium. Actually, for the grassland, it looks like abundance dips a little, either driven by higher death rate or lower immigration rate, so we can just use the third timepoint to calculate our immigration rate at equilibrium.</p>
+<pre class="r"><code># Calculate immigration rate for the grassland 
+imm.grass &lt;- grass.cells %&gt;% filter(Treatment == &quot;Open&quot;, Time_Point %in% c(&quot;3&quot;)) %&gt;% 
+  summarize(mean = mean(number_cells_on_glass_slide_cleaned)) * r.grass
+
+print(paste0(&quot;The immigration rate for the grassland is &quot;, imm.grass, &quot; cells / day.&quot;))</code></pre>
+<pre><code>[1] &quot;The immigration rate for the grassland is 20287.3196400304 cells / day.&quot;</code></pre>
+<pre class="r"><code># Calculate immigration rate for the shrubland 
+imm.shrub &lt;- shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;, Time_Point %in% c(&quot;3&quot;)) %&gt;% 
+  summarize(mean = mean(number_cells_on_glass_slide_cleaned)) * r.shrub
+
+print(paste0(&quot;The immigration rate for the shrubland is &quot;, imm.shrub, &quot; cells / day.&quot;))</code></pre>
+<pre><code>[1] &quot;The immigration rate for the shrubland is 10861.2794380827 cells / day.&quot;</code></pre>
 </div>
 
 
