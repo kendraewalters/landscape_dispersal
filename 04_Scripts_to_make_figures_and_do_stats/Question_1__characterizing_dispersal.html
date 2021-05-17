@@ -273,8 +273,14 @@ td, th { padding : 6px }
 library(data.table)
 library(knitr)
 library(kableExtra)
+require(ggplot2)
+require(gridExtra)
 
 knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;../05_output_figures/&quot;)</code></pre>
+</div>
+<div id="immigration-rate-calculations" class="section level1">
+<h1>Immigration rate calculations</h1>
+<p>First, we’ll look at the abundances on the glass slides over time to see if they are acculumulating or at equilibrium.</p>
 <pre class="r"><code># Load the data
 flow.data &lt;- load(&quot;../03_Processed_data/flow_cytometry_cleaned.rda&quot;)
 metadata &lt;- load(&quot;../03_Processed_data/metadata_cleaned.rda&quot;)
@@ -296,7 +302,163 @@ cell.counts.use &lt;- cleaned.cell.counts %&gt;% left_join(metadata.together) %&
                             ifelse(grepl(&quot;^s&quot;, `Random_#_Flow`), &quot;Shrubland&quot;, Ecosystem))) %&gt;%
   select(number_cells_on_glass_slide_cleaned, Treatment, Ecosystem, Time_Point) %&gt;% # reduce to only columns we need
   filter(Treatment != &quot;Closed&quot;) %&gt;% # remove this negative control (should have been removed prior to this script)
-  mutate(Time_as_days = days.key[as.character(Time_Point)]) # make column that lists # of days</code></pre>
+  mutate(Time_as_days = days.key[as.character(Time_Point)]) # make column that lists # of days
+
+
+# Plot this as a boxplot to give a general sense of what the abundance on the glass slides are doing
+ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;)) +
+  geom_boxplot(aes(x = as.factor(Time_Point), y = number_cells_on_glass_slide_cleaned)) + 
+  facet_wrap(vars(Ecosystem))</code></pre>
+<p><img src="../05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
+<p>Okay, seems like the immigration rate is faster than the death rate for the first three timepoints, and then a plateau is potentially being reached. We can model this increase and plateau using the integral of our population “growth” equation (with just immigration and death).</p>
+<p>dn/dt = i - d*n(t) where n = abundance on glass slides, i = immigration rate, and d = death rate</p>
+<p>So the integral is (when forced to go through the origin): n(t) = i/d * (1 - e^(-d*t))</p>
+<pre class="r"><code># plotting our data with our fancy integral equation going through the origin
+ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% 
+  mutate(Time_as_days= as.integer(Time_as_days)), 
+       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+  geom_point() + 
+  geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / d) * (1 - exp(-d * x))&quot;, se=F, 
+              method.args = list(start=c(Im=2e5, d=0.034))) +
+  facet_wrap(vars(Ecosystem)) </code></pre>
+<p><img src="../05_output_figures/scatterplot_abundance_glass_slides_by_ecosystem-1.png" width="672" /></p>
+<pre class="r"><code># Separate into our two ecosystems
+grass.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Grassland&quot;)
+shrub.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Shrubland&quot;)
+
+
+# Calculating the death rate and immigration rate coefficients
+(nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  Im/d * (1 - exp(-d * Time_as_days)), 
+               data = shrub.cells[shrub.cells$Treatment == &quot;Open&quot;, ],
+               start = list(Im = 2e5, d = 0.034)) %&gt;% summary) </code></pre>
+<pre><code>
+Formula: number_cells_on_glass_slide_cleaned ~ Im/d * (1 - exp(-d * Time_as_days))
+
+Parameters:
+    Estimate Std. Error t value Pr(&gt;|t|)   
+Im 2.002e+04  7.059e+03   2.836  0.00676 **
+d  3.097e-02  2.036e-02   1.521  0.13499   
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 243700 on 46 degrees of freedom
+
+Number of iterations to convergence: 6 
+Achieved convergence tolerance: 5.734e-06</code></pre>
+<pre class="r"><code>(nls.grass &lt;- nls(number_cells_on_glass_slide_cleaned ~  Im/d * (1 - exp(-d * Time_as_days)), 
+               data = grass.cells[grass.cells$Treatment == &quot;Open&quot;, ],
+               start = list(Im = 2e5, d = 0.034)) %&gt;% summary)</code></pre>
+<pre><code>
+Formula: number_cells_on_glass_slide_cleaned ~ Im/d * (1 - exp(-d * Time_as_days))
+
+Parameters:
+    Estimate Std. Error t value Pr(&gt;|t|)
+Im 3.732e+04  2.354e+04   1.586    0.120
+d  6.902e-02  5.500e-02   1.255    0.216
+
+Residual standard error: 453700 on 46 degrees of freedom
+
+Number of iterations to convergence: 17 
+Achieved convergence tolerance: 8.027e-06</code></pre>
+<pre class="r"><code># note: use summary(model) to look at standard error, which is HUGE for the death rate and fairly large for the immigration rate</code></pre>
+<p>But we don’t actually need to have the model guess what the death rate is because we measured death rate with our death rate glass slides. So let’s plot that data now and calculate our death rate for the grassland and shrubland.</p>
+<pre class="r"><code># Calculating death rate for the grassland death slides
+intercept.grass &lt;- grass.cells %&gt;% 
+  filter(Treatment == &quot;Death&quot;, 
+         Time_as_days == 0) %&gt;% 
+  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned)))
+
+r.grass &lt;- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.grass[[1]]) ~ Time_as_days + 0, 
+               grass.cells %&gt;% filter(Treatment == &quot;Death&quot;)) %&gt;% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
+print(paste0(&quot;Continuous death rate for grassland cells is &quot;, round(r.grass, 4), &quot;.&quot;))</code></pre>
+<pre><code>[1] &quot;Continuous death rate for grassland cells is 0.0311.&quot;</code></pre>
+<pre class="r"><code># Calculating death rate for the grassland death slides
+intercept.shrub &lt;- shrub.cells %&gt;% 
+  filter(Treatment == &quot;Death&quot;, 
+         Time_as_days == 0) %&gt;% 
+  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned)))
+
+r.shrub &lt;- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.shrub[[1]]) ~ Time_as_days + 0, 
+               shrub.cells %&gt;% filter(Treatment == &quot;Death&quot;)) %&gt;% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
+print(paste0(&quot;Continuous death rate for shrubland cells is &quot;, round(r.shrub, 4), &quot;.&quot;))</code></pre>
+<pre><code>[1] &quot;Continuous death rate for shrubland cells is 0.0237.&quot;</code></pre>
+<pre class="r"><code># creating a mini data frame to give our parameters for the linear models (since we are picky about our intercepts here)
+lm.parameters.death &lt;- data.frame(&quot;Intercept&quot; = c(intercept.grass[[1]], intercept.shrub[[1]]), 
+                                  &quot;Slope&quot; = c(r.grass[[1]], r.shrub[[1]]), 
+                                  &quot;Ecosystem&quot; = c(&quot;Grassland&quot;, &quot;Shrubland&quot;))
+
+
+# plotting our death rate data
+ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt;% 
+  mutate(Time_as_days= as.integer(Time_as_days)), 
+       aes(x = Time_as_days, y = log(number_cells_on_glass_slide_cleaned))) +
+  geom_point() + 
+  geom_abline(data = lm.parameters.death, aes(intercept = Intercept, slope = -Slope)) + 
+  facet_wrap(vars(Ecosystem))</code></pre>
+<p><img src="../05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
+<p>Sweet! Now we can use these death rates to input into our model so we are only asking it to find the estimate for the immigration rate. Note how much smaller the standard errors are for these immigration rates!</p>
+<pre class="r"><code># Calculating the death rate and immigration rate coefficients WITH measured death rates
+r.shrub</code></pre>
+<pre><code>Time_as_days 
+  0.02372169 </code></pre>
+<pre class="r"><code>(nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  
+                    Im/0.02372169 * (1 - exp(-0.02372169 * Time_as_days)), 
+               data = shrub.cells[shrub.cells$Treatment == &quot;Open&quot;, ],
+               start = list(Im = 2e5)) %&gt;% summary) </code></pre>
+<pre><code>
+Formula: number_cells_on_glass_slide_cleaned ~ Im/0.02372169 * (1 - exp(-0.02372169 * 
+    Time_as_days))
+
+Parameters:
+   Estimate Std. Error t value Pr(&gt;|t|)    
+Im    17625       1477   11.93 7.89e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 241300 on 47 degrees of freedom
+
+Number of iterations to convergence: 1 
+Achieved convergence tolerance: 7.677e-08</code></pre>
+<pre class="r"><code>(nls.grass &lt;- nls(number_cells_on_glass_slide_cleaned ~ 
+                    Im/0.03106574 * (1 - exp(-0.03106574 * Time_as_days)), 
+               data = grass.cells[grass.cells$Treatment == &quot;Open&quot;, ],
+               start = list(Im = 2e5)) %&gt;% summary)</code></pre>
+<pre><code>
+Formula: number_cells_on_glass_slide_cleaned ~ Im/0.03106574 * (1 - exp(-0.03106574 * 
+    Time_as_days))
+
+Parameters:
+   Estimate Std. Error t value Pr(&gt;|t|)    
+Im    21918       3170   6.915  1.1e-08 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 454700 on 47 degrees of freedom
+
+Number of iterations to convergence: 1 
+Achieved convergence tolerance: 2.33e-08</code></pre>
+<pre class="r"><code># Graph the new curves that we made
+A &lt;- ggplot(data = grass.cells %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% 
+  mutate(Time_as_days= as.integer(Time_as_days)), 
+       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+  geom_point() + 
+  geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / 0.03106574) * (1 - exp(-0.03106574 * x))&quot;, se=F, 
+              method.args = list(start=c(Im=2e5))) +
+  ggtitle(&quot;Grassland&quot;)
+
+B &lt;- ggplot(data = shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% 
+  mutate(Time_as_days= as.integer(Time_as_days)), 
+       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+  geom_point() + 
+  geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / 0.02372169) * (1 - exp(-0.02372169 * x))&quot;, se=F, 
+              method.args = list(start=c(Im=2e5))) +
+  ggtitle(&quot;Shrubland&quot;)
+
+grid.arrange(A,B, nrow = 1)</code></pre>
+<p><img src="../05_output_figures/scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem-1.png" width="672" /></p>
+<pre class="r"><code># 
+nhat &lt;- cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot; &amp; Time_Point %in% c(&quot;3&quot;, &quot;4&quot;)) %&gt;% 
+  summarize(median = median(number_cells_on_glass_slide_cleaned))</code></pre>
 </div>
 
 
