@@ -45,4 +45,4 @@ vignettes/*.pdf
 .~lock
 
 #SourceTracker's bajillion file output
-*/source_tracker_contamination/*
+01_Raw_data/03_Microbial_Community_Composition/glass_slides__16S/source_tracker_contamination/
