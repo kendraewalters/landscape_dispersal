@@ -43,3 +43,6 @@ vignettes/*.pdf
 
 #LibreOffice
 .~lock
+
+#SourceTracker's bajillion file output
+*/source_tracker_contamination/*
