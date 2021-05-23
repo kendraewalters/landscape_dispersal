@@ -1,560 +1,560 @@
-Old_Sample_ID,New_Sample_ID,Sample_Lost?,Random_#_Extractions_Tubes,Random_#_Extractions_Plates,Substrate,Treatment,Time_Point,Transect,Ecosystem,Location,Random_#_Flow,Abundance?,Mass_Loss?,Composition?,Numbers,Notes,Transect_Loc
-AirT2R4,AirT2R4,,10,NA,FTA Card,Air,2,Tower,Tower,Tower,NA,N,N,Y,310,,TowerTower
-AirT2R5,AirT2R5,,87,NA,FTA Card,Air,2,Tower,Tower,Tower,NA,N,N,Y,311,,TowerTower
-AirT2R6,AirT2R6,,72,NA,FTA Card,Air,2,Tower,Tower,Tower,NA,N,N,Y,312,,TowerTower
-AirT4R4,AirT4R4,,88,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,496,,TowerTower
-AirT4R5,AirT4R5,,82,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,497,,TowerTower
-AirT4R6,AirT4R6,,57,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,498,,TowerTower
-AirT4R7,AirT4R7,,123,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,498.1,,TowerTower
-AirT4R8,AirT4R8,,96,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,498.2,,TowerTower
-AirT4R9,AirT4R9,,156,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,498.3,,TowerTower
-AirT2R1,AirT2R1,,149,NA,Glass Slide,Air,2,Tower,Tower,Tower,NA,N,N,Y,307,,TowerTower
-AirT2R2,AirT2R2,,117,NA,Glass Slide,Air,2,Tower,Tower,Tower,NA,N,N,Y,308,,TowerTower
-AirT2R3,AirT2R3,,153,NA,Glass Slide,Air,2,Tower,Tower,Tower,NA,N,N,Y,309,,TowerTower
-AirT4R1,AirT4R1,,2,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,493,,TowerTower
-SlideT4R3,AirT4R12,,110,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,495.3,"Not assigned label before placement in field so was assigned stand-in label in field, then reassigned correct label in lab.",TowerTower
-AirT4R2,AirT4R2,,59,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,494,,TowerTower
-SlideT4R1,AirT4R10,,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,N,495.1,"Not assigned label before placement in field so was assigned stand-in label in field, then reassigned correct label in lab; bird poop so not extracted",NA
-SlideT4R2,AirT4R11,,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,N,495.2,"Not assigned label before placement in field so was assigned stand-in label in field, then reassigned correct label in lab; bird poop so not extracted",NA
-AirT4R3,AirT4R3,,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,N,495,"Poop on slide, no DNA extraction done",NA
-GCT1A1,GCT1A1,,NA,279,Grass Litter,Closed,1,A,Shrubland,1,NA,N,Y,Y,103,,A1
-GCT1A2,GCT1A2,,NA,163,Grass Litter,Closed,1,A,Shrubland,2,NA,N,Y,Y,104,,A2
-GCT1A3,GCT1A3,,NA,234,Grass Litter,Closed,1,A,Shrubland,3,NA,N,Y,Y,105,,A3
-GCT1A4,GCT1A4,,NA,316,Grass Litter,Closed,1,A,Shrubland,4,NA,N,Y,Y,106,,A4
-GCT1A5,GCT1A5,,NA,263,Grass Litter,Closed,1,A,Grassland,5,NA,N,Y,Y,115,,A5
-GCT1A6,GCT1A6,,NA,91,Grass Litter,Closed,1,A,Grassland,6,NA,N,Y,Y,116,,A6
-GCT1A7,GCT1A7,,NA,273,Grass Litter,Closed,1,A,Grassland,7,NA,N,Y,Y,117,,A7
-GCT1A8,GCT1A8,,NA,145,Grass Litter,Closed,1,A,Grassland,8,NA,N,Y,Y,118,,A8
-GCT1B1,GCT1B1,,NA,179,Grass Litter,Closed,1,B,Shrubland,1,NA,N,Y,Y,107,,B1
-GCT1B2,GCT1B2,,NA,123,Grass Litter,Closed,1,B,Shrubland,2,NA,N,Y,Y,108,,B2
-GCT1B4,GCT1B4,,NA,318,Grass Litter,Closed,1,B,Shrubland,4,NA,N,Y,Y,110,,B4
-GCT1B5,GCT1B5,,NA,212,Grass Litter,Closed,1,B,Grassland,5,NA,N,Y,Y,119,,B5
-GCT1B6,GCT1B6,,NA,65,Grass Litter,Closed,1,B,Grassland,6,NA,N,Y,Y,120,,B6
-GCT1B7,GCT1B7,,NA,85,Grass Litter,Closed,1,B,Grassland,7,NA,N,Y,Y,121,,B7
-GCT1B8,GCT1B8,,NA,219,Grass Litter,Closed,1,B,Grassland,8,NA,N,Y,Y,122,,B8
-GCT1C1,GCT1C1,,NA,53,Grass Litter,Closed,1,C,Shrubland,1,NA,N,Y,Y,111,,C1
-GCT1C2,GCT1C2,,NA,118,Grass Litter,Closed,1,C,Shrubland,2,NA,N,Y,Y,112,,C2
-GCT1C3,GCT1C3,,NA,278,Grass Litter,Closed,1,C,Shrubland,3,NA,N,Y,Y,113,,C3
-GCT1C4,GCT1C4,,NA,235,Grass Litter,Closed,1,C,Shrubland,4,NA,N,Y,Y,114,,C4
-GCT1C5,GCT1C5,,NA,161,Grass Litter,Closed,1,C,Grassland,5,NA,N,Y,Y,123,,C5
-GCT1C6,GCT1C6,,NA,78,Grass Litter,Closed,1,C,Grassland,6,NA,N,Y,Y,124,,C6
-GCT1C7,GCT1C7,,NA,221,Grass Litter,Closed,1,C,Grassland,7,NA,N,Y,Y,125,,C7
-GCT1C8,GCT1C8,,NA,151,Grass Litter,Closed,1,C,Grassland,8,NA,N,Y,Y,126,,C8
-GCT2A1,GCT2A1,,NA,27,Grass Litter,Closed,2,A,Shrubland,1,NA,N,Y,Y,241,,A1
-GCT2A2,GCT2A2,,NA,87,Grass Litter,Closed,2,A,Shrubland,2,NA,N,Y,Y,242,,A2
-GCT2A3,GCT2A3,,NA,319,Grass Litter,Closed,2,A,Shrubland,3,NA,N,Y,Y,243,,A3
-GCT2A4,GCT2A4,,NA,116,Grass Litter,Closed,2,A,Shrubland,4,NA,N,Y,Y,244,,A4
-GCT2A5,GCT2A5,,NA,144,Grass Litter,Closed,2,A,Grassland,5,NA,N,Y,Y,253,,A5
-GCT2A7,GCT2A7,,NA,270,Grass Litter,Closed,2,A,Grassland,7,NA,N,Y,Y,255,,A7
-GCT2A8,GCT2A8,,NA,247,Grass Litter,Closed,2,A,Grassland,8,NA,N,Y,Y,256,,A8
-GCT2B1,GCT2B1,,NA,181,Grass Litter,Closed,2,B,Shrubland,1,NA,N,Y,Y,245,,B1
-GCT2B2,GCT2B2,,NA,6,Grass Litter,Closed,2,B,Shrubland,2,NA,N,Y,Y,246,,B2
-GCT2B3,GCT2B3,,NA,208,Grass Litter,Closed,2,B,Shrubland,3,NA,N,Y,Y,247,,B3
-GCT2B4,GCT2B4,,NA,23,Grass Litter,Closed,2,B,Shrubland,4,NA,N,Y,Y,248,,B4
-GCT2B5,GCT2B5,,NA,320,Grass Litter,Closed,2,B,Grassland,5,NA,N,Y,Y,257,,B5
-GCT2B6,GCT2B6,,NA,236,Grass Litter,Closed,2,B,Grassland,6,NA,N,Y,Y,258,,B6
-GCT2B7,GCT2B7,,NA,2,Grass Litter,Closed,2,B,Grassland,7,NA,N,Y,Y,259,,B7
-GCT2B8,GCT2B8,,NA,61,Grass Litter,Closed,2,B,Grassland,8,NA,N,Y,Y,260,,B8
-GCT2C1,GCT2C1,,NA,127,Grass Litter,Closed,2,C,Shrubland,1,NA,N,Y,Y,249,,C1
-GCT2C2,GCT2C2,,NA,83,Grass Litter,Closed,2,C,Shrubland,2,NA,N,Y,Y,250,,C2
-GCT2C3,GCT2C3,,NA,70,Grass Litter,Closed,2,C,Shrubland,3,NA,N,Y,Y,251,,C3
-GCT2C4,GCT2C4,,NA,292,Grass Litter,Closed,2,C,Shrubland,4,NA,N,Y,Y,252,,C4
-GCT2C5,GCT2C5,,NA,153,Grass Litter,Closed,2,C,Grassland,5,NA,N,Y,Y,261,,C5
-GCT2C6,GCT2C6,,NA,12,Grass Litter,Closed,2,C,Grassland,6,NA,N,Y,Y,262,,C6
-GCT2C7,GCT2C7,,NA,35,Grass Litter,Closed,2,C,Grassland,7,NA,N,Y,Y,263,,C7
-GCT2C8,GCT2C8,,NA,298,Grass Litter,Closed,2,C,Grassland,8,NA,N,Y,Y,264,,C8
-GCT4A1,GCT4A1,,NA,63,Grass Litter,Closed,4,A,Shrubland,1,NA,N,Y,Y,427,,A1
-GCT4A2,GCT4A2,,NA,306,Grass Litter,Closed,4,A,Shrubland,2,NA,N,Y,Y,428,,A2
-GCT4A3,GCT4A3,,NA,136,Grass Litter,Closed,4,A,Shrubland,3,NA,N,Y,Y,429,,A3
-GCT4A4,GCT4A4,,NA,32,Grass Litter,Closed,4,A,Shrubland,4,NA,N,Y,Y,430,,A4
-GCT4A5,GCT4A5,,NA,220,Grass Litter,Closed,4,A,Grassland,5,NA,N,Y,Y,439,,A5
-GCT4A6,GCT4A6,,NA,231,Grass Litter,Closed,4,A,Grassland,6,NA,N,Y,Y,440,,A6
-GCT4A7,GCT4A7,,NA,157,Grass Litter,Closed,4,A,Grassland,7,NA,N,Y,Y,441,,A7
-GCT4A8,GCT4A8,,NA,98,Grass Litter,Closed,4,A,Grassland,8,NA,N,Y,Y,442,,A8
-GCT4B1,GCT4B1,,NA,54,Grass Litter,Closed,4,B,Shrubland,1,NA,N,Y,Y,431,,B1
-GCT4B2,GCT4B2,,NA,287,Grass Litter,Closed,4,B,Shrubland,2,NA,N,Y,Y,432,,B2
-GCT4B3,GCT4B3,,NA,253,Grass Litter,Closed,4,B,Shrubland,3,NA,N,Y,Y,433,,B3
-GCT4B4,GCT4B4,,NA,229,Grass Litter,Closed,4,B,Shrubland,4,NA,N,Y,Y,434,,B4
-GCT4B5,GCT4B5,,NA,238,Grass Litter,Closed,4,B,Grassland,5,NA,N,Y,Y,443,,B5
-GCT4B6,GCT4B6,,NA,274,Grass Litter,Closed,4,B,Grassland,6,NA,N,Y,Y,444,,B6
-GCT4B7,GCT4B7,,NA,310,Grass Litter,Closed,4,B,Grassland,7,NA,N,Y,Y,445,,B7
-GCT4B8,GCT4B8,,NA,257,Grass Litter,Closed,4,B,Grassland,8,NA,N,Y,Y,446,,B8
-GCT4C1,GCT4C1,,NA,62,Grass Litter,Closed,4,C,Shrubland,1,NA,N,Y,Y,435,,C1
-GCT4C2,GCT4C2,,NA,250,Grass Litter,Closed,4,C,Shrubland,2,NA,N,Y,Y,436,,C2
-GCT4C3,GCT4C3,,NA,251,Grass Litter,Closed,4,C,Shrubland,3,NA,N,Y,Y,437,,C3
-GCT4C4,GCT4C4,,NA,290,Grass Litter,Closed,4,C,Shrubland,4,NA,N,Y,Y,438,,C4
-GCT4C5,GCT4C5,,NA,282,Grass Litter,Closed,4,C,Grassland,5,NA,N,Y,Y,447,,C5
-GCT4C6,GCT4C6,,NA,106,Grass Litter,Closed,4,C,Grassland,6,NA,N,Y,Y,448,,C6
-GCT4C7,GCT4C7,,NA,301,Grass Litter,Closed,4,C,Grassland,7,NA,N,Y,Y,449,,C7
-SCT1A1,SCT1A1,,NA,196,Shrub Litter,Closed,1,A,Shrubland,1,NA,N,Y,Y,55,,A1
-SCT1A2,SCT1A2,,NA,284,Shrub Litter,Closed,1,A,Shrubland,2,NA,N,Y,Y,56,,A2
-SCT1A6,SCT1A3,,NA,114,Shrub Litter,Closed,1,A,Shrubland,3,NA,N,Y,Y,68,,A3
-SCT1A8,SCT1A4,,NA,113,Shrub Litter,Closed,1,A,Shrubland,4,NA,N,Y,Y,70,,A4
-SCT1A5,SCT1A5,,NA,268,Shrub Litter,Closed,1,A,Grassland,5,NA,N,Y,Y,67,,A5
-SCT1A3,SCT1A6,,NA,281,Shrub Litter,Closed,1,A,Grassland,6,NA,N,Y,Y,57,,A6
-SCT1A7,SCT1A7,,NA,100,Shrub Litter,Closed,1,A,Grassland,7,NA,N,Y,Y,69,,A7
-SCT1A4,SCT1A8,,NA,29,Shrub Litter,Closed,1,A,Grassland,8,NA,N,Y,Y,58,,A8
-SCT1B1,SCT1B1,,NA,166,Shrub Litter,Closed,1,B,Shrubland,1,NA,N,Y,Y,59,,B1
-SCT1B2,SCT1B2,,NA,228,Shrub Litter,Closed,1,B,Shrubland,2,NA,N,Y,Y,60,,B2
-SCT1B6,SCT1B3,,NA,277,Shrub Litter,Closed,1,B,Shrubland,3,NA,N,Y,Y,72,,B3
-SCT1B7,SCT1B4,,NA,71,Shrub Litter,Closed,1,B,Shrubland,4,NA,N,Y,Y,73,,B4
-SCT1B5,SCT1B5,,NA,217,Shrub Litter,Closed,1,B,Grassland,5,NA,N,Y,Y,71,,B5
-SCT1B3,SCT1B6,,NA,170,Shrub Litter,Closed,1,B,Grassland,6,NA,N,Y,Y,61,,B6
-SCT1B4,SCT1B7,,NA,289,Shrub Litter,Closed,1,B,Grassland,7,NA,N,Y,Y,62,,B7
-SCT1B8,SCT1B8,,NA,7,Shrub Litter,Closed,1,B,Grassland,8,NA,N,Y,Y,74,,B8
-SCT1C6,SCT1C1,,NA,68,Shrub Litter,Closed,1,C,Shrubland,1,NA,N,Y,Y,76,,C1
-SCT1C2,SCT1C2,,NA,38,Shrub Litter,Closed,1,C,Shrubland,2,NA,N,Y,Y,64,,C2
-SCT1C7,SCT1C3,,NA,102,Shrub Litter,Closed,1,C,Shrubland,3,NA,N,Y,Y,77,,C3
-SCT1C4,SCT1C4,,NA,186,Shrub Litter,Closed,1,C,Shrubland,4,NA,N,Y,Y,66,,C4
-SCT1C5,SCT1C5,,NA,207,Shrub Litter,Closed,1,C,Grassland,5,NA,N,Y,Y,75,,C5
-SCT1C1,SCT1C6,,NA,198,Shrub Litter,Closed,1,C,Grassland,6,NA,N,Y,Y,63,,C6
-SCT1C3,SCT1C7,,NA,233,Shrub Litter,Closed,1,C,Grassland,7,NA,N,Y,Y,65,,C7
-SCT1C8,SCT1C8,,NA,121,Shrub Litter,Closed,1,C,Grassland,8,NA,N,Y,Y,78,,C8
-SCT2A1,SCT2A1,,NA,304,Shrub Litter,Closed,2,A,Shrubland,1,NA,N,Y,Y,193,,A1
-SCT2A8,SCT2A2,,NA,119,Shrub Litter,Closed,2,A,Shrubland,2,NA,N,Y,Y,208,,A2
-SCT2A5,SCT2A3,,NA,241,Shrub Litter,Closed,2,A,Shrubland,3,NA,N,Y,Y,205,,A3
-SCT2A4,SCT2A4,,NA,264,Shrub Litter,Closed,2,A,Shrubland,4,NA,N,Y,Y,196,,A4
-SCT2A3,SCT2A5,,NA,192,Shrub Litter,Closed,2,A,Grassland,5,NA,N,Y,Y,195,,A5
-SCT2A6,SCT2A6,,NA,150,Shrub Litter,Closed,2,A,Grassland,6,NA,N,Y,Y,206,,A6
-SCT2A7,SCT2A7,,NA,314,Shrub Litter,Closed,2,A,Grassland,7,NA,N,Y,Y,207,,A7
-SCT2A2,SCT2A8,,NA,177,Shrub Litter,Closed,2,A,Grassland,8,NA,N,Y,Y,194,,A8
-SCT2B1,SCT2B1,,NA,154,Shrub Litter,Closed,2,B,Shrubland,1,NA,N,Y,Y,197,,B1
-SCT2B8,SCT2B2,,NA,176,Shrub Litter,Closed,2,B,Shrubland,2,NA,N,Y,Y,212,,B2
-SCT2B6,SCT2B3,,NA,20,Shrub Litter,Closed,2,B,Shrubland,3,NA,N,Y,Y,210,,B3
-SCT2B4,SCT2B4,,NA,213,Shrub Litter,Closed,2,B,Shrubland,4,NA,N,Y,Y,200,,B4
-SCT2B5,SCT2B5,,NA,203,Shrub Litter,Closed,2,B,Grassland,5,NA,N,Y,Y,209,,B5
-SCT2B3,SCT2B6,,NA,244,Shrub Litter,Closed,2,B,Grassland,6,NA,N,Y,Y,199,,B6
-SCT2B7,SCT2B7,,NA,73,Shrub Litter,Closed,2,B,Grassland,7,NA,N,Y,Y,211,,B7
-SCT2B2,SCT2B8,,NA,173,Shrub Litter,Closed,2,B,Grassland,8,NA,N,Y,Y,198,,B8
-SCT2C8,SCT2C1,,NA,195,Shrub Litter,Closed,2,C,Shrubland,1,NA,N,Y,Y,216,,C1
-SCT2C7,SCT2C2,,NA,126,Shrub Litter,Closed,2,C,Shrubland,2,NA,N,Y,Y,215,,C2
-SCT2C3,SCT2C3,,NA,5,Shrub Litter,Closed,2,C,Shrubland,3,NA,N,Y,Y,203,,C3
-SCT2C4,SCT2C4,,NA,226,Shrub Litter,Closed,2,C,Shrubland,4,NA,N,Y,Y,204,,C4
-SCT2C5,SCT2C5,,NA,156,Shrub Litter,Closed,2,C,Grassland,5,NA,N,Y,Y,213,,C5
-SCT2C6,SCT2C6,,NA,260,Shrub Litter,Closed,2,C,Grassland,6,NA,N,Y,Y,214,,C6
-SCT2C2,SCT2C7,,NA,110,Shrub Litter,Closed,2,C,Grassland,7,NA,N,Y,Y,202,,C7
-SCT2C1,SCT2C8,,NA,43,Shrub Litter,Closed,2,C,Grassland,8,NA,N,Y,Y,201,,C8
-SCT4A1,SCT4A1,,NA,223,Shrub Litter,Closed,4,A,Shrubland,1,NA,N,Y,Y,379,,A1
-SCT4A2,SCT4A2,,NA,81,Shrub Litter,Closed,4,A,Shrubland,2,NA,N,Y,Y,380,,A2
-SCT4A6,SCT4A3,,NA,55,Shrub Litter,Closed,4,A,Shrubland,3,NA,N,Y,Y,392,,A3
-SCT4A8,SCT4A4,,NA,296,Shrub Litter,Closed,4,A,Shrubland,4,NA,N,Y,Y,394,,A4
-SCT4A5,SCT4A5,,NA,42,Shrub Litter,Closed,4,A,Grassland,5,NA,N,Y,Y,391,,A5
-SCT4A3,SCT4A6,,NA,108,Shrub Litter,Closed,4,A,Grassland,6,NA,N,Y,Y,381,,A6
-SCT4A7,SCT4A7,,NA,89,Shrub Litter,Closed,4,A,Grassland,7,NA,N,Y,Y,393,,A7
-SCT4A4,SCT4A8,,NA,299,Shrub Litter,Closed,4,A,Grassland,8,NA,N,Y,Y,382,,A8
-SCT4B1,SCT4B1,,NA,34,Shrub Litter,Closed,4,B,Shrubland,1,NA,N,Y,Y,383,,B1
-SCT4B8,SCT4B2,,NA,141,Shrub Litter,Closed,4,B,Shrubland,2,NA,N,Y,Y,398,,B2
-SCT4B3,SCT4B3,,NA,45,Shrub Litter,Closed,4,B,Shrubland,3,NA,N,Y,Y,385,,B3
-SCT4B6,SCT4B4,,NA,249,Shrub Litter,Closed,4,B,Shrubland,4,NA,N,Y,Y,396,,B4
-SCT4B5,SCT4B5,,NA,197,Shrub Litter,Closed,4,B,Grassland,5,NA,N,Y,Y,395,,B5
-SCT4B4,SCT4B6,,NA,88,Shrub Litter,Closed,4,B,Grassland,6,NA,N,Y,Y,386,,B6
-SCT4B7,SCT4B7,,NA,184,Shrub Litter,Closed,4,B,Grassland,7,NA,N,Y,Y,397,,B7
-SCT4B2,SCT4B8,,NA,9,Shrub Litter,Closed,4,B,Grassland,8,NA,N,Y,Y,384,,B8
-SCT4C1,SCT4C1,,NA,258,Shrub Litter,Closed,4,C,Shrubland,1,NA,N,Y,Y,387,,C1
-SCT4C2,SCT4C2,,NA,252,Shrub Litter,Closed,4,C,Shrubland,2,NA,N,Y,Y,388,,C2
-SCT4C7,SCT4C3,,NA,95,Shrub Litter,Closed,4,C,Shrubland,3,NA,N,Y,Y,401,,C3
-SCT4C8,SCT4C4,,NA,74,Shrub Litter,Closed,4,C,Shrubland,4,NA,N,Y,Y,402,,C4
-SCT4C5,SCT4C5,,NA,218,Shrub Litter,Closed,4,C,Grassland,5,NA,N,Y,Y,399,,C5
-SCT4C6,SCT4C6,,NA,109,Shrub Litter,Closed,4,C,Grassland,6,NA,N,Y,Y,400,,C6
-SCT4C3,SCT4C7,,NA,26,Shrub Litter,Closed,4,C,Grassland,7,NA,N,Y,Y,389,,C7
-SCT4C4,SCT4C8,,NA,214,Shrub Litter,Closed,4,C,Grassland,8,NA,N,Y,Y,390,,C8
-LCT1R1,LCT1R1,,NA,NA,Glass Slide,Closed,1,C,Boundary,B,5,Y,N,N,151,,NA
-LCT1R2,LCT1R2,,NA,NA,Glass Slide,Closed,1,B,Boundary,B,7,Y,N,N,152,,NA
-LCT1R3,LCT1R3,,NA,NA,Glass Slide,Closed,1,C,Boundary,B,16,Y,N,N,153,,NA
-LCT1R4,LCT1R4,,NA,NA,Glass Slide,Closed,1,A,Boundary,B,2,Y,N,N,154,,NA
-LCT2R1,LCT2R1,,NA,NA,Glass Slide,Closed,2,A,Boundary,B,40,Y,N,N,289,,NA
-LCT2R2,LCT2R2,,NA,NA,Glass Slide,Closed,2,B,Boundary,B,56,Y,N,N,290,,NA
-LCT2R3,LCT2R3,,NA,NA,Glass Slide,Closed,2,B,Boundary,B,53,Y,N,N,291,,NA
-LCT2R4,LCT2R4,,NA,NA,Glass Slide,Closed,2,C,Boundary,B,39,Y,N,N,292,,NA
-LCT2R5,LCT2R5,,NA,NA,Glass Slide,Closed,2,A,Boundary,B,38,Y,N,N,293,,NA
-LCT3R1,LCT3R1,,NA,NA,Glass Slide,Closed,3,C,Boundary,B,84,Y,N,N,337,,NA
-LCT3R2,LCT3R2,,NA,NA,Glass Slide,Closed,3,B,Boundary,B,93,Y,N,N,338,,NA
-LCT3R3,LCT3R3,,NA,NA,Glass Slide,Closed,3,C,Boundary,B,104,Y,N,N,339,,NA
-LCT3R4,LCT3R4,,NA,NA,Glass Slide,Closed,3,A,Boundary,B,96,Y,N,N,340,,NA
-LCT4R1,LCT4R1,,NA,NA,Glass Slide,Closed,4,A,Boundary,B,114,Y,N,N,475,,NA
-LCT4R2,LCT4R2,,NA,NA,Glass Slide,Closed,4,C,Boundary,B,131,Y,N,N,476,,NA
-LCT4R3,LCT4R3,,NA,NA,Glass Slide,Closed,4,A,Boundary,B,120,Y,N,N,477,,NA
-LCT4R4,LCT4R4,,NA,NA,Glass Slide,Closed,4,B,Boundary,B,149,Y,N,N,478,,NA
-LCT4R5,LCT4R5,,NA,NA,Glass Slide,Closed,4,B,Boundary,B,113,Y,N,N,479,,NA
-LDT0R1,LDT0R1G,,89,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA
-LDT0R2,LDT0R2G,,151,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA
-LDT0R3,LDT0R3G,,44,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA
-LDT0R4,LDT0R4G,,121,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA
-LDT0R5,LDT0R5G,,78,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA
-LDT0R6,LDT0R6G,,107,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA
-LDT0R7,LDT0R1S,,127,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA
-LDT0R8,LDT0R2S,,138,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA
-LDT0R9,LDT0R3S,,68,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA
-LDT0R10,LDT0R4S,,111,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA
-LDT0R11,LDT0R5S,,6,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA
-LDT0R12,LDT0R6S,,128,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA
-LDT1R1,LDT1R1AS,,9,NA,Glass Slide,Death,1,A,Shrubland,2,33,Y,N,Y,157,,A2
-LDT1R2,LDT1R2BS,,106,NA,Glass Slide,Death,1,B,Shrubland,2,35,Y,N,Y,158,,B2
-LDT1R3,LDT1R3CS,,71,NA,Glass Slide,Death,1,C,Shrubland,2,4,Y,N,Y,159,,C2
-LDT1R4,LDT1R4AG,,66,NA,Glass Slide,Death,1,A,Grassland,7,23,Y,N,Y,160,,A7
-LDT1R5,LDT1R5BG,,91,NA,Glass Slide,Death,1,B,Grassland,7,10,Y,N,Y,161,,B7
-LDT1R6,LDT1R6CG,,53,NA,Glass Slide,Death,1,C,Grassland,7,11,Y,N,Y,162,,C7
-LDT1R7,LDT1R7AS,,130,NA,Glass Slide,Death,1,A,Shrubland,2,13,Y,N,Y,163,,NA
-LDT1R8,LDT1R8BG,,67,NA,Glass Slide,Death,1,B,Grassland,7,28,Y,N,Y,164,,B7
-LDT2R10,LDT2R10CG,,21,NA,Glass Slide,Death,2,C,Grassland,7,62,Y,N,Y,304,,C7
-LDT2R1,LDT2R1AS,,62,NA,Glass Slide,Death,2,A,Shrubland,2,72,Y,N,Y,295,,A2
-LDT2R2,LDT2R2BS,,150,NA,Glass Slide,Death,2,B,Shrubland,2,54,Y,N,Y,296,,B2
-LDT2R3,LDT2R3CS,,118,NA,Glass Slide,Death,2,C,Shrubland,2,44,Y,N,Y,297,,C2
-LDT2R4,LDT2R4AG,,92,NA,Glass Slide,Death,2,A,Grassland,7,45,Y,N,Y,298,,A7
-LDT2R5,LDT2R5BG,,60,NA,Glass Slide,Death,2,B,Grassland,7,46,Y,N,Y,299,,B7
-LDT2R6,LDT2R6CG,,56,NA,Glass Slide,Death,2,C,Grassland,7,42,Y,N,Y,300,,C7
-LDT2R7,LDT2R7CS,,1,NA,Glass Slide,Death,2,C,Shrubland,2,43,Y,N,Y,301,,C2
-LDT2R8,LDT2R8AS,,22,NA,Glass Slide,Death,2,A,Shrubland,2,64,Y,N,Y,302,,A2
-LDT2R9,LDT2R9BG,,157,NA,Glass Slide,Death,2,B,Grassland,7,74,Y,N,Y,303,,B7
-LDT3R1,LDT3R1AS,,73,NA,Glass Slide,Death,3,A,Shrubland,2,102,Y,N,Y,343,,A2
-LDT3R2,LDT3R2BS,,75,NA,Glass Slide,Death,3,B,Shrubland,2,95,Y,N,Y,344,,B2
-LDT3R3,LDT3R3CS,,69,NA,Glass Slide,Death,3,C,Shrubland,2,106,Y,N,Y,345,,C2
-LDT3R4,LDT3R4AG,,42,NA,Glass Slide,Death,3,A,Grassland,7,80,Y,N,Y,346,,A7
-LDT3R5,LDT3R5BG,,63,NA,Glass Slide,Death,3,B,Grassland,7,110,Y,N,Y,347,,B7
-LDT3R6,LDT3R6CG,,112,NA,Glass Slide,Death,3,C,Grassland,7,90,Y,N,Y,348,,C7
-LDT3R7,LDT3R7AS,,144,NA,Glass Slide,Death,3,A,Shrubland,2,97,Y,N,Y,349,,A2
-LDT3R8,LDT3R8BG,,140,NA,Glass Slide,Death,3,B,Grassland,7,101,Y,N,Y,350,,B7
-LDT4R1,LDT4R1AS,,32,NA,Glass Slide,Death,4,A,Shrubland,2,142,Y,N,Y,481,,A2
-LDT4R2,LDT4R2BS,,33,NA,Glass Slide,Death,4,B,Shrubland,2,144,Y,N,Y,482,,B2
-LDT4R3,LDT4R3CS,,94,NA,Glass Slide,Death,4,C,Shrubland,2,145,Y,N,Y,483,,C2
-LDT4R4,LDT4R4AG,,34,NA,Glass Slide,Death,4,A,Grassland,7,130,Y,N,Y,484,,A7
-LDT4R5,LDT4R5BG,,100,NA,Glass Slide,Death,4,B,Grassland,7,122,Y,N,Y,485,,B7
-LDT4R6,LDT4R6CG,,114,NA,Glass Slide,Death,4,C,Grassland,7,136,Y,N,Y,486,,C7
-LDT4R7,LDT4R7CS,,14,NA,Glass Slide,Death,4,C,Shrubland,2,121,Y,N,Y,487,,C2
-LDT4R8,LDT4R8AS,,25,NA,Glass Slide,Death,4,A,Shrubland,2,117,Y,N,Y,488,,A2
-LDT4R9,LDT4R9BG,,109,NA,Glass Slide,Death,4,B,Grassland,7,141,Y,N,Y,489,,B7
-LOT1A1,LOT1A1,,141,NA,Glass Slide,Open,1,A,Shrubland,1,6,Y,N,Y,127,,A1
-LOT1A2,LOT1A2,,37,NA,Glass Slide,Open,1,A,Shrubland,2,31,Y,N,Y,128,,A2
-LOT1A3,LOT1A3,,122,NA,Glass Slide,Open,1,A,Shrubland,3,26,Y,N,Y,129,,A3
-LOT1A4,LOT1A4,,29,NA,Glass Slide,Open,1,A,Shrubland,4,25,Y,N,Y,130,,A4
-LOT1A5,LOT1A5,,86,NA,Glass Slide,Open,1,A,Grassland,5,29,Y,N,Y,139,,A5
-LOT1A6,LOT1A6,,20,NA,Glass Slide,Open,1,A,Grassland,6,24,Y,N,Y,140,,A6
-LOT1A7,LOT1A7,,45,NA,Glass Slide,Open,1,A,Grassland,7,3,Y,N,Y,141,,A7
-LOT1A8,LOT1A8,,90,NA,Glass Slide,Open,1,A,Grassland,8,1,Y,N,Y,142,,A8
-LOT1B1,LOT1B1,,119,NA,Glass Slide,Open,1,B,Shrubland,1,19,Y,N,Y,131,,B1
-LOT1B2,LOT1B2,,129,NA,Glass Slide,Open,1,B,Shrubland,2,20,Y,N,Y,132,,B2
-LOT1B3,LOT1B3,,147,NA,Glass Slide,Open,1,B,Shrubland,3,34,Y,N,Y,133,,B3
-LOT1B4,LOT1B4,,142,NA,Glass Slide,Open,1,B,Shrubland,4,36,Y,N,Y,134,,B4
-LOT1B5,LOT1B5,,52,NA,Glass Slide,Open,1,B,Grassland,5,15,Y,N,Y,143,,B5
-LOT1B6,LOT1B6,,132,NA,Glass Slide,Open,1,B,Grassland,6,27,Y,N,Y,144,,B6
-LOT1B7,LOT1B7,,154,NA,Glass Slide,Open,1,B,Grassland,7,9,Y,N,Y,145,,B7
-LOT1B8,LOT1B8,,145,NA,Glass Slide,Open,1,B,Grassland,8,30,Y,N,Y,146,,B8
-LOT1C1,LOT1C1,,3,NA,Glass Slide,Open,1,C,Shrubland,1,8,Y,N,Y,135,,C1
-LOT1C2,LOT1C2,,98,NA,Glass Slide,Open,1,C,Shrubland,2,17,Y,N,Y,136,,C2
-LOT1C3,LOT1C3,,103,NA,Glass Slide,Open,1,C,Shrubland,3,22,Y,N,Y,137,,C3
-LOT1C4,LOT1C4,,79,NA,Glass Slide,Open,1,C,Shrubland,4,18,Y,N,Y,138,,C4
-LOT1C5,LOT1C5,,8,NA,Glass Slide,Open,1,C,Grassland,5,12,Y,N,Y,147,,C5
-LOT1C6,LOT1C6,,80,NA,Glass Slide,Open,1,C,Grassland,6,32,Y,N,Y,148,,C6
-LOT1C7,LOT1C7,,12,NA,Glass Slide,Open,1,C,Grassland,7,21,Y,N,Y,149,,C7
-LOT1C8,LOT1C8,,50,NA,Glass Slide,Open,1,C,Grassland,8,14,Y,N,Y,150,,C8
-LOT2A1,LOT2A1,,41,NA,Glass Slide,Open,2,A,Shrubland,1,73,Y,N,Y,265,,A1
-LOT2A2,LOT2A2,,39,NA,Glass Slide,Open,2,A,Shrubland,2,55,Y,N,Y,266,,A2
-LOT2A3,LOT2A3,,36,NA,Glass Slide,Open,2,A,Shrubland,3,63,Y,N,Y,267,,A3
-LOT2A4,LOT2A4,,31,NA,Glass Slide,Open,2,A,Shrubland,4,67,Y,N,Y,268,,A4
-LOT2A5,LOT2A5,,64,NA,Glass Slide,Open,2,A,Grassland,5,58,Y,N,Y,277,,A5
-LOT2A6,LOT2A6,,13,NA,Glass Slide,Open,2,A,Grassland,6,52,Y,N,Y,278,,A6
-LOT2A7,LOT2A7,,83,NA,Glass Slide,Open,2,A,Grassland,7,60,Y,N,Y,279,,A7
-LOT2A8,LOT2A8,,23,NA,Glass Slide,Open,2,A,Grassland,8,41,Y,N,Y,280,,A8
-LOT2B1,LOT2B1,,139,NA,Glass Slide,Open,2,B,Shrubland,1,57,Y,N,Y,269,,B1
-LOT2B2,LOT2B2,,133,NA,Glass Slide,Open,2,B,Shrubland,2,70,Y,N,Y,270,,B2
-LOT2B3,LOT2B3,,43,NA,Glass Slide,Open,2,B,Shrubland,3,51,Y,N,Y,271,,B3
-LOT2B4,LOT2B4,,93,NA,Glass Slide,Open,2,B,Shrubland,4,71,Y,N,Y,272,,B4
-LOT2B5,LOT2B5,,18,NA,Glass Slide,Open,2,B,Grassland,5,75,Y,N,Y,281,,B5
-LOT2B6,LOT2B6,,148,NA,Glass Slide,Open,2,B,Grassland,6,50,Y,N,Y,282,,B6
-LOT2B7,LOT2B7,,28,NA,Glass Slide,Open,2,B,Grassland,7,65,Y,N,Y,283,,B7
-LOT2B8,LOT2B8,,104,NA,Glass Slide,Open,2,B,Grassland,8,47,Y,N,Y,284,,B8
-LOT2C1,LOT2C1,,124,NA,Glass Slide,Open,2,C,Shrubland,1,49,Y,N,Y,273,,C1
-LOT2C2,LOT2C2,,24,NA,Glass Slide,Open,2,C,Shrubland,2,48,Y,N,Y,274,,C2
-LOT2C3,LOT2C3,,48,NA,Glass Slide,Open,2,C,Shrubland,3,59,Y,N,Y,275,,C3
-LOT2C4,LOT2C4,,85,NA,Glass Slide,Open,2,C,Shrubland,4,68,Y,N,Y,276,,C4
-LOT2C5,LOT2C5,,19,NA,Glass Slide,Open,2,C,Grassland,5,69,Y,N,Y,285,,C5
-LOT2C6,LOT2C6,,134,NA,Glass Slide,Open,2,C,Grassland,6,61,Y,N,Y,286,,C6
-LOT2C7,LOT2C7,,49,NA,Glass Slide,Open,2,C,Grassland,7,37,Y,N,Y,287,,C7
-LOT2C8,LOT2C8,,126,NA,Glass Slide,Open,2,C,Grassland,8,66,Y,N,Y,288,,C8
-LOT3A1,LOT3A1,,7,NA,Glass Slide,Open,3,A,Shrubland,1,89,Y,N,Y,313,,A1
-LOT3A2,LOT3A2,,65,NA,Glass Slide,Open,3,A,Shrubland,2,108,Y,N,Y,314,,A2
-LOT3A3,LOT3A3,,136,NA,Glass Slide,Open,3,A,Shrubland,3,82,Y,N,Y,315,,A3
-LOT3A5,LOT3A5,,77,NA,Glass Slide,Open,3,A,Grassland,5,92,Y,N,Y,325,,A5
-LOT3A6,LOT3A6,,30,NA,Glass Slide,Open,3,A,Grassland,6,109,Y,N,Y,326,,A6
-LOT3A7,LOT3A7,,146,NA,Glass Slide,Open,3,A,Grassland,7,103,Y,N,Y,327,,A7
-LOT3A8,LOT3A8,,113,NA,Glass Slide,Open,3,A,Grassland,8,79,Y,N,Y,328,,A8
-LOT3B1,LOT3B1,,137,NA,Glass Slide,Open,3,B,Shrubland,1,76,Y,N,Y,317,,B1
-LOT3B2,LOT3B2,,26,NA,Glass Slide,Open,3,B,Shrubland,2,77,Y,N,Y,318,,B2
-LOT3B3,LOT3B3,,101,NA,Glass Slide,Open,3,B,Shrubland,3,88,Y,N,Y,319,,B3
-LOT3B4,LOT3B4,,84,NA,Glass Slide,Open,3,B,Shrubland,4,99,Y,N,Y,320,,B4
-LOT3B5,LOT3B5,,125,NA,Glass Slide,Open,3,B,Grassland,5,94,Y,N,Y,329,,B5
-LOT3B6,LOT3B6,,5,NA,Glass Slide,Open,3,B,Grassland,6,91,Y,N,Y,330,,B6
-LOT3B7,LOT3B7,,46,NA,Glass Slide,Open,3,B,Grassland,7,87,Y,N,Y,331,,B7
-LOT3B8,LOT3B8,,51,NA,Glass Slide,Open,3,B,Grassland,8,111,Y,N,Y,332,,B8
-LOT3C1,LOT3C1,,97,NA,Glass Slide,Open,3,C,Shrubland,1,83,Y,N,Y,321,,C1
-LOT3C2,LOT3C2,,61,NA,Glass Slide,Open,3,C,Shrubland,2,78,Y,N,Y,322,,C2
-LOT3C3,LOT3C3,,54,NA,Glass Slide,Open,3,C,Shrubland,3,107,Y,N,Y,323,,C3
-LOT3C4,LOT3C4,,158,NA,Glass Slide,Open,3,C,Shrubland,4,105,Y,N,Y,324,,C4
-LOT3C5,LOT3C5,,55,NA,Glass Slide,Open,3,C,Grassland,5,98,Y,N,Y,333,,C5
-LOT3C6,LOT3C6,,15,NA,Glass Slide,Open,3,C,Grassland,6,100,Y,N,Y,334,,C6
-LOT3C7,LOT3C7,,108,NA,Glass Slide,Open,3,C,Grassland,7,81,Y,N,Y,335,,C7
-LOT3C8,LOT3C8,,102,NA,Glass Slide,Open,3,C,Grassland,8,85,Y,N,Y,336,,C8
-LOT3A4,LOT3A4,,95,NA,Glass Slide,Open,4,A,Shrubland,4,86,Y,N,Y,316,,NA
-LOT4A1,LOT4A1,,135,NA,Glass Slide,Open,4,A,Shrubland,1,137,Y,N,Y,451,,A1
-LOT4A2,LOT4A2,,99,NA,Glass Slide,Open,4,A,Shrubland,2,129,Y,N,Y,452,,A2
-LOT4A3,LOT4A3,,17,NA,Glass Slide,Open,4,A,Shrubland,3,119,Y,N,Y,453,,A3
-LOT4A4,LOT4A4,,155,NA,Glass Slide,Open,4,A,Shrubland,4,146,Y,N,Y,454,,A4
-LOT4A5,LOT4A5,,105,NA,Glass Slide,Open,4,A,Grassland,5,134,Y,N,Y,463,,A5
-LOT4A6,LOT4A6,,11,NA,Glass Slide,Open,4,A,Grassland,6,135,Y,N,Y,464,,A6
-LOT4A7,LOT4A7,,16,NA,Glass Slide,Open,4,A,Grassland,7,133,Y,N,Y,465,,A7
-LOT4A8,LOT4A8,,40,NA,Glass Slide,Open,4,A,Grassland,8,147,Y,N,Y,466,,A8
-LOT4B1,LOT4B1,,38,NA,Glass Slide,Open,4,B,Shrubland,1,125,Y,N,Y,455,,B1
-LOT4B2,LOT4B2,,143,NA,Glass Slide,Open,4,B,Shrubland,2,116,Y,N,Y,456,,B2
-LOT4B3,LOT4B3,,27,NA,Glass Slide,Open,4,B,Shrubland,3,148,Y,N,Y,457,,B3
-LOT4B4,LOT4B4,,120,NA,Glass Slide,Open,4,B,Shrubland,4,132,Y,N,Y,458,,B4
-LOT4B5,LOT4B5,,76,NA,Glass Slide,Open,4,B,Grassland,5,112,Y,N,Y,467,,B5
-LOT4B6,LOT4B6,,131,NA,Glass Slide,Open,4,B,Grassland,6,123,Y,N,Y,468,,B6
-LOT4B7,LOT4B7,,116,NA,Glass Slide,Open,4,B,Grassland,7,127,Y,N,Y,469,,B7
-LOT4B8,LOT4B8,,70,NA,Glass Slide,Open,4,B,Grassland,8,126,Y,N,Y,470,,B8
-LOT4C1,LOT4C1,,74,NA,Glass Slide,Open,4,C,Shrubland,1,128,Y,N,Y,459,,C1
-LOT4C2,LOT4C2,,58,NA,Glass Slide,Open,4,C,Shrubland,2,115,Y,N,Y,460,,C2
-LOT4C3,LOT4C3,,4,NA,Glass Slide,Open,4,C,Shrubland,3,138,Y,N,Y,461,,C3
-LOT4C4,LOT4C4,,115,NA,Glass Slide,Open,4,C,Shrubland,4,143,Y,N,Y,462,,C4
-LOT4C5,LOT4C5,,35,NA,Glass Slide,Open,4,C,Grassland,5,124,Y,N,Y,471,,C5
-LOT4C6,LOT4C6,,152,NA,Glass Slide,Open,4,C,Grassland,6,118,Y,N,Y,472,,C6
-LOT4C7,LOT4C7,,47,NA,Glass Slide,Open,4,C,Grassland,7,139,Y,N,Y,473,,C7
-LOT4C8,LOT4C8,,81,NA,Glass Slide,Open,4,C,Grassland,8,140,Y,N,Y,474,,C8
-GOT1A1,GOT1A1,,NA,52,Grass Litter,Open,1,A,Shrubland,1,NA,N,Y,Y,79,,A1
-GOT1A2,GOT1A2,,NA,182,Grass Litter,Open,1,A,Shrubland,2,NA,N,Y,Y,80,,A2
-GOT1A3,GOT1A3,,NA,240,Grass Litter,Open,1,A,Shrubland,3,NA,N,Y,Y,81,,A3
-GOT1A4,GOT1A4,,NA,44,Grass Litter,Open,1,A,Shrubland,4,NA,N,Y,Y,82,,A4
-GOT1A5,GOT1A5,,NA,33,Grass Litter,Open,1,A,Grassland,5,NA,N,Y,Y,91,,A5
-GOT1A6,GOT1A6,,NA,169,Grass Litter,Open,1,A,Grassland,6,NA,N,Y,Y,92,,A6
-GOT1A7,GOT1A7,,NA,175,Grass Litter,Open,1,A,Grassland,7,NA,N,Y,Y,93,,A7
-GOT1A8,GOT1A8,,NA,137,Grass Litter,Open,1,A,Grassland,8,NA,N,Y,Y,94,,A8
-GOT1B1,GOT1B1,,NA,84,Grass Litter,Open,1,B,Shrubland,1,NA,N,Y,Y,83,,B1
-GOT1B2,GOT1B2,,NA,237,Grass Litter,Open,1,B,Shrubland,2,NA,N,Y,Y,84,,B2
-GOT1B3,GOT1B3,,NA,133,Grass Litter,Open,1,B,Shrubland,3,NA,N,Y,Y,85,,B3
-GOT1B4,GOT1B4,,NA,259,Grass Litter,Open,1,B,Shrubland,4,NA,N,Y,Y,86,,B4
-GOT1B5,GOT1B5,,NA,138,Grass Litter,Open,1,B,Grassland,5,NA,N,Y,Y,95,,B5
-GOT1B6,GOT1B6,,NA,286,Grass Litter,Open,1,B,Grassland,6,NA,N,Y,Y,96,,B6
-GOT1B7,GOT1B7,,NA,311,Grass Litter,Open,1,B,Grassland,7,NA,N,Y,Y,97,,B7
-GOT1B8,GOT1B8,,NA,92,Grass Litter,Open,1,B,Grassland,8,NA,N,Y,Y,98,,B8
-GOT1C1,GOT1C1,,NA,262,Grass Litter,Open,1,C,Shrubland,1,NA,N,Y,Y,87,,C1
-GOT1C2,GOT1C2,,NA,36,Grass Litter,Open,1,C,Shrubland,2,NA,N,Y,Y,88,,C2
-GOT1C3,GOT1C3,,NA,56,Grass Litter,Open,1,C,Shrubland,3,NA,N,Y,Y,89,,C3
-GOT1C4,GOT1C4,,NA,210,Grass Litter,Open,1,C,Shrubland,4,NA,N,Y,Y,90,,C4
-GOT1C5,GOT1C5,,NA,206,Grass Litter,Open,1,C,Grassland,5,NA,N,Y,Y,99,,C5
-GOT1C6,GOT1C6,,NA,128,Grass Litter,Open,1,C,Grassland,6,NA,N,Y,Y,100,,C6
-GOT1C7,GOT1C7,,NA,300,Grass Litter,Open,1,C,Grassland,7,NA,N,Y,Y,101,,C7
-GOT1C8,GOT1C8,,NA,246,Grass Litter,Open,1,C,Grassland,8,NA,N,Y,Y,102,,C8
-GOT2A1,GOT2A1,,NA,24,Grass Litter,Open,2,A,Shrubland,1,NA,N,Y,Y,217,,A1
-GOT2A2,GOT2A2,,NA,248,Grass Litter,Open,2,A,Shrubland,2,NA,N,Y,Y,218,,A2
-GOT2A3,GOT2A3,,NA,180,Grass Litter,Open,2,A,Shrubland,3,NA,N,Y,Y,219,,A3
-GOT2A4,GOT2A4,,NA,267,Grass Litter,Open,2,A,Shrubland,4,NA,N,Y,Y,220,,A4
-GOT2A5,GOT2A5,,NA,30,Grass Litter,Open,2,A,Grassland,5,NA,N,Y,Y,229,,A5
-GOT2A6,GOT2A6,,NA,143,Grass Litter,Open,2,A,Grassland,6,NA,N,Y,Y,230,,A6
-GOT2A7,GOT2A7,,NA,317,Grass Litter,Open,2,A,Grassland,7,NA,N,Y,Y,231,,A7
-GOT2A8,GOT2A8,,NA,155,Grass Litter,Open,2,A,Grassland,8,NA,N,Y,Y,232,,A8
-GOT2B1,GOT2B1,,NA,193,Grass Litter,Open,2,B,Shrubland,1,NA,N,Y,Y,221,,B1
-GOT2B2,GOT2B2,,NA,313,Grass Litter,Open,2,B,Shrubland,2,NA,N,Y,Y,222,,B2
-GOT2B3,GOT2B3,,NA,129,Grass Litter,Open,2,B,Shrubland,3,NA,N,Y,Y,223,,B3
-GOT2B4,GOT2B4,,NA,188,Grass Litter,Open,2,B,Shrubland,4,NA,N,Y,Y,224,,B4
-GOT2B5,GOT2B5,,NA,142,Grass Litter,Open,2,B,Grassland,5,NA,N,Y,Y,233,,B5
-GOT2B6,GOT2B6,,NA,269,Grass Litter,Open,2,B,Grassland,6,NA,N,Y,Y,234,,B6
-GOT2B7,GOT2B7,,NA,1,Grass Litter,Open,2,B,Grassland,7,NA,N,Y,Y,235,,B7
-GOT2B8,GOT2B8,,NA,261,Grass Litter,Open,2,B,Grassland,8,NA,N,Y,Y,236,,B8
-GOT2C1,GOT2C1,,NA,67,Grass Litter,Open,2,C,Shrubland,1,NA,N,Y,Y,225,,C1
-GOT2C2,GOT2C2,,NA,191,Grass Litter,Open,2,C,Shrubland,2,NA,N,Y,Y,226,,C2
-GOT2C3,GOT2C3,,NA,57,Grass Litter,Open,2,C,Shrubland,3,NA,N,Y,Y,227,,C3
-GOT2C4,GOT2C4,,NA,239,Grass Litter,Open,2,C,Shrubland,4,NA,N,Y,Y,228,,C4
-GOT2C5,GOT2C5,,NA,321,Grass Litter,Open,2,C,Grassland,5,NA,N,Y,Y,237,,C5
-GOT2C6,GOT2C6,,NA,227,Grass Litter,Open,2,C,Grassland,6,NA,N,Y,Y,238,,C6
-GOT2C7,GOT2C7,,NA,4,Grass Litter,Open,2,C,Grassland,7,NA,N,Y,Y,239,,C7
-GOT2C8,GOT2C8,,NA,297,Grass Litter,Open,2,C,Grassland,8,NA,N,Y,Y,240,,C8
-GOT4A1,GOT4A1,,NA,86,Grass Litter,Open,4,A,Shrubland,1,NA,N,Y,Y,403,,A1
-GOT4A2,GOT4A2,,NA,130,Grass Litter,Open,4,A,Shrubland,2,NA,N,Y,Y,404,,A2
-GOT4A3,GOT4A3,,NA,50,Grass Litter,Open,4,A,Shrubland,3,NA,N,Y,Y,405,,A3
-GOT4A4,GOT4A4,,NA,178,Grass Litter,Open,4,A,Shrubland,4,NA,N,Y,Y,406,,A4
-GOT4A5,GOT4A5,,NA,76,Grass Litter,Open,4,A,Grassland,5,NA,N,Y,Y,415,,A5
-GOT4A6,GOT4A6,,NA,225,Grass Litter,Open,4,A,Grassland,6,NA,N,Y,Y,416,,A6
-GOT4A7,GOT4A7,,NA,64,Grass Litter,Open,4,A,Grassland,7,NA,N,Y,Y,417,,A7
-GOT4A8,GOT4A8,,NA,280,Grass Litter,Open,4,A,Grassland,8,NA,N,Y,Y,418,,A8
-GOT4B1,GOT4B1,,NA,295,Grass Litter,Open,4,B,Shrubland,1,NA,N,Y,Y,407,,B1
-GOT4B2,GOT4B2,,NA,111,Grass Litter,Open,4,B,Shrubland,2,NA,N,Y,Y,408,,B2
-GOT4B3,GOT4B3,,NA,200,Grass Litter,Open,4,B,Shrubland,3,NA,N,Y,Y,409,,B3
-GOT4B4,GOT4B4,,NA,103,Grass Litter,Open,4,B,Shrubland,4,NA,N,Y,Y,410,,B4
-GOT4B5,GOT4B5,,NA,60,Grass Litter,Open,4,B,Grassland,5,NA,N,Y,Y,419,,B5
-GOT4B6,GOT4B6,,NA,255,Grass Litter,Open,4,B,Grassland,6,NA,N,Y,Y,420,,B6
-GOT4B7,GOT4B7,,NA,117,Grass Litter,Open,4,B,Grassland,7,NA,N,Y,Y,421,,B7
-GOT4B8,GOT4B8,,NA,41,Grass Litter,Open,4,B,Grassland,8,NA,N,Y,Y,422,,B8
-GOT4C1,GOT4C1,,NA,105,Grass Litter,Open,4,C,Shrubland,1,NA,N,Y,Y,411,,C1
-GOT4C2,GOT4C2,,NA,215,Grass Litter,Open,4,C,Shrubland,2,NA,N,Y,Y,412,,C2
-GOT4C3,GOT4C3,,NA,39,Grass Litter,Open,4,C,Shrubland,3,NA,N,Y,Y,413,,C3
-GOT4C4,GOT4C4,,NA,194,Grass Litter,Open,4,C,Shrubland,4,NA,N,Y,Y,414,,C4
-GOT4C5,GOT4C5,,NA,167,Grass Litter,Open,4,C,Grassland,5,NA,N,Y,Y,423,,C5
-GOT4C6,GOT4C6,,NA,139,Grass Litter,Open,4,C,Grassland,6,NA,N,Y,Y,424,,C6
-GOT4C7,GOT4C7,,NA,224,Grass Litter,Open,4,C,Grassland,7,NA,N,Y,Y,425,,C7
-GOT4C8,GOT4C8,,NA,164,Grass Litter,Open,4,C,Grassland,8,NA,N,Y,Y,426,,C8
-SOT1A1,SOT1A1,,NA,101,Shrub Litter,Open,1,A,Shrubland,1,NA,N,Y,Y,31,,A1
-SOT1A8,SOT1A2,,NA,82,Shrub Litter,Open,1,A,Shrubland,2,NA,N,Y,Y,46,,A2
-SOT1A6,SOT1A3,,NA,8,Shrub Litter,Open,1,A,Shrubland,3,NA,N,Y,Y,44,,A3
-SOT1A4,SOT1A4,,NA,187,Shrub Litter,Open,1,A,Shrubland,4,NA,N,Y,Y,34,,A4
-SOT1A5,SOT1A5,,NA,285,Shrub Litter,Open,1,A,Grassland,5,NA,N,Y,Y,43,,A5
-SOT1A3,SOT1A6,,NA,18,Shrub Litter,Open,1,A,Grassland,6,NA,N,Y,Y,33,,A6
-SOT1A7,SOT1A7,,NA,131,Shrub Litter,Open,1,A,Grassland,7,NA,N,Y,Y,45,,A7
-SOT1A2,SOT1A8,,NA,271,Shrub Litter,Open,1,A,Grassland,8,NA,N,Y,Y,32,,A8
-SOT1B6,SOT1B1,,NA,201,Shrub Litter,Open,1,B,Shrubland,1,NA,N,Y,Y,48,,B1
-SOT1B2,SOT1B2,,NA,242,Shrub Litter,Open,1,B,Shrubland,2,NA,N,Y,Y,36,,B2
-SOT1B7,SOT1B3,,NA,16,Shrub Litter,Open,1,B,Shrubland,3,NA,N,Y,Y,49,,B3
-SOT1B4,SOT1B4,,NA,11,Shrub Litter,Open,1,B,Shrubland,4,NA,N,Y,Y,38,,B4
-SOT1B5,SOT1B5,,NA,185,Shrub Litter,Open,1,B,Grassland,5,NA,N,Y,Y,47,,B5
-SOT1B1,SOT1B6,,NA,124,Shrub Litter,Open,1,B,Grassland,6,NA,N,Y,Y,35,,B6
-SOT1B3,SOT1B7,,NA,14,Shrub Litter,Open,1,B,Grassland,7,NA,N,Y,Y,37,,B7
-SOT1B8,SOT1B8,,NA,159,Shrub Litter,Open,1,B,Grassland,8,NA,N,Y,Y,50,,B8
-SOT1C7,SOT1C1,,NA,59,Shrub Litter,Open,1,C,Shrubland,1,NA,N,Y,Y,53,,C1
-SOT1C2,SOT1C2,,NA,171,Shrub Litter,Open,1,C,Shrubland,2,NA,N,Y,Y,40,,C2
-SOT1C8,SOT1C3,,NA,209,Shrub Litter,Open,1,C,Shrubland,3,NA,N,Y,Y,54,,C3
-SOT1C4,SOT1C4,,NA,80,Shrub Litter,Open,1,C,Shrubland,4,NA,N,Y,Y,42,,C4
-SOT1C6,SOT1C6,,NA,77,Shrub Litter,Open,1,C,Grassland,6,NA,N,Y,Y,52,,C6
-SOT1C1,SOT1C7,,NA,69,Shrub Litter,Open,1,C,Grassland,7,NA,N,Y,Y,39,,C7
-SOT1C3,SOT1C8,,NA,254,Shrub Litter,Open,1,C,Grassland,8,NA,N,Y,Y,41,,C8
-SOT4C5,SOT4C5,,NA,211,Shrub Litter,Open,1,C,Grassland,5,NA,N,Y,Y,375,,NA
-SOT2A8,SOT2A1,,NA,21,Shrub Litter,Open,2,A,Shrubland,1,NA,N,Y,Y,184,,A1
-SOT2A2,SOT2A2,,NA,146,Shrub Litter,Open,2,A,Shrubland,2,NA,N,Y,Y,170,,A2
-SOT2A7,SOT2A3,,NA,272,Shrub Litter,Open,2,A,Shrubland,3,NA,N,Y,Y,183,,A3
-SOT2A4,SOT2A4,,NA,293,Shrub Litter,Open,2,A,Shrubland,4,NA,N,Y,Y,172,,A4
-SOT2A5,SOT2A5,,NA,160,Shrub Litter,Open,2,A,Grassland,5,NA,N,Y,Y,181,,A5
-SOT2A6,SOT2A6,,NA,132,Shrub Litter,Open,2,A,Grassland,6,NA,N,Y,Y,182,,A6
-SOT2A3,SOT2A7,,NA,40,Shrub Litter,Open,2,A,Grassland,7,NA,N,Y,Y,171,,A7
-SOT2A1,SOT2A8,,NA,315,Shrub Litter,Open,2,A,Grassland,8,NA,N,Y,Y,169,,A8
-SOT2B8,SOT2B1,,NA,291,Shrub Litter,Open,2,B,Shrubland,1,NA,N,Y,Y,188,,B1
-SOT2B7,SOT2B2,,NA,309,Shrub Litter,Open,2,B,Shrubland,2,NA,N,Y,Y,187,,B2
-SOT2B3,SOT2B3,,NA,15,Shrub Litter,Open,2,B,Shrubland,3,NA,N,Y,Y,175,,B3
-SOT2B4,SOT2B4,,NA,48,Shrub Litter,Open,2,B,Shrubland,4,NA,N,Y,Y,176,,B4
-SOT2B5,SOT2B5,,NA,104,Shrub Litter,Open,2,B,Grassland,5,NA,N,Y,Y,185,,B5
-SOT2B6,SOT2B6,,NA,17,Shrub Litter,Open,2,B,Grassland,6,NA,N,Y,Y,186,,B6
-SOT2B2,SOT2B7,,NA,51,Shrub Litter,Open,2,B,Grassland,7,NA,N,Y,Y,174,,B7
-SOT2B1,SOT2B8,,NA,266,Shrub Litter,Open,2,B,Grassland,8,NA,N,Y,Y,173,,B8
-SOT2C1,SOT2C1,,NA,288,Shrub Litter,Open,2,C,Shrubland,1,NA,N,Y,Y,177,,C1
-SOT2C7,SOT2C2,,NA,22,Shrub Litter,Open,2,C,Shrubland,2,NA,N,Y,Y,191,,C2
-SOT2C3,SOT2C3,,NA,37,Shrub Litter,Open,2,C,Shrubland,3,NA,N,Y,Y,179,,C3
-SOT2C8,SOT2C4,,NA,222,Shrub Litter,Open,2,C,Shrubland,4,NA,N,Y,Y,192,,C4
-SOT2C5,SOT2C5,,NA,168,Shrub Litter,Open,2,C,Grassland,5,NA,N,Y,Y,189,,C5
-SOT2C6,SOT2C6,,NA,58,Shrub Litter,Open,2,C,Grassland,6,NA,N,Y,Y,190,,C6
-SOT2C2,SOT2C7,,NA,305,Shrub Litter,Open,2,C,Grassland,7,NA,N,Y,Y,178,,C7
-SOT2C4,SOT2C8,,NA,107,Shrub Litter,Open,2,C,Grassland,8,NA,N,Y,Y,180,,C8
-SOT1C5,SOT1C5,,NA,120,Shrub Litter,Open,4,C,Grassland,5,NA,N,Y,Y,51,,NA
-SOT4A5,SOT4A1,,NA,28,Shrub Litter,Open,4,A,Shrubland,1,NA,N,Y,Y,367,,A1
-SOT4A2,SOT4A2,,NA,31,Shrub Litter,Open,4,A,Shrubland,2,NA,N,Y,Y,356,,A2
-SOT4A3,SOT4A3,,NA,19,Shrub Litter,Open,4,A,Shrubland,3,NA,N,Y,Y,357,,A3
-SOT4A7,SOT4A4,,NA,46,Shrub Litter,Open,4,A,Shrubland,4,NA,N,Y,Y,369,,A4
-SOT4A1,SOT4A5,,NA,13,Shrub Litter,Open,4,A,Grassland,5,NA,Y,N,Y,355,,A5
-SOT4A6,SOT4A6,,NA,312,Shrub Litter,Open,4,A,Grassland,6,NA,N,Y,Y,368,,A6
-SOT4A4,SOT4A7,,NA,148,Shrub Litter,Open,4,A,Grassland,7,NA,N,Y,Y,358,,A7
-SOT4A8,SOT4A8,,NA,190,Shrub Litter,Open,4,A,Grassland,8,NA,N,Y,Y,370,,A8
-SOT4B1,SOT4B1,,NA,230,Shrub Litter,Open,4,B,Shrubland,1,NA,N,Y,Y,359,,B1
-SOT4B5,SOT4B2,,NA,93,Shrub Litter,Open,4,B,Shrubland,2,NA,N,Y,Y,371,,B2
-SOT4B3,SOT4B3,,NA,256,Shrub Litter,Open,4,B,Shrubland,3,NA,N,Y,Y,361,,B3
-SOT4B6,SOT4B4,,NA,10,Shrub Litter,Open,4,B,Shrubland,4,NA,N,Y,Y,372,,B4
-SOT4B2,SOT4B5,,NA,140,Shrub Litter,Open,4,B,Grassland,5,NA,N,Y,Y,360,,B5
-SOT4B4,SOT4B6,,NA,308,Shrub Litter,Open,4,B,Grassland,6,NA,N,Y,Y,362,,B6
-SOT4B7,SOT4B7,,NA,204,Shrub Litter,Open,4,B,Grassland,7,NA,N,Y,Y,373,,B7
-SOT4B8,SOT4B8,,NA,199,Shrub Litter,Open,4,B,Grassland,8,NA,N,Y,Y,374,,B8
-SOT4C7,SOT4C1,,NA,265,Shrub Litter,Open,4,C,Shrubland,1,NA,N,Y,Y,377,,C1
-SOT4C2,SOT4C2,,NA,125,Shrub Litter,Open,4,C,Shrubland,2,NA,N,Y,Y,364,,C2
-SOT4C6,SOT4C3,,NA,275,Shrub Litter,Open,4,C,Shrubland,3,NA,N,Y,Y,376,,C3
-SOT4C4,SOT4C4,,NA,165,Shrub Litter,Open,4,C,Shrubland,4,NA,N,Y,Y,366,,C4
-SOT4C3,SOT4C6,,NA,134,Shrub Litter,Open,4,C,Grassland,6,NA,N,Y,Y,365,,C6
-SOT4C1,SOT4C7,,NA,115,Shrub Litter,Open,4,C,Grassland,7,NA,N,Y,Y,363,,C7
-SOT4C8,SOT4C8,,NA,232,Shrub Litter,Open,4,C,Grassland,8,NA,N,Y,Y,378,,C8
-EnvG_T2R1,EnvG_T2R1,,NA,149,Environmental Grass Litter,Environmental Litter,2,A,Grassland,8,NA,N,N,Y,25,,A8
-EnvG_T2R2,EnvG_T2R2,,NA,49,Environmental Grass Litter,Environmental Litter,2,A,Grassland,7,NA,N,N,Y,26,,A7
-EnvG_T2R3,EnvG_T2R3,,NA,216,Environmental Grass Litter,Environmental Litter,2,B,Grassland,8,NA,N,N,Y,27,,B8
-EnvG_T2R4,EnvG_T2R4,,NA,183,Environmental Grass Litter,Environmental Litter,2,B,Grassland,7,NA,N,N,Y,28,,B7
-EnvG_T2R5,EnvG_T2R5,,NA,243,Environmental Grass Litter,Environmental Litter,2,C,Grassland,8,NA,N,N,Y,29,,C8
-EnvG_T2R6,EnvG_T2R6,,NA,294,Environmental Grass Litter,Environmental Litter,2,C,Grassland,7,NA,N,N,Y,30,,C7
-EnvS_T2R1,EnvS_T2R1,,NA,158,Environmental Shrub Litter,Environmental Litter,2,A,Shrubland,1,NA,N,N,Y,19,,A1
-EnvS_T2R2,EnvS_T2R2,,NA,97,Environmental Shrub Litter,Environmental Litter,2,A,Shrubland,2,NA,N,N,Y,20,,A2
-EnvS_T2R3,EnvS_T2R3,,NA,174,Environmental Shrub Litter,Environmental Litter,2,B,Shrubland,1,NA,N,N,Y,21,,B1
-EnvS_T2R4,EnvS_T2R4,,NA,135,Environmental Shrub Litter,Environmental Litter,2,B,Shrubland,2,NA,N,N,Y,22,,B2
-EnvS_T2R5,EnvS_T2R5,,NA,90,Environmental Shrub Litter,Environmental Litter,2,C,Shrubland,1,NA,N,N,Y,23,,C1
-EnvS_T2R6,EnvS_T2R6,,NA,147,Environmental Shrub Litter,Environmental Litter,2,C,Shrubland,2,NA,N,N,Y,24,,C2
-G_T0R1,G_T0R1,,NA,189,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,7,,NA
-G_T0R2,G_T0R2,,NA,112,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,8,,NA
-G_T0R3,G_T0R3,,NA,79,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,9,,NA
-G_T0R4,G_T0R4,,NA,94,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,10,,NA
-G_T0R5,G_T0R5,,NA,152,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,11,,NA
-G_T0R6,G_T0R6,,NA,66,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,12,,NA
-S_T0R1,S_T0R1,,NA,72,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,1,,NA
-S_T0R2,S_T0R2,,NA,307,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,2,,NA
-S_T0R3,S_T0R3,,NA,3,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,3,,NA
-S_T0R4,S_T0R4,,NA,25,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,4,,NA
-S_T0R5,S_T0R5,,NA,122,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,5,,NA
-S_T0R6,S_T0R6,,NA,245,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,6,,NA
-Soil_T2R1,Soil_T2R1,,NA,47,Soil,Soil,2,A,Shrubland,1,NA,N,N,Y,13,,NA
-Soil_T2R10,Soil_T2R10,,NA,96,Soil,Soil,2,C,Shrubland,2,NA,N,N,Y,18.4,,NA
-Soil_T2R11,Soil_T2R11,,NA,75,Soil,Soil,2,C,Grassland,7,NA,N,N,Y,18.5,,NA
-Soil_T2R12,Soil_T2R12,,NA,276,Soil,Soil,2,C,Grassland,8,NA,N,N,Y,18.6,,NA
-Soil_T2R2,Soil_T2R2,,NA,303,Soil,Soil,2,A,Shrubland,2,NA,N,N,Y,14,,NA
-Soil_T2R3,Soil_T2R3,,NA,162,Soil,Soil,2,A,Grassland,7,NA,N,N,Y,15,,NA
-Soil_T2R4,Soil_T2R4,,NA,172,Soil,Soil,2,A,Grassland,8,NA,N,N,Y,16,,NA
-Soil_T2R5,Soil_T2R5,,NA,283,Soil,Soil,2,B,Shrubland,1,NA,N,N,Y,17,,NA
-Soil_T2R6,Soil_T2R6,,NA,302,Soil,Soil,2,B,Shrubland,2,NA,N,N,Y,18,,NA
-Soil_T2R7,Soil_T2R7,,NA,99,Soil,Soil,2,B,Grassland,7,NA,N,N,Y,18.1,,NA
-Soil_T2R8,Soil_T2R8,,NA,202,Soil,Soil,2,B,Grassland,8,NA,N,N,Y,18.2,,NA
-Soil_T2R9,Soil_T2R9,,NA,205,Soil,Soil,2,C,Shrubland,1,NA,N,N,Y,18.3,,NA
-GCT1B3,,Yes,NA,NA,,,NA,,,,NA,,,,109,,NA
-LDT1R10,,Yes,NA,NA,,,NA,,,,NA,,,,166,,NA
-LDT1R11,,Yes,NA,NA,,,NA,,,,NA,,,,167,,NA
-LDT1R12,,Yes,NA,NA,,,NA,,,,NA,,,,168,,NA
-GCT2A6,,Yes,NA,NA,,,NA,,,,NA,,,,254,,NA
-GCT4C8,,Yes,NA,NA,,,NA,,,,NA,,,,450,,NA
-LCT1R5,,Yes,NA,NA,,,NA,,,,NA,,,,155,,NA
-LCT1R6,,Yes,NA,NA,,,NA,,,,NA,,,,156,,NA
-LCT2R6,,Yes,NA,NA,,,NA,,,,NA,,,,294,,NA
-LCT3R5,,Yes,NA,NA,,,NA,,,,NA,,,,341,,NA
-LCT3R6,,Yes,NA,NA,,,NA,,,,NA,,,,342,,NA
-LCT4R6,,Yes,NA,NA,,,NA,,,,NA,,,,480,,NA
-LDT1R9,,Yes,NA,NA,,,NA,,,,NA,,,,165,,NA
-LDT2R11,,Yes,NA,NA,,,NA,,,,NA,,,,305,,NA
-LDT2R12,,Yes,NA,NA,,,NA,,,,NA,,,,306,,NA
-LDT3R10,,Yes,NA,NA,,,NA,,,,NA,,,,352,,NA
-LDT3R11,,Yes,NA,NA,,,NA,,,,NA,,,,353,,NA
-LDT3R12,,Yes,NA,NA,,,NA,,,,NA,,,,354,,NA
-LDT3R9,,Yes,NA,NA,,,NA,,,,NA,,,,351,,NA
-LDT4R10,,Yes,NA,NA,,,NA,,,,NA,,,,490,,NA
-LDT4R11,,Yes,NA,NA,,,NA,,,,NA,,,,491,,NA
-LDT4R12,,Yes,NA,NA,,,NA,,,,NA,,,,492,,NA
-NA,LCT1R1,NA,NA,NA,Glass Slide,Closed,1,C,Boundary,B,NA,Y,N,Y,NA,NA,CB
-NA,LCT1R2,NA,NA,NA,Glass Slide,Closed,1,B,Boundary,B,NA,Y,N,Y,NA,NA,BB
-NA,LCT1R3,NA,NA,NA,Glass Slide,Closed,1,C,Boundary,B,NA,Y,N,Y,NA,NA,CB
-NA,LCT1R4,NA,NA,NA,Glass Slide,Closed,1,A,Boundary,B,NA,Y,N,Y,NA,NA,AB
-NA,LDT1R7AS,NA,NA,NA,Glass Slide,Death,1,A,Shrubland,3,NA,Y,N,Y,NA,NA,A3
-NA,SOT1C5,NA,NA,NA,Shrub Litter,Open,1,C,Grassland,5,NA,N,Y,Y,NA,NA,C5
-NA,LCT2R1,NA,NA,NA,Glass Slide,Closed,2,A,Boundary,B,NA,Y,N,Y,NA,NA,AB
-NA,LCT2R2,NA,NA,NA,Glass Slide,Closed,2,B,Boundary,B,NA,Y,N,Y,NA,NA,BB
-NA,LCT2R3,NA,NA,NA,Glass Slide,Closed,2,B,Boundary,B,NA,Y,N,Y,NA,NA,BB
-NA,LCT2R4,NA,NA,NA,Glass Slide,Closed,2,C,Boundary,B,NA,Y,N,Y,NA,NA,CB
-NA,LCT2R5,NA,NA,NA,Glass Slide,Closed,2,A,Boundary,B,NA,Y,N,Y,NA,NA,AB
-NA,Soil_T2R1,NA,NA,NA,Soil,Soil,2,A,Shrubland,1,NA,N,N,Y,NA,NA,A1
-NA,Soil_T2R10,NA,NA,NA,Soil,Soil,2,C,Shrubland,2,NA,N,N,Y,NA,NA,C2
-NA,Soil_T2R11,NA,NA,NA,Soil,Soil,2,C,Grassland,7,NA,N,N,Y,NA,NA,C7
-NA,Soil_T2R12,NA,NA,NA,Soil,Soil,2,C,Grassland,8,NA,N,N,Y,NA,NA,C8
-NA,Soil_T2R2,NA,NA,NA,Soil,Soil,2,A,Shrubland,2,NA,N,N,Y,NA,NA,A2
-NA,Soil_T2R3,NA,NA,NA,Soil,Soil,2,A,Grassland,7,NA,N,N,Y,NA,NA,A7
-NA,Soil_T2R4,NA,NA,NA,Soil,Soil,2,A,Grassland,8,NA,N,N,Y,NA,NA,A8
-NA,Soil_T2R5,NA,NA,NA,Soil,Soil,2,B,Shrubland,1,NA,N,N,Y,NA,NA,B1
-NA,Soil_T2R6,NA,NA,NA,Soil,Soil,2,B,Shrubland,2,NA,N,N,Y,NA,NA,B2
-NA,Soil_T2R7,NA,NA,NA,Soil,Soil,2,B,Grassland,7,NA,N,N,Y,NA,NA,B7
-NA,Soil_T2R8,NA,NA,NA,Soil,Soil,2,B,Grassland,8,NA,N,N,Y,NA,NA,B8
-NA,Soil_T2R9,NA,NA,NA,Soil,Soil,2,C,Shrubland,1,NA,N,N,Y,NA,NA,C1
-NA,LOT3A4,NA,NA,NA,Glass Slide,Open,3,A,Shrubland,4,NA,Y,N,Y,NA,NA,A4
-NA,LCT3R4,NA,NA,NA,Glass Slide,Closed,3,A,Boundary,B,NA,Y,N,Y,NA,NA,AB
-NA,LCT3R2,NA,NA,NA,Glass Slide,Closed,3,B,Boundary,B,NA,Y,N,Y,NA,NA,BB
-NA,LCT3R1,NA,NA,NA,Glass Slide,Closed,3,C,Boundary,B,NA,Y,N,Y,NA,NA,CB
-NA,LCT3R3,NA,NA,NA,Glass Slide,Closed,3,C,Boundary,B,NA,Y,N,Y,NA,NA,CB
-NA,AirT4R10,NA,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,NA,NA,TowerTower
-NA,AirT4R11,NA,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,NA,NA,TowerTower
-NA,AirT4R3,NA,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,NA,NA,TowerTower
-NA,LCT4R1,NA,NA,NA,Glass Slide,Closed,4,A,Boundary,B,NA,Y,N,Y,NA,NA,AB
-NA,LCT4R2,NA,NA,NA,Glass Slide,Closed,4,C,Boundary,B,NA,Y,N,Y,NA,NA,CB
-NA,LCT4R3,NA,NA,NA,Glass Slide,Closed,4,A,Boundary,B,NA,Y,N,Y,NA,NA,AB
-NA,LCT4R4,NA,NA,NA,Glass Slide,Closed,4,B,Boundary,B,NA,Y,N,Y,NA,NA,BB
-NA,LCT4R5,NA,NA,NA,Glass Slide,Closed,4,B,Boundary,B,NA,Y,N,Y,NA,NA,BB
-NA,SOT4C5,NA,NA,NA,Shrub Litter,Open,4,C,Grassland,5,NA,N,Y,Y,NA,NA,C5
+Old_Sample_ID,New_Sample_ID,Sample_Lost?,Random_#_Extractions_Tubes,Random_#_Extractions_Plates,Substrate,Treatment,Time_Point,Transect,Ecosystem,Location,Random_#_Flow,Abundance?,Mass_Loss?,Composition?,Numbers,Notes,Random_#_FLow_Cytometry,Transect_Loc,Transect_Loc...2,Transect_Loc...8
+AirT2R4,AirT2R4,,10,NA,FTA Card,Air,2,Tower,Tower,Tower,NA,N,N,Y,310,,NA,NA,TowerTower,TowerTower
+AirT2R5,AirT2R5,,87,NA,FTA Card,Air,2,Tower,Tower,Tower,NA,N,N,Y,311,,NA,NA,TowerTower,TowerTower
+AirT2R6,AirT2R6,,72,NA,FTA Card,Air,2,Tower,Tower,Tower,NA,N,N,Y,312,,NA,NA,TowerTower,TowerTower
+AirT4R4,AirT4R4,,88,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,496,,NA,NA,TowerTower,TowerTower
+AirT4R5,AirT4R5,,82,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,497,,NA,NA,TowerTower,TowerTower
+AirT4R6,AirT4R6,,57,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,498,,NA,NA,TowerTower,TowerTower
+AirT4R7,AirT4R7,,123,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,498.1,,NA,NA,TowerTower,TowerTower
+AirT4R8,AirT4R8,,96,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,498.2,,NA,NA,TowerTower,TowerTower
+AirT4R9,AirT4R9,,156,NA,FTA Card,Air,4,Tower,Tower,Tower,NA,N,N,Y,498.3,,NA,NA,TowerTower,TowerTower
+AirT2R1,AirT2R1,,149,NA,Glass Slide,Air,2,Tower,Tower,Tower,NA,N,N,Y,307,,NA,NA,TowerTower,TowerTower
+AirT2R2,AirT2R2,,117,NA,Glass Slide,Air,2,Tower,Tower,Tower,NA,N,N,Y,308,,NA,NA,TowerTower,TowerTower
+AirT2R3,AirT2R3,,153,NA,Glass Slide,Air,2,Tower,Tower,Tower,NA,N,N,Y,309,,NA,NA,TowerTower,TowerTower
+AirT4R1,AirT4R1,,2,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,493,,NA,NA,TowerTower,TowerTower
+SlideT4R3,AirT4R12,,110,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,495.3,"Not assigned label before placement in field so was assigned stand-in label in field, then reassigned correct label in lab.",NA,NA,TowerTower,TowerTower
+AirT4R2,AirT4R2,,59,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,494,,NA,NA,TowerTower,TowerTower
+SlideT4R1,AirT4R10,,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,N,495.1,NA,NA,NA,NA,NA
+SlideT4R2,AirT4R11,,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,N,495.2,NA,NA,NA,NA,NA
+AirT4R3,AirT4R3,,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,N,495,NA,NA,NA,NA,NA
+GCT1A1,GCT1A1,,NA,279,Grass Litter,Closed,1,A,Shrubland,1,NA,N,Y,Y,103,NA,NA,A1,NA,NA
+GCT1A2,GCT1A2,,NA,163,Grass Litter,Closed,1,A,Shrubland,2,NA,N,Y,Y,104,NA,NA,A2,NA,NA
+GCT1A3,GCT1A3,,NA,234,Grass Litter,Closed,1,A,Shrubland,3,NA,N,Y,Y,105,NA,NA,A3,NA,NA
+GCT1A4,GCT1A4,,NA,316,Grass Litter,Closed,1,A,Shrubland,4,NA,N,Y,Y,106,NA,NA,A4,NA,NA
+GCT1A5,GCT1A5,,NA,263,Grass Litter,Closed,1,A,Grassland,5,NA,N,Y,Y,115,NA,NA,A5,NA,NA
+GCT1A6,GCT1A6,,NA,91,Grass Litter,Closed,1,A,Grassland,6,NA,N,Y,Y,116,NA,NA,A6,NA,NA
+GCT1A7,GCT1A7,,NA,273,Grass Litter,Closed,1,A,Grassland,7,NA,N,Y,Y,117,NA,NA,A7,NA,NA
+GCT1A8,GCT1A8,,NA,145,Grass Litter,Closed,1,A,Grassland,8,NA,N,Y,Y,118,NA,NA,A8,NA,NA
+GCT1B1,GCT1B1,,NA,179,Grass Litter,Closed,1,B,Shrubland,1,NA,N,Y,Y,107,NA,NA,B1,NA,NA
+GCT1B2,GCT1B2,,NA,123,Grass Litter,Closed,1,B,Shrubland,2,NA,N,Y,Y,108,NA,NA,B2,NA,NA
+GCT1B4,GCT1B4,,NA,318,Grass Litter,Closed,1,B,Shrubland,4,NA,N,Y,Y,110,NA,NA,B4,NA,NA
+GCT1B5,GCT1B5,,NA,212,Grass Litter,Closed,1,B,Grassland,5,NA,N,Y,Y,119,NA,NA,B5,NA,NA
+GCT1B6,GCT1B6,,NA,65,Grass Litter,Closed,1,B,Grassland,6,NA,N,Y,Y,120,NA,NA,B6,NA,NA
+GCT1B7,GCT1B7,,NA,85,Grass Litter,Closed,1,B,Grassland,7,NA,N,Y,Y,121,NA,NA,B7,NA,NA
+GCT1B8,GCT1B8,,NA,219,Grass Litter,Closed,1,B,Grassland,8,NA,N,Y,Y,122,NA,NA,B8,NA,NA
+GCT1C1,GCT1C1,,NA,53,Grass Litter,Closed,1,C,Shrubland,1,NA,N,Y,Y,111,NA,NA,C1,NA,NA
+GCT1C2,GCT1C2,,NA,118,Grass Litter,Closed,1,C,Shrubland,2,NA,N,Y,Y,112,NA,NA,C2,NA,NA
+GCT1C3,GCT1C3,,NA,278,Grass Litter,Closed,1,C,Shrubland,3,NA,N,Y,Y,113,NA,NA,C3,NA,NA
+GCT1C4,GCT1C4,,NA,235,Grass Litter,Closed,1,C,Shrubland,4,NA,N,Y,Y,114,NA,NA,C4,NA,NA
+GCT1C5,GCT1C5,,NA,161,Grass Litter,Closed,1,C,Grassland,5,NA,N,Y,Y,123,NA,NA,C5,NA,NA
+GCT1C6,GCT1C6,,NA,78,Grass Litter,Closed,1,C,Grassland,6,NA,N,Y,Y,124,NA,NA,C6,NA,NA
+GCT1C7,GCT1C7,,NA,221,Grass Litter,Closed,1,C,Grassland,7,NA,N,Y,Y,125,NA,NA,C7,NA,NA
+GCT1C8,GCT1C8,,NA,151,Grass Litter,Closed,1,C,Grassland,8,NA,N,Y,Y,126,NA,NA,C8,NA,NA
+GCT2A1,GCT2A1,,NA,27,Grass Litter,Closed,2,A,Shrubland,1,NA,N,Y,Y,241,NA,NA,NA,A1,A1
+GCT2A2,GCT2A2,,NA,87,Grass Litter,Closed,2,A,Shrubland,2,NA,N,Y,Y,242,NA,NA,NA,A2,A2
+GCT2A3,GCT2A3,,NA,319,Grass Litter,Closed,2,A,Shrubland,3,NA,N,Y,Y,243,NA,NA,NA,A3,A3
+GCT2A4,GCT2A4,,NA,116,Grass Litter,Closed,2,A,Shrubland,4,NA,N,Y,Y,244,NA,NA,NA,A4,A4
+GCT2A5,GCT2A5,,NA,144,Grass Litter,Closed,2,A,Grassland,5,NA,N,Y,Y,253,NA,NA,NA,A5,A5
+GCT2A7,GCT2A7,,NA,270,Grass Litter,Closed,2,A,Grassland,7,NA,N,Y,Y,255,NA,NA,NA,A7,A7
+GCT2A8,GCT2A8,,NA,247,Grass Litter,Closed,2,A,Grassland,8,NA,N,Y,Y,256,NA,NA,NA,A8,A8
+GCT2B1,GCT2B1,,NA,181,Grass Litter,Closed,2,B,Shrubland,1,NA,N,Y,Y,245,NA,NA,NA,B1,B1
+GCT2B2,GCT2B2,,NA,6,Grass Litter,Closed,2,B,Shrubland,2,NA,N,Y,Y,246,NA,NA,NA,B2,B2
+GCT2B3,GCT2B3,,NA,208,Grass Litter,Closed,2,B,Shrubland,3,NA,N,Y,Y,247,NA,NA,NA,B3,B3
+GCT2B4,GCT2B4,,NA,23,Grass Litter,Closed,2,B,Shrubland,4,NA,N,Y,Y,248,NA,NA,NA,B4,B4
+GCT2B5,GCT2B5,,NA,320,Grass Litter,Closed,2,B,Grassland,5,NA,N,Y,Y,257,NA,NA,NA,B5,B5
+GCT2B6,GCT2B6,,NA,236,Grass Litter,Closed,2,B,Grassland,6,NA,N,Y,Y,258,NA,NA,NA,B6,B6
+GCT2B7,GCT2B7,,NA,2,Grass Litter,Closed,2,B,Grassland,7,NA,N,Y,Y,259,NA,NA,NA,B7,B7
+GCT2B8,GCT2B8,,NA,61,Grass Litter,Closed,2,B,Grassland,8,NA,N,Y,Y,260,NA,NA,NA,B8,B8
+GCT2C1,GCT2C1,,NA,127,Grass Litter,Closed,2,C,Shrubland,1,NA,N,Y,Y,249,NA,NA,NA,C1,C1
+GCT2C2,GCT2C2,,NA,83,Grass Litter,Closed,2,C,Shrubland,2,NA,N,Y,Y,250,NA,NA,NA,C2,C2
+GCT2C3,GCT2C3,,NA,70,Grass Litter,Closed,2,C,Shrubland,3,NA,N,Y,Y,251,NA,NA,NA,C3,C3
+GCT2C4,GCT2C4,,NA,292,Grass Litter,Closed,2,C,Shrubland,4,NA,N,Y,Y,252,NA,NA,NA,C4,C4
+GCT2C5,GCT2C5,,NA,153,Grass Litter,Closed,2,C,Grassland,5,NA,N,Y,Y,261,NA,NA,NA,C5,C5
+GCT2C6,GCT2C6,,NA,12,Grass Litter,Closed,2,C,Grassland,6,NA,N,Y,Y,262,NA,NA,NA,C6,C6
+GCT2C7,GCT2C7,,NA,35,Grass Litter,Closed,2,C,Grassland,7,NA,N,Y,Y,263,NA,NA,NA,C7,C7
+GCT2C8,GCT2C8,,NA,298,Grass Litter,Closed,2,C,Grassland,8,NA,N,Y,Y,264,NA,NA,NA,C8,C8
+GCT4A1,GCT4A1,,NA,63,Grass Litter,Closed,4,A,Shrubland,1,NA,N,Y,Y,427,NA,NA,NA,A1,A1
+GCT4A2,GCT4A2,,NA,306,Grass Litter,Closed,4,A,Shrubland,2,NA,N,Y,Y,428,NA,NA,NA,A2,A2
+GCT4A3,GCT4A3,,NA,136,Grass Litter,Closed,4,A,Shrubland,3,NA,N,Y,Y,429,NA,NA,NA,A3,A3
+GCT4A4,GCT4A4,,NA,32,Grass Litter,Closed,4,A,Shrubland,4,NA,N,Y,Y,430,NA,NA,NA,A4,A4
+GCT4A5,GCT4A5,,NA,220,Grass Litter,Closed,4,A,Grassland,5,NA,N,Y,Y,439,NA,NA,NA,A5,A5
+GCT4A6,GCT4A6,,NA,231,Grass Litter,Closed,4,A,Grassland,6,NA,N,Y,Y,440,NA,NA,NA,A6,A6
+GCT4A7,GCT4A7,,NA,157,Grass Litter,Closed,4,A,Grassland,7,NA,N,Y,Y,441,NA,NA,NA,A7,A7
+GCT4A8,GCT4A8,,NA,98,Grass Litter,Closed,4,A,Grassland,8,NA,N,Y,Y,442,NA,NA,NA,A8,A8
+GCT4B1,GCT4B1,,NA,54,Grass Litter,Closed,4,B,Shrubland,1,NA,N,Y,Y,431,NA,NA,NA,B1,B1
+GCT4B2,GCT4B2,,NA,287,Grass Litter,Closed,4,B,Shrubland,2,NA,N,Y,Y,432,NA,NA,NA,B2,B2
+GCT4B3,GCT4B3,,NA,253,Grass Litter,Closed,4,B,Shrubland,3,NA,N,Y,Y,433,NA,NA,NA,B3,B3
+GCT4B4,GCT4B4,,NA,229,Grass Litter,Closed,4,B,Shrubland,4,NA,N,Y,Y,434,NA,NA,NA,B4,B4
+GCT4B5,GCT4B5,,NA,238,Grass Litter,Closed,4,B,Grassland,5,NA,N,Y,Y,443,NA,NA,NA,B5,B5
+GCT4B6,GCT4B6,,NA,274,Grass Litter,Closed,4,B,Grassland,6,NA,N,Y,Y,444,NA,NA,NA,B6,B6
+GCT4B7,GCT4B7,,NA,310,Grass Litter,Closed,4,B,Grassland,7,NA,N,Y,Y,445,NA,NA,NA,B7,B7
+GCT4B8,GCT4B8,,NA,257,Grass Litter,Closed,4,B,Grassland,8,NA,N,Y,Y,446,NA,NA,NA,B8,B8
+GCT4C1,GCT4C1,,NA,62,Grass Litter,Closed,4,C,Shrubland,1,NA,N,Y,Y,435,NA,NA,NA,C1,C1
+GCT4C2,GCT4C2,,NA,250,Grass Litter,Closed,4,C,Shrubland,2,NA,N,Y,Y,436,NA,NA,NA,C2,C2
+GCT4C3,GCT4C3,,NA,251,Grass Litter,Closed,4,C,Shrubland,3,NA,N,Y,Y,437,NA,NA,NA,C3,C3
+GCT4C4,GCT4C4,,NA,290,Grass Litter,Closed,4,C,Shrubland,4,NA,N,Y,Y,438,NA,NA,NA,C4,C4
+GCT4C5,GCT4C5,,NA,282,Grass Litter,Closed,4,C,Grassland,5,NA,N,Y,Y,447,NA,NA,NA,C5,C5
+GCT4C6,GCT4C6,,NA,106,Grass Litter,Closed,4,C,Grassland,6,NA,N,Y,Y,448,NA,NA,NA,C6,C6
+GCT4C7,GCT4C7,,NA,301,Grass Litter,Closed,4,C,Grassland,7,NA,N,Y,Y,449,NA,NA,NA,C7,C7
+SCT1A1,SCT1A1,,NA,196,Shrub Litter,Closed,1,A,Shrubland,1,NA,N,Y,Y,55,NA,NA,A1,NA,NA
+SCT1A2,SCT1A2,,NA,284,Shrub Litter,Closed,1,A,Shrubland,2,NA,N,Y,Y,56,NA,NA,A2,NA,NA
+SCT1A6,SCT1A3,,NA,114,Shrub Litter,Closed,1,A,Shrubland,3,NA,N,Y,Y,68,NA,NA,A3,NA,NA
+SCT1A8,SCT1A4,,NA,113,Shrub Litter,Closed,1,A,Shrubland,4,NA,N,Y,Y,70,NA,NA,A4,NA,NA
+SCT1A5,SCT1A5,,NA,268,Shrub Litter,Closed,1,A,Grassland,5,NA,N,Y,Y,67,NA,NA,A5,NA,NA
+SCT1A3,SCT1A6,,NA,281,Shrub Litter,Closed,1,A,Grassland,6,NA,N,Y,Y,57,NA,NA,A6,NA,NA
+SCT1A7,SCT1A7,,NA,100,Shrub Litter,Closed,1,A,Grassland,7,NA,N,Y,Y,69,NA,NA,A7,NA,NA
+SCT1A4,SCT1A8,,NA,29,Shrub Litter,Closed,1,A,Grassland,8,NA,N,Y,Y,58,NA,NA,A8,NA,NA
+SCT1B1,SCT1B1,,NA,166,Shrub Litter,Closed,1,B,Shrubland,1,NA,N,Y,Y,59,NA,NA,B1,NA,NA
+SCT1B2,SCT1B2,,NA,228,Shrub Litter,Closed,1,B,Shrubland,2,NA,N,Y,Y,60,NA,NA,B2,NA,NA
+SCT1B6,SCT1B3,,NA,277,Shrub Litter,Closed,1,B,Shrubland,3,NA,N,Y,Y,72,NA,NA,B3,NA,NA
+SCT1B7,SCT1B4,,NA,71,Shrub Litter,Closed,1,B,Shrubland,4,NA,N,Y,Y,73,NA,NA,B4,NA,NA
+SCT1B5,SCT1B5,,NA,217,Shrub Litter,Closed,1,B,Grassland,5,NA,N,Y,Y,71,NA,NA,B5,NA,NA
+SCT1B3,SCT1B6,,NA,170,Shrub Litter,Closed,1,B,Grassland,6,NA,N,Y,Y,61,NA,NA,B6,NA,NA
+SCT1B4,SCT1B7,,NA,289,Shrub Litter,Closed,1,B,Grassland,7,NA,N,Y,Y,62,NA,NA,B7,NA,NA
+SCT1B8,SCT1B8,,NA,7,Shrub Litter,Closed,1,B,Grassland,8,NA,N,Y,Y,74,NA,NA,B8,NA,NA
+SCT1C6,SCT1C1,,NA,68,Shrub Litter,Closed,1,C,Shrubland,1,NA,N,Y,Y,76,NA,NA,C1,NA,NA
+SCT1C2,SCT1C2,,NA,38,Shrub Litter,Closed,1,C,Shrubland,2,NA,N,Y,Y,64,NA,NA,C2,NA,NA
+SCT1C7,SCT1C3,,NA,102,Shrub Litter,Closed,1,C,Shrubland,3,NA,N,Y,Y,77,NA,NA,C3,NA,NA
+SCT1C4,SCT1C4,,NA,186,Shrub Litter,Closed,1,C,Shrubland,4,NA,N,Y,Y,66,NA,NA,C4,NA,NA
+SCT1C5,SCT1C5,,NA,207,Shrub Litter,Closed,1,C,Grassland,5,NA,N,Y,Y,75,NA,NA,C5,NA,NA
+SCT1C1,SCT1C6,,NA,198,Shrub Litter,Closed,1,C,Grassland,6,NA,N,Y,Y,63,NA,NA,C6,NA,NA
+SCT1C3,SCT1C7,,NA,233,Shrub Litter,Closed,1,C,Grassland,7,NA,N,Y,Y,65,NA,NA,C7,NA,NA
+SCT1C8,SCT1C8,,NA,121,Shrub Litter,Closed,1,C,Grassland,8,NA,N,Y,Y,78,NA,NA,C8,NA,NA
+SCT2A1,SCT2A1,,NA,304,Shrub Litter,Closed,2,A,Shrubland,1,NA,N,Y,Y,193,NA,NA,NA,A1,A1
+SCT2A8,SCT2A2,,NA,119,Shrub Litter,Closed,2,A,Shrubland,2,NA,N,Y,Y,208,NA,NA,NA,A2,A2
+SCT2A5,SCT2A3,,NA,241,Shrub Litter,Closed,2,A,Shrubland,3,NA,N,Y,Y,205,NA,NA,NA,A3,A3
+SCT2A4,SCT2A4,,NA,264,Shrub Litter,Closed,2,A,Shrubland,4,NA,N,Y,Y,196,NA,NA,NA,A4,A4
+SCT2A3,SCT2A5,,NA,192,Shrub Litter,Closed,2,A,Grassland,5,NA,N,Y,Y,195,NA,NA,NA,A5,A5
+SCT2A6,SCT2A6,,NA,150,Shrub Litter,Closed,2,A,Grassland,6,NA,N,Y,Y,206,NA,NA,NA,A6,A6
+SCT2A7,SCT2A7,,NA,314,Shrub Litter,Closed,2,A,Grassland,7,NA,N,Y,Y,207,NA,NA,NA,A7,A7
+SCT2A2,SCT2A8,,NA,177,Shrub Litter,Closed,2,A,Grassland,8,NA,N,Y,Y,194,NA,NA,NA,A8,A8
+SCT2B1,SCT2B1,,NA,154,Shrub Litter,Closed,2,B,Shrubland,1,NA,N,Y,Y,197,NA,NA,NA,B1,B1
+SCT2B8,SCT2B2,,NA,176,Shrub Litter,Closed,2,B,Shrubland,2,NA,N,Y,Y,212,NA,NA,NA,B2,B2
+SCT2B6,SCT2B3,,NA,20,Shrub Litter,Closed,2,B,Shrubland,3,NA,N,Y,Y,210,NA,NA,NA,B3,B3
+SCT2B4,SCT2B4,,NA,213,Shrub Litter,Closed,2,B,Shrubland,4,NA,N,Y,Y,200,NA,NA,NA,B4,B4
+SCT2B5,SCT2B5,,NA,203,Shrub Litter,Closed,2,B,Grassland,5,NA,N,Y,Y,209,NA,NA,NA,B5,B5
+SCT2B3,SCT2B6,,NA,244,Shrub Litter,Closed,2,B,Grassland,6,NA,N,Y,Y,199,NA,NA,NA,B6,B6
+SCT2B7,SCT2B7,,NA,73,Shrub Litter,Closed,2,B,Grassland,7,NA,N,Y,Y,211,NA,NA,NA,B7,B7
+SCT2B2,SCT2B8,,NA,173,Shrub Litter,Closed,2,B,Grassland,8,NA,N,Y,Y,198,NA,NA,NA,B8,B8
+SCT2C8,SCT2C1,,NA,195,Shrub Litter,Closed,2,C,Shrubland,1,NA,N,Y,Y,216,NA,NA,NA,C1,C1
+SCT2C7,SCT2C2,,NA,126,Shrub Litter,Closed,2,C,Shrubland,2,NA,N,Y,Y,215,NA,NA,NA,C2,C2
+SCT2C3,SCT2C3,,NA,5,Shrub Litter,Closed,2,C,Shrubland,3,NA,N,Y,Y,203,NA,NA,NA,C3,C3
+SCT2C4,SCT2C4,,NA,226,Shrub Litter,Closed,2,C,Shrubland,4,NA,N,Y,Y,204,NA,NA,NA,C4,C4
+SCT2C5,SCT2C5,,NA,156,Shrub Litter,Closed,2,C,Grassland,5,NA,N,Y,Y,213,NA,NA,NA,C5,C5
+SCT2C6,SCT2C6,,NA,260,Shrub Litter,Closed,2,C,Grassland,6,NA,N,Y,Y,214,NA,NA,NA,C6,C6
+SCT2C2,SCT2C7,,NA,110,Shrub Litter,Closed,2,C,Grassland,7,NA,N,Y,Y,202,NA,NA,NA,C7,C7
+SCT2C1,SCT2C8,,NA,43,Shrub Litter,Closed,2,C,Grassland,8,NA,N,Y,Y,201,NA,NA,NA,C8,C8
+SCT4A1,SCT4A1,,NA,223,Shrub Litter,Closed,4,A,Shrubland,1,NA,N,Y,Y,379,NA,118,NA,A1,A1
+SCT4A2,SCT4A2,,NA,81,Shrub Litter,Closed,4,A,Shrubland,2,NA,N,Y,Y,380,NA,127,NA,A2,A2
+SCT4A6,SCT4A3,,NA,55,Shrub Litter,Closed,4,A,Shrubland,3,NA,N,Y,Y,392,NA,120,NA,A3,A3
+SCT4A8,SCT4A4,,NA,296,Shrub Litter,Closed,4,A,Shrubland,4,NA,N,Y,Y,394,NA,135,NA,A4,A4
+SCT4A5,SCT4A5,,NA,42,Shrub Litter,Closed,4,A,Grassland,5,NA,N,Y,Y,391,NA,NA,NA,A5,A5
+SCT4A3,SCT4A6,,NA,108,Shrub Litter,Closed,4,A,Grassland,6,NA,N,Y,Y,381,NA,NA,NA,A6,A6
+SCT4A7,SCT4A7,,NA,89,Shrub Litter,Closed,4,A,Grassland,7,NA,N,Y,Y,393,NA,NA,NA,A7,A7
+SCT4A4,SCT4A8,,NA,299,Shrub Litter,Closed,4,A,Grassland,8,NA,N,Y,Y,382,NA,NA,NA,A8,A8
+SCT4B1,SCT4B1,,NA,34,Shrub Litter,Closed,4,B,Shrubland,1,NA,N,Y,Y,383,NA,NA,NA,B1,B1
+SCT4B8,SCT4B2,,NA,141,Shrub Litter,Closed,4,B,Shrubland,2,NA,N,Y,Y,398,NA,NA,NA,B2,B2
+SCT4B3,SCT4B3,,NA,45,Shrub Litter,Closed,4,B,Shrubland,3,NA,N,Y,Y,385,NA,NA,NA,B3,B3
+SCT4B6,SCT4B4,,NA,249,Shrub Litter,Closed,4,B,Shrubland,4,NA,N,Y,Y,396,NA,NA,NA,B4,B4
+SCT4B5,SCT4B5,,NA,197,Shrub Litter,Closed,4,B,Grassland,5,NA,N,Y,Y,395,NA,NA,NA,B5,B5
+SCT4B4,SCT4B6,,NA,88,Shrub Litter,Closed,4,B,Grassland,6,NA,N,Y,Y,386,NA,NA,NA,B6,B6
+SCT4B7,SCT4B7,,NA,184,Shrub Litter,Closed,4,B,Grassland,7,NA,N,Y,Y,397,NA,NA,NA,B7,B7
+SCT4B2,SCT4B8,,NA,9,Shrub Litter,Closed,4,B,Grassland,8,NA,N,Y,Y,384,NA,NA,NA,B8,B8
+SCT4C1,SCT4C1,,NA,258,Shrub Litter,Closed,4,C,Shrubland,1,NA,N,Y,Y,387,NA,NA,NA,C1,C1
+SCT4C2,SCT4C2,,NA,252,Shrub Litter,Closed,4,C,Shrubland,2,NA,N,Y,Y,388,NA,NA,NA,C2,C2
+SCT4C7,SCT4C3,,NA,95,Shrub Litter,Closed,4,C,Shrubland,3,NA,N,Y,Y,401,NA,NA,NA,C3,C3
+SCT4C8,SCT4C4,,NA,74,Shrub Litter,Closed,4,C,Shrubland,4,NA,N,Y,Y,402,NA,NA,NA,C4,C4
+SCT4C5,SCT4C5,,NA,218,Shrub Litter,Closed,4,C,Grassland,5,NA,N,Y,Y,399,NA,NA,NA,C5,C5
+SCT4C6,SCT4C6,,NA,109,Shrub Litter,Closed,4,C,Grassland,6,NA,N,Y,Y,400,NA,NA,NA,C6,C6
+SCT4C3,SCT4C7,,NA,26,Shrub Litter,Closed,4,C,Grassland,7,NA,N,Y,Y,389,NA,NA,NA,C7,C7
+SCT4C4,SCT4C8,,NA,214,Shrub Litter,Closed,4,C,Grassland,8,NA,N,Y,Y,390,NA,NA,NA,C8,C8
+LCT1R1,LCT1R1,,NA,NA,Glass Slide,Closed,1,C,Boundary,B,5,Y,N,N,151,NA,NA,NA,NA,NA
+LCT1R2,LCT1R2,,NA,NA,Glass Slide,Closed,1,B,Boundary,B,7,Y,N,N,152,NA,NA,NA,NA,NA
+LCT1R3,LCT1R3,,NA,NA,Glass Slide,Closed,1,C,Boundary,B,16,Y,N,N,153,NA,NA,NA,NA,NA
+LCT1R4,LCT1R4,,NA,NA,Glass Slide,Closed,1,A,Boundary,B,2,Y,N,N,154,NA,NA,NA,NA,NA
+LCT2R1,LCT2R1,,NA,NA,Glass Slide,Closed,2,A,Boundary,B,40,Y,N,N,289,NA,NA,NA,NA,NA
+LCT2R2,LCT2R2,,NA,NA,Glass Slide,Closed,2,B,Boundary,B,56,Y,N,N,290,NA,NA,NA,NA,NA
+LCT2R3,LCT2R3,,NA,NA,Glass Slide,Closed,2,B,Boundary,B,53,Y,N,N,291,NA,NA,NA,NA,NA
+LCT2R4,LCT2R4,,NA,NA,Glass Slide,Closed,2,C,Boundary,B,39,Y,N,N,292,NA,NA,NA,NA,NA
+LCT2R5,LCT2R5,,NA,NA,Glass Slide,Closed,2,A,Boundary,B,38,Y,N,N,293,NA,NA,NA,NA,NA
+LCT3R1,LCT3R1,,NA,NA,Glass Slide,Closed,3,C,Boundary,B,84,Y,N,N,337,NA,NA,NA,NA,NA
+LCT3R2,LCT3R2,,NA,NA,Glass Slide,Closed,3,B,Boundary,B,93,Y,N,N,338,NA,NA,NA,NA,NA
+LCT3R3,LCT3R3,,NA,NA,Glass Slide,Closed,3,C,Boundary,B,104,Y,N,N,339,NA,NA,NA,NA,NA
+LCT3R4,LCT3R4,,NA,NA,Glass Slide,Closed,3,A,Boundary,B,96,Y,N,N,340,NA,NA,NA,NA,NA
+LCT4R1,LCT4R1,,NA,NA,Glass Slide,Closed,4,A,Boundary,B,114,Y,N,N,475,NA,NA,NA,NA,NA
+LCT4R2,LCT4R2,,NA,NA,Glass Slide,Closed,4,C,Boundary,B,131,Y,N,N,476,NA,NA,NA,NA,NA
+LCT4R3,LCT4R3,,NA,NA,Glass Slide,Closed,4,A,Boundary,B,120,Y,N,N,477,NA,NA,NA,NA,NA
+LCT4R4,LCT4R4,,NA,NA,Glass Slide,Closed,4,B,Boundary,B,149,Y,N,N,478,NA,NA,NA,NA,NA
+LCT4R5,LCT4R5,,NA,NA,Glass Slide,Closed,4,B,Boundary,B,113,Y,N,N,479,NA,NA,NA,NA,NA
+LDT0R1,LDT0R1G,,89,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R2,LDT0R2G,,151,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R3,LDT0R3G,,44,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R4,LDT0R4G,,121,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R5,LDT0R5G,,78,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R6,LDT0R6G,,107,NA,Glass Slide,Death,0,,Grassland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R7,LDT0R1S,,127,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R8,LDT0R2S,,138,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R9,LDT0R3S,,68,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R10,LDT0R4S,,111,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R11,LDT0R5S,,6,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT0R12,LDT0R6S,,128,NA,Glass Slide,Death,0,,Shrubland,,NA,Y,N,Y,NA,,NA,NA,NA,NA
+LDT1R1,LDT1R1AS,,9,NA,Glass Slide,Death,1,A,Shrubland,2,33,Y,N,Y,157,,33,A2,NA,NA
+LDT1R2,LDT1R2BS,,106,NA,Glass Slide,Death,1,B,Shrubland,2,35,Y,N,Y,158,,35,B2,NA,NA
+LDT1R3,LDT1R3CS,,71,NA,Glass Slide,Death,1,C,Shrubland,2,4,Y,N,Y,159,,4,C2,NA,NA
+LDT1R4,LDT1R4AG,,66,NA,Glass Slide,Death,1,A,Grassland,7,23,Y,N,Y,160,,23,A7,NA,NA
+LDT1R5,LDT1R5BG,,91,NA,Glass Slide,Death,1,B,Grassland,7,10,Y,N,Y,161,,10,B7,NA,NA
+LDT1R6,LDT1R6CG,,53,NA,Glass Slide,Death,1,C,Grassland,7,11,Y,N,Y,162,,11,C7,NA,NA
+LDT1R7,LDT1R7AS,,130,NA,Glass Slide,Death,1,A,Shrubland,2,13,Y,N,Y,163,,NA,NA,NA,NA
+LDT1R8,LDT1R8BG,,67,NA,Glass Slide,Death,1,B,Grassland,7,28,Y,N,Y,164,,28,B7,NA,NA
+LDT2R10,LDT2R10CG,,21,NA,Glass Slide,Death,2,C,Grassland,7,62,Y,N,Y,304,Might be sample 21 + the positive PCR control?,62,NA,C7,C7
+LDT2R1,LDT2R1AS,,62,NA,Glass Slide,Death,2,A,Shrubland,2,72,Y,N,Y,295,,72,NA,A2,A2
+LDT2R2,LDT2R2BS,,150,NA,Glass Slide,Death,2,B,Shrubland,2,54,Y,N,Y,296,,54,NA,B2,B2
+LDT2R3,LDT2R3CS,,118,NA,Glass Slide,Death,2,C,Shrubland,2,44,Y,N,Y,297,,44,NA,C2,C2
+LDT2R4,LDT2R4AG,,92,NA,Glass Slide,Death,2,A,Grassland,7,45,Y,N,Y,298,,45,NA,A7,A7
+LDT2R5,LDT2R5BG,,60,NA,Glass Slide,Death,2,B,Grassland,7,46,Y,N,Y,299,,46,NA,B7,B7
+LDT2R6,LDT2R6CG,,56,NA,Glass Slide,Death,2,C,Grassland,7,42,Y,N,Y,300,,42,NA,C7,C7
+LDT2R7,LDT2R7CS,,1,NA,Glass Slide,Death,2,C,Shrubland,2,43,Y,N,Y,301,,43,NA,C2,C2
+LDT2R8,LDT2R8AS,,22,NA,Glass Slide,Death,2,A,Shrubland,2,64,Y,N,Y,302,,64,NA,A2,A2
+LDT2R9,LDT2R9BG,,157,NA,Glass Slide,Death,2,B,Grassland,7,74,Y,N,Y,303,,74,NA,B7,B7
+LDT3R1,LDT3R1AS,,73,NA,Glass Slide,Death,3,A,Shrubland,2,102,Y,N,Y,343,,102,NA,A2,A2
+LDT3R2,LDT3R2BS,,75,NA,Glass Slide,Death,3,B,Shrubland,2,95,Y,N,Y,344,,95,NA,B2,B2
+LDT3R3,LDT3R3CS,,69,NA,Glass Slide,Death,3,C,Shrubland,2,106,Y,N,Y,345,,106,NA,C2,C2
+LDT3R4,LDT3R4AG,,42,NA,Glass Slide,Death,3,A,Grassland,7,80,Y,N,Y,346,,80,NA,A7,A7
+LDT3R5,LDT3R5BG,,63,NA,Glass Slide,Death,3,B,Grassland,7,110,Y,N,Y,347,,110,NA,B7,B7
+LDT3R6,LDT3R6CG,,112,NA,Glass Slide,Death,3,C,Grassland,7,90,Y,N,Y,348,,90,NA,C7,C7
+LDT3R7,LDT3R7AS,,144,NA,Glass Slide,Death,3,A,Shrubland,2,97,Y,N,Y,349,,97,NA,A2,A2
+LDT3R8,LDT3R8BG,,140,NA,Glass Slide,Death,3,B,Grassland,7,101,Y,N,Y,350,,101,NA,B7,B7
+LDT4R1,LDT4R1AS,,32,NA,Glass Slide,Death,4,A,Shrubland,2,142,Y,N,Y,481,,126,NA,A2,A2
+LDT4R2,LDT4R2BS,,33,NA,Glass Slide,Death,4,B,Shrubland,2,144,Y,N,Y,482,,124,NA,B2,B2
+LDT4R3,LDT4R3CS,,94,NA,Glass Slide,Death,4,C,Shrubland,2,145,Y,N,Y,483,,115,NA,C2,C2
+LDT4R4,LDT4R4AG,,34,NA,Glass Slide,Death,4,A,Grassland,7,130,Y,N,Y,484,,132,NA,A7,A7
+LDT4R5,LDT4R5BG,,100,NA,Glass Slide,Death,4,B,Grassland,7,122,Y,N,Y,485,,144,NA,B7,B7
+LDT4R6,LDT4R6CG,,114,NA,Glass Slide,Death,4,C,Grassland,7,136,Y,N,Y,486,,149,NA,C7,C7
+LDT4R7,LDT4R7CS,,14,NA,Glass Slide,Death,4,C,Shrubland,2,121,Y,N,Y,487,,125,NA,C2,C2
+LDT4R8,LDT4R8AS,,25,NA,Glass Slide,Death,4,A,Shrubland,2,117,Y,N,Y,488,,113,NA,A2,A2
+LDT4R9,LDT4R9BG,,109,NA,Glass Slide,Death,4,B,Grassland,7,141,Y,N,Y,489,,138,NA,B7,B7
+LOT1A1,LOT1A1,,141,NA,Glass Slide,Open,1,A,Shrubland,1,6,Y,N,Y,127,,6,A1,NA,NA
+LOT1A2,LOT1A2,,37,NA,Glass Slide,Open,1,A,Shrubland,2,31,Y,N,Y,128,,31,A2,NA,NA
+LOT1A3,LOT1A3,,122,NA,Glass Slide,Open,1,A,Shrubland,3,26,Y,N,Y,129,,26,A3,NA,NA
+LOT1A4,LOT1A4,,29,NA,Glass Slide,Open,1,A,Shrubland,4,25,Y,N,Y,130,,25,A4,NA,NA
+LOT1A5,LOT1A5,,86,NA,Glass Slide,Open,1,A,Grassland,5,29,Y,N,Y,139,,29,A5,NA,NA
+LOT1A6,LOT1A6,,20,NA,Glass Slide,Open,1,A,Grassland,6,24,Y,N,Y,140,,24,A6,NA,NA
+LOT1A7,LOT1A7,,45,NA,Glass Slide,Open,1,A,Grassland,7,3,Y,N,Y,141,,3,A7,NA,NA
+LOT1A8,LOT1A8,,90,NA,Glass Slide,Open,1,A,Grassland,8,1,Y,N,Y,142,,1,A8,NA,NA
+LOT1B1,LOT1B1,,119,NA,Glass Slide,Open,1,B,Shrubland,1,19,Y,N,Y,131,,19,B1,NA,NA
+LOT1B2,LOT1B2,,129,NA,Glass Slide,Open,1,B,Shrubland,2,20,Y,N,Y,132,,20,B2,NA,NA
+LOT1B3,LOT1B3,,147,NA,Glass Slide,Open,1,B,Shrubland,3,34,Y,N,Y,133,,34,B3,NA,NA
+LOT1B4,LOT1B4,,142,NA,Glass Slide,Open,1,B,Shrubland,4,36,Y,N,Y,134,,36,B4,NA,NA
+LOT1B5,LOT1B5,,52,NA,Glass Slide,Open,1,B,Grassland,5,15,Y,N,Y,143,,15,B5,NA,NA
+LOT1B6,LOT1B6,,132,NA,Glass Slide,Open,1,B,Grassland,6,27,Y,N,Y,144,,27,B6,NA,NA
+LOT1B7,LOT1B7,,154,NA,Glass Slide,Open,1,B,Grassland,7,9,Y,N,Y,145,,9,B7,NA,NA
+LOT1B8,LOT1B8,,145,NA,Glass Slide,Open,1,B,Grassland,8,30,Y,N,Y,146,,30,B8,NA,NA
+LOT1C1,LOT1C1,,3,NA,Glass Slide,Open,1,C,Shrubland,1,8,Y,N,Y,135,,8,C1,NA,NA
+LOT1C2,LOT1C2,,98,NA,Glass Slide,Open,1,C,Shrubland,2,17,Y,N,Y,136,,17,C2,NA,NA
+LOT1C3,LOT1C3,,103,NA,Glass Slide,Open,1,C,Shrubland,3,22,Y,N,Y,137,,22,C3,NA,NA
+LOT1C4,LOT1C4,,79,NA,Glass Slide,Open,1,C,Shrubland,4,18,Y,N,Y,138,,18,C4,NA,NA
+LOT1C5,LOT1C5,,8,NA,Glass Slide,Open,1,C,Grassland,5,12,Y,N,Y,147,,12,C5,NA,NA
+LOT1C6,LOT1C6,,80,NA,Glass Slide,Open,1,C,Grassland,6,32,Y,N,Y,148,,32,C6,NA,NA
+LOT1C7,LOT1C7,,12,NA,Glass Slide,Open,1,C,Grassland,7,21,Y,N,Y,149,,21,C7,NA,NA
+LOT1C8,LOT1C8,,50,NA,Glass Slide,Open,1,C,Grassland,8,14,Y,N,Y,150,,14,C8,NA,NA
+LOT2A1,LOT2A1,,41,NA,Glass Slide,Open,2,A,Shrubland,1,73,Y,N,Y,265,,73,NA,A1,A1
+LOT2A2,LOT2A2,,39,NA,Glass Slide,Open,2,A,Shrubland,2,55,Y,N,Y,266,,55,NA,A2,A2
+LOT2A3,LOT2A3,,36,NA,Glass Slide,Open,2,A,Shrubland,3,63,Y,N,Y,267,,63,NA,A3,A3
+LOT2A4,LOT2A4,,31,NA,Glass Slide,Open,2,A,Shrubland,4,67,Y,N,Y,268,,67,NA,A4,A4
+LOT2A5,LOT2A5,,64,NA,Glass Slide,Open,2,A,Grassland,5,58,Y,N,Y,277,,58,NA,A5,A5
+LOT2A6,LOT2A6,,13,NA,Glass Slide,Open,2,A,Grassland,6,52,Y,N,Y,278,,52,NA,A6,A6
+LOT2A7,LOT2A7,,83,NA,Glass Slide,Open,2,A,Grassland,7,60,Y,N,Y,279,,60,NA,A7,A7
+LOT2A8,LOT2A8,,23,NA,Glass Slide,Open,2,A,Grassland,8,41,Y,N,Y,280,,41,NA,A8,A8
+LOT2B1,LOT2B1,,139,NA,Glass Slide,Open,2,B,Shrubland,1,57,Y,N,Y,269,,57,NA,B1,B1
+LOT2B2,LOT2B2,,133,NA,Glass Slide,Open,2,B,Shrubland,2,70,Y,N,Y,270,,70,NA,B2,B2
+LOT2B3,LOT2B3,,43,NA,Glass Slide,Open,2,B,Shrubland,3,51,Y,N,Y,271,,51,NA,B3,B3
+LOT2B4,LOT2B4,,93,NA,Glass Slide,Open,2,B,Shrubland,4,71,Y,N,Y,272,,71,NA,B4,B4
+LOT2B5,LOT2B5,,18,NA,Glass Slide,Open,2,B,Grassland,5,75,Y,N,Y,281,,75,NA,B5,B5
+LOT2B6,LOT2B6,,148,NA,Glass Slide,Open,2,B,Grassland,6,50,Y,N,Y,282,,50,NA,B6,B6
+LOT2B7,LOT2B7,,28,NA,Glass Slide,Open,2,B,Grassland,7,65,Y,N,Y,283,,65,NA,B7,B7
+LOT2B8,LOT2B8,,104,NA,Glass Slide,Open,2,B,Grassland,8,47,Y,N,Y,284,,47,NA,B8,B8
+LOT2C1,LOT2C1,,124,NA,Glass Slide,Open,2,C,Shrubland,1,49,Y,N,Y,273,,49,NA,C1,C1
+LOT2C2,LOT2C2,,24,NA,Glass Slide,Open,2,C,Shrubland,2,48,Y,N,Y,274,,48,NA,C2,C2
+LOT2C3,LOT2C3,,48,NA,Glass Slide,Open,2,C,Shrubland,3,59,Y,N,Y,275,,59,NA,C3,C3
+LOT2C4,LOT2C4,,85,NA,Glass Slide,Open,2,C,Shrubland,4,68,Y,N,Y,276,,68,NA,C4,C4
+LOT2C5,LOT2C5,,19,NA,Glass Slide,Open,2,C,Grassland,5,69,Y,N,Y,285,,69,NA,C5,C5
+LOT2C6,LOT2C6,,134,NA,Glass Slide,Open,2,C,Grassland,6,61,Y,N,Y,286,,61,NA,C6,C6
+LOT2C7,LOT2C7,,49,NA,Glass Slide,Open,2,C,Grassland,7,37,Y,N,Y,287,,37,NA,C7,C7
+LOT2C8,LOT2C8,,126,NA,Glass Slide,Open,2,C,Grassland,8,66,Y,N,Y,288,,66,NA,C8,C8
+LOT3A1,LOT3A1,,7,NA,Glass Slide,Open,3,A,Shrubland,1,89,Y,N,Y,313,,89,NA,A1,A1
+LOT3A2,LOT3A2,,65,NA,Glass Slide,Open,3,A,Shrubland,2,108,Y,N,Y,314,,108,NA,A2,A2
+LOT3A3,LOT3A3,,136,NA,Glass Slide,Open,3,A,Shrubland,3,82,Y,N,Y,315,,82,NA,A3,A3
+LOT3A5,LOT3A5,,77,NA,Glass Slide,Open,3,A,Grassland,5,92,Y,N,Y,325,,92,NA,A5,A5
+LOT3A6,LOT3A6,,30,NA,Glass Slide,Open,3,A,Grassland,6,109,Y,N,Y,326,,109,NA,A6,A6
+LOT3A7,LOT3A7,,146,NA,Glass Slide,Open,3,A,Grassland,7,103,Y,N,Y,327,,103,NA,A7,A7
+LOT3A8,LOT3A8,,113,NA,Glass Slide,Open,3,A,Grassland,8,79,Y,N,Y,328,,79,NA,A8,A8
+LOT3B1,LOT3B1,,137,NA,Glass Slide,Open,3,B,Shrubland,1,76,Y,N,Y,317,,76,NA,B1,B1
+LOT3B2,LOT3B2,,26,NA,Glass Slide,Open,3,B,Shrubland,2,77,Y,N,Y,318,,77,NA,B2,B2
+LOT3B3,LOT3B3,,101,NA,Glass Slide,Open,3,B,Shrubland,3,88,Y,N,Y,319,,88,NA,B3,B3
+LOT3B4,LOT3B4,,84,NA,Glass Slide,Open,3,B,Shrubland,4,99,Y,N,Y,320,,99,NA,B4,B4
+LOT3B5,LOT3B5,,125,NA,Glass Slide,Open,3,B,Grassland,5,94,Y,N,Y,329,,94,NA,B5,B5
+LOT3B6,LOT3B6,,5,NA,Glass Slide,Open,3,B,Grassland,6,91,Y,N,Y,330,,91,NA,B6,B6
+LOT3B7,LOT3B7,,46,NA,Glass Slide,Open,3,B,Grassland,7,87,Y,N,Y,331,,87,NA,B7,B7
+LOT3B8,LOT3B8,,51,NA,Glass Slide,Open,3,B,Grassland,8,111,Y,N,Y,332,,111,NA,B8,B8
+LOT3C1,LOT3C1,,97,NA,Glass Slide,Open,3,C,Shrubland,1,83,Y,N,Y,321,,83,NA,C1,C1
+LOT3C2,LOT3C2,,61,NA,Glass Slide,Open,3,C,Shrubland,2,78,Y,N,Y,322,,78,NA,C2,C2
+LOT3C3,LOT3C3,,54,NA,Glass Slide,Open,3,C,Shrubland,3,107,Y,N,Y,323,,107,NA,C3,C3
+LOT3C4,LOT3C4,,158,NA,Glass Slide,Open,3,C,Shrubland,4,105,Y,N,Y,324,,105,NA,C4,C4
+LOT3C5,LOT3C5,,55,NA,Glass Slide,Open,3,C,Grassland,5,98,Y,N,Y,333,,98,NA,C5,C5
+LOT3C6,LOT3C6,,15,NA,Glass Slide,Open,3,C,Grassland,6,100,Y,N,Y,334,,100,NA,C6,C6
+LOT3C7,LOT3C7,,108,NA,Glass Slide,Open,3,C,Grassland,7,81,Y,N,Y,335,,81,NA,C7,C7
+LOT3C8,LOT3C8,,102,NA,Glass Slide,Open,3,C,Grassland,8,85,Y,N,Y,336,,85,NA,C8,C8
+LOT3A4,LOT3A4,,95,NA,Glass Slide,Open,4,A,Shrubland,4,86,Y,N,Y,316,,NA,NA,NA,NA
+LOT4A1,LOT4A1,,135,NA,Glass Slide,Open,4,A,Shrubland,1,137,Y,N,Y,451,Is actually two samples (135 + 127) combined,131,NA,A1,A1
+LOT4A2,LOT4A2,,99,NA,Glass Slide,Open,4,A,Shrubland,2,129,Y,N,Y,452,,142,NA,A2,A2
+LOT4A3,LOT4A3,,17,NA,Glass Slide,Open,4,A,Shrubland,3,119,Y,N,Y,453,,116,NA,A3,A3
+LOT4A4,LOT4A4,,155,NA,Glass Slide,Open,4,A,Shrubland,4,146,Y,N,Y,454,,129,NA,A4,A4
+LOT4A5,LOT4A5,,105,NA,Glass Slide,Open,4,A,Grassland,5,134,Y,N,Y,463,,112,NA,A5,A5
+LOT4A6,LOT4A6,,11,NA,Glass Slide,Open,4,A,Grassland,6,135,Y,N,Y,464,,119,NA,A6,A6
+LOT4A7,LOT4A7,,16,NA,Glass Slide,Open,4,A,Grassland,7,133,Y,N,Y,465,,134,NA,A7,A7
+LOT4A8,LOT4A8,,40,NA,Glass Slide,Open,4,A,Grassland,8,147,Y,N,Y,466,,137,NA,A8,A8
+LOT4B1,LOT4B1,,38,NA,Glass Slide,Open,4,B,Shrubland,1,125,Y,N,Y,455,,114,NA,B1,B1
+LOT4B2,LOT4B2,,143,NA,Glass Slide,Open,4,B,Shrubland,2,116,Y,N,Y,456,,150,NA,B2,B2
+LOT4B3,LOT4B3,,27,NA,Glass Slide,Open,4,B,Shrubland,3,148,Y,N,Y,457,,151,NA,B3,B3
+LOT4B4,LOT4B4,,120,NA,Glass Slide,Open,4,B,Shrubland,4,132,Y,N,Y,458,,117,NA,B4,B4
+LOT4B5,LOT4B5,,76,NA,Glass Slide,Open,4,B,Grassland,5,112,Y,N,Y,467,,122,NA,B5,B5
+LOT4B6,LOT4B6,,131,NA,Glass Slide,Open,4,B,Grassland,6,123,Y,N,Y,468,,152,NA,B6,B6
+LOT4B7,LOT4B7,,116,NA,Glass Slide,Open,4,B,Grassland,7,127,Y,N,Y,469,,136,NA,B7,B7
+LOT4B8,LOT4B8,,70,NA,Glass Slide,Open,4,B,Grassland,8,126,Y,N,Y,470,,153,NA,B8,B8
+LOT4C1,LOT4C1,,74,NA,Glass Slide,Open,4,C,Shrubland,1,128,Y,N,Y,459,,128,NA,C1,C1
+LOT4C2,LOT4C2,,58,NA,Glass Slide,Open,4,C,Shrubland,2,115,Y,N,Y,460,,146,NA,C2,C2
+LOT4C3,LOT4C3,,4,NA,Glass Slide,Open,4,C,Shrubland,3,138,Y,N,Y,461,,148,NA,C3,C3
+LOT4C4,LOT4C4,,115,NA,Glass Slide,Open,4,C,Shrubland,4,143,Y,N,Y,462,,147,NA,C4,C4
+LOT4C5,LOT4C5,,35,NA,Glass Slide,Open,4,C,Grassland,5,124,Y,N,Y,471,,121,NA,C5,C5
+LOT4C6,LOT4C6,,152,NA,Glass Slide,Open,4,C,Grassland,6,118,Y,N,Y,472,,130,NA,C6,C6
+LOT4C7,LOT4C7,,47,NA,Glass Slide,Open,4,C,Grassland,7,139,Y,N,Y,473,,140,NA,C7,C7
+LOT4C8,LOT4C8,,81,NA,Glass Slide,Open,4,C,Grassland,8,140,Y,N,Y,474,,143,NA,C8,C8
+GOT1A1,GOT1A1,,NA,52,Grass Litter,Open,1,A,Shrubland,1,NA,N,Y,Y,79,NA,NA,A1,NA,NA
+GOT1A2,GOT1A2,,NA,182,Grass Litter,Open,1,A,Shrubland,2,NA,N,Y,Y,80,NA,NA,A2,NA,NA
+GOT1A3,GOT1A3,,NA,240,Grass Litter,Open,1,A,Shrubland,3,NA,N,Y,Y,81,NA,NA,A3,NA,NA
+GOT1A4,GOT1A4,,NA,44,Grass Litter,Open,1,A,Shrubland,4,NA,N,Y,Y,82,NA,NA,A4,NA,NA
+GOT1A5,GOT1A5,,NA,33,Grass Litter,Open,1,A,Grassland,5,NA,N,Y,Y,91,NA,NA,A5,NA,NA
+GOT1A6,GOT1A6,,NA,169,Grass Litter,Open,1,A,Grassland,6,NA,N,Y,Y,92,NA,NA,A6,NA,NA
+GOT1A7,GOT1A7,,NA,175,Grass Litter,Open,1,A,Grassland,7,NA,N,Y,Y,93,NA,NA,A7,NA,NA
+GOT1A8,GOT1A8,,NA,137,Grass Litter,Open,1,A,Grassland,8,NA,N,Y,Y,94,NA,NA,A8,NA,NA
+GOT1B1,GOT1B1,,NA,84,Grass Litter,Open,1,B,Shrubland,1,NA,N,Y,Y,83,NA,NA,B1,NA,NA
+GOT1B2,GOT1B2,,NA,237,Grass Litter,Open,1,B,Shrubland,2,NA,N,Y,Y,84,NA,NA,B2,NA,NA
+GOT1B3,GOT1B3,,NA,133,Grass Litter,Open,1,B,Shrubland,3,NA,N,Y,Y,85,NA,NA,B3,NA,NA
+GOT1B4,GOT1B4,,NA,259,Grass Litter,Open,1,B,Shrubland,4,NA,N,Y,Y,86,NA,NA,B4,NA,NA
+GOT1B5,GOT1B5,,NA,138,Grass Litter,Open,1,B,Grassland,5,NA,N,Y,Y,95,NA,NA,B5,NA,NA
+GOT1B6,GOT1B6,,NA,286,Grass Litter,Open,1,B,Grassland,6,NA,N,Y,Y,96,NA,NA,B6,NA,NA
+GOT1B7,GOT1B7,,NA,311,Grass Litter,Open,1,B,Grassland,7,NA,N,Y,Y,97,NA,NA,B7,NA,NA
+GOT1B8,GOT1B8,,NA,92,Grass Litter,Open,1,B,Grassland,8,NA,N,Y,Y,98,NA,NA,B8,NA,NA
+GOT1C1,GOT1C1,,NA,262,Grass Litter,Open,1,C,Shrubland,1,NA,N,Y,Y,87,NA,NA,C1,NA,NA
+GOT1C2,GOT1C2,,NA,36,Grass Litter,Open,1,C,Shrubland,2,NA,N,Y,Y,88,NA,NA,C2,NA,NA
+GOT1C3,GOT1C3,,NA,56,Grass Litter,Open,1,C,Shrubland,3,NA,N,Y,Y,89,NA,NA,C3,NA,NA
+GOT1C4,GOT1C4,,NA,210,Grass Litter,Open,1,C,Shrubland,4,NA,N,Y,Y,90,NA,NA,C4,NA,NA
+GOT1C5,GOT1C5,,NA,206,Grass Litter,Open,1,C,Grassland,5,NA,N,Y,Y,99,NA,NA,C5,NA,NA
+GOT1C6,GOT1C6,,NA,128,Grass Litter,Open,1,C,Grassland,6,NA,N,Y,Y,100,NA,NA,C6,NA,NA
+GOT1C7,GOT1C7,,NA,300,Grass Litter,Open,1,C,Grassland,7,NA,N,Y,Y,101,NA,NA,C7,NA,NA
+GOT1C8,GOT1C8,,NA,246,Grass Litter,Open,1,C,Grassland,8,NA,N,Y,Y,102,NA,NA,C8,NA,NA
+GOT2A1,GOT2A1,,NA,24,Grass Litter,Open,2,A,Shrubland,1,NA,N,Y,Y,217,NA,NA,NA,A1,A1
+GOT2A2,GOT2A2,,NA,248,Grass Litter,Open,2,A,Shrubland,2,NA,N,Y,Y,218,NA,NA,NA,A2,A2
+GOT2A3,GOT2A3,,NA,180,Grass Litter,Open,2,A,Shrubland,3,NA,N,Y,Y,219,NA,NA,NA,A3,A3
+GOT2A4,GOT2A4,,NA,267,Grass Litter,Open,2,A,Shrubland,4,NA,N,Y,Y,220,NA,NA,NA,A4,A4
+GOT2A5,GOT2A5,,NA,30,Grass Litter,Open,2,A,Grassland,5,NA,N,Y,Y,229,NA,NA,NA,A5,A5
+GOT2A6,GOT2A6,,NA,143,Grass Litter,Open,2,A,Grassland,6,NA,N,Y,Y,230,NA,NA,NA,A6,A6
+GOT2A7,GOT2A7,,NA,317,Grass Litter,Open,2,A,Grassland,7,NA,N,Y,Y,231,NA,NA,NA,A7,A7
+GOT2A8,GOT2A8,,NA,155,Grass Litter,Open,2,A,Grassland,8,NA,N,Y,Y,232,NA,NA,NA,A8,A8
+GOT2B1,GOT2B1,,NA,193,Grass Litter,Open,2,B,Shrubland,1,NA,N,Y,Y,221,NA,NA,NA,B1,B1
+GOT2B2,GOT2B2,,NA,313,Grass Litter,Open,2,B,Shrubland,2,NA,N,Y,Y,222,NA,NA,NA,B2,B2
+GOT2B3,GOT2B3,,NA,129,Grass Litter,Open,2,B,Shrubland,3,NA,N,Y,Y,223,NA,NA,NA,B3,B3
+GOT2B4,GOT2B4,,NA,188,Grass Litter,Open,2,B,Shrubland,4,NA,N,Y,Y,224,NA,NA,NA,B4,B4
+GOT2B5,GOT2B5,,NA,142,Grass Litter,Open,2,B,Grassland,5,NA,N,Y,Y,233,NA,NA,NA,B5,B5
+GOT2B6,GOT2B6,,NA,269,Grass Litter,Open,2,B,Grassland,6,NA,N,Y,Y,234,NA,NA,NA,B6,B6
+GOT2B7,GOT2B7,,NA,1,Grass Litter,Open,2,B,Grassland,7,NA,N,Y,Y,235,NA,NA,NA,B7,B7
+GOT2B8,GOT2B8,,NA,261,Grass Litter,Open,2,B,Grassland,8,NA,N,Y,Y,236,NA,NA,NA,B8,B8
+GOT2C1,GOT2C1,,NA,67,Grass Litter,Open,2,C,Shrubland,1,NA,N,Y,Y,225,NA,NA,NA,C1,C1
+GOT2C2,GOT2C2,,NA,191,Grass Litter,Open,2,C,Shrubland,2,NA,N,Y,Y,226,NA,NA,NA,C2,C2
+GOT2C3,GOT2C3,,NA,57,Grass Litter,Open,2,C,Shrubland,3,NA,N,Y,Y,227,NA,NA,NA,C3,C3
+GOT2C4,GOT2C4,,NA,239,Grass Litter,Open,2,C,Shrubland,4,NA,N,Y,Y,228,NA,NA,NA,C4,C4
+GOT2C5,GOT2C5,,NA,321,Grass Litter,Open,2,C,Grassland,5,NA,N,Y,Y,237,NA,NA,NA,C5,C5
+GOT2C6,GOT2C6,,NA,227,Grass Litter,Open,2,C,Grassland,6,NA,N,Y,Y,238,NA,NA,NA,C6,C6
+GOT2C7,GOT2C7,,NA,4,Grass Litter,Open,2,C,Grassland,7,NA,N,Y,Y,239,NA,NA,NA,C7,C7
+GOT2C8,GOT2C8,,NA,297,Grass Litter,Open,2,C,Grassland,8,NA,N,Y,Y,240,NA,NA,NA,C8,C8
+GOT4A1,GOT4A1,,NA,86,Grass Litter,Open,4,A,Shrubland,1,NA,N,Y,Y,403,NA,NA,NA,A1,A1
+GOT4A2,GOT4A2,,NA,130,Grass Litter,Open,4,A,Shrubland,2,NA,N,Y,Y,404,NA,NA,NA,A2,A2
+GOT4A3,GOT4A3,,NA,50,Grass Litter,Open,4,A,Shrubland,3,NA,N,Y,Y,405,NA,NA,NA,A3,A3
+GOT4A4,GOT4A4,,NA,178,Grass Litter,Open,4,A,Shrubland,4,NA,N,Y,Y,406,NA,NA,NA,A4,A4
+GOT4A5,GOT4A5,,NA,76,Grass Litter,Open,4,A,Grassland,5,NA,N,Y,Y,415,NA,NA,NA,A5,A5
+GOT4A6,GOT4A6,,NA,225,Grass Litter,Open,4,A,Grassland,6,NA,N,Y,Y,416,NA,NA,NA,A6,A6
+GOT4A7,GOT4A7,,NA,64,Grass Litter,Open,4,A,Grassland,7,NA,N,Y,Y,417,NA,NA,NA,A7,A7
+GOT4A8,GOT4A8,,NA,280,Grass Litter,Open,4,A,Grassland,8,NA,N,Y,Y,418,NA,NA,NA,A8,A8
+GOT4B1,GOT4B1,,NA,295,Grass Litter,Open,4,B,Shrubland,1,NA,N,Y,Y,407,NA,NA,NA,B1,B1
+GOT4B2,GOT4B2,,NA,111,Grass Litter,Open,4,B,Shrubland,2,NA,N,Y,Y,408,NA,NA,NA,B2,B2
+GOT4B3,GOT4B3,,NA,200,Grass Litter,Open,4,B,Shrubland,3,NA,N,Y,Y,409,NA,NA,NA,B3,B3
+GOT4B4,GOT4B4,,NA,103,Grass Litter,Open,4,B,Shrubland,4,NA,N,Y,Y,410,NA,NA,NA,B4,B4
+GOT4B5,GOT4B5,,NA,60,Grass Litter,Open,4,B,Grassland,5,NA,N,Y,Y,419,NA,NA,NA,B5,B5
+GOT4B6,GOT4B6,,NA,255,Grass Litter,Open,4,B,Grassland,6,NA,N,Y,Y,420,NA,NA,NA,B6,B6
+GOT4B7,GOT4B7,,NA,117,Grass Litter,Open,4,B,Grassland,7,NA,N,Y,Y,421,NA,NA,NA,B7,B7
+GOT4B8,GOT4B8,,NA,41,Grass Litter,Open,4,B,Grassland,8,NA,N,Y,Y,422,NA,NA,NA,B8,B8
+GOT4C1,GOT4C1,,NA,105,Grass Litter,Open,4,C,Shrubland,1,NA,N,Y,Y,411,NA,NA,NA,C1,C1
+GOT4C2,GOT4C2,,NA,215,Grass Litter,Open,4,C,Shrubland,2,NA,N,Y,Y,412,NA,NA,NA,C2,C2
+GOT4C3,GOT4C3,,NA,39,Grass Litter,Open,4,C,Shrubland,3,NA,N,Y,Y,413,NA,NA,NA,C3,C3
+GOT4C4,GOT4C4,,NA,194,Grass Litter,Open,4,C,Shrubland,4,NA,N,Y,Y,414,NA,NA,NA,C4,C4
+GOT4C5,GOT4C5,,NA,167,Grass Litter,Open,4,C,Grassland,5,NA,N,Y,Y,423,NA,NA,NA,C5,C5
+GOT4C6,GOT4C6,,NA,139,Grass Litter,Open,4,C,Grassland,6,NA,N,Y,Y,424,NA,NA,NA,C6,C6
+GOT4C7,GOT4C7,,NA,224,Grass Litter,Open,4,C,Grassland,7,NA,N,Y,Y,425,NA,NA,NA,C7,C7
+GOT4C8,GOT4C8,,NA,164,Grass Litter,Open,4,C,Grassland,8,NA,N,Y,Y,426,NA,NA,NA,C8,C8
+SOT1A1,SOT1A1,,NA,101,Shrub Litter,Open,1,A,Shrubland,1,NA,N,Y,Y,31,NA,NA,A1,NA,NA
+SOT1A8,SOT1A2,,NA,82,Shrub Litter,Open,1,A,Shrubland,2,NA,N,Y,Y,46,NA,NA,A2,NA,NA
+SOT1A6,SOT1A3,,NA,8,Shrub Litter,Open,1,A,Shrubland,3,NA,N,Y,Y,44,NA,NA,A3,NA,NA
+SOT1A4,SOT1A4,,NA,187,Shrub Litter,Open,1,A,Shrubland,4,NA,N,Y,Y,34,NA,NA,A4,NA,NA
+SOT1A5,SOT1A5,,NA,285,Shrub Litter,Open,1,A,Grassland,5,NA,N,Y,Y,43,NA,NA,A5,NA,NA
+SOT1A3,SOT1A6,,NA,18,Shrub Litter,Open,1,A,Grassland,6,NA,N,Y,Y,33,NA,NA,A6,NA,NA
+SOT1A7,SOT1A7,,NA,131,Shrub Litter,Open,1,A,Grassland,7,NA,N,Y,Y,45,NA,NA,A7,NA,NA
+SOT1A2,SOT1A8,,NA,271,Shrub Litter,Open,1,A,Grassland,8,NA,N,Y,Y,32,NA,NA,A8,NA,NA
+SOT1B6,SOT1B1,,NA,201,Shrub Litter,Open,1,B,Shrubland,1,NA,N,Y,Y,48,NA,NA,B1,NA,NA
+SOT1B2,SOT1B2,,NA,242,Shrub Litter,Open,1,B,Shrubland,2,NA,N,Y,Y,36,NA,NA,B2,NA,NA
+SOT1B7,SOT1B3,,NA,16,Shrub Litter,Open,1,B,Shrubland,3,NA,N,Y,Y,49,NA,NA,B3,NA,NA
+SOT1B4,SOT1B4,,NA,11,Shrub Litter,Open,1,B,Shrubland,4,NA,N,Y,Y,38,NA,NA,B4,NA,NA
+SOT1B5,SOT1B5,,NA,185,Shrub Litter,Open,1,B,Grassland,5,NA,N,Y,Y,47,NA,NA,B5,NA,NA
+SOT1B1,SOT1B6,,NA,124,Shrub Litter,Open,1,B,Grassland,6,NA,N,Y,Y,35,NA,NA,B6,NA,NA
+SOT1B3,SOT1B7,,NA,14,Shrub Litter,Open,1,B,Grassland,7,NA,N,Y,Y,37,NA,NA,B7,NA,NA
+SOT1B8,SOT1B8,,NA,159,Shrub Litter,Open,1,B,Grassland,8,NA,N,Y,Y,50,NA,NA,B8,NA,NA
+SOT1C7,SOT1C1,,NA,59,Shrub Litter,Open,1,C,Shrubland,1,NA,N,Y,Y,53,NA,NA,C1,NA,NA
+SOT1C2,SOT1C2,,NA,171,Shrub Litter,Open,1,C,Shrubland,2,NA,N,Y,Y,40,NA,NA,C2,NA,NA
+SOT1C8,SOT1C3,,NA,209,Shrub Litter,Open,1,C,Shrubland,3,NA,N,Y,Y,54,NA,NA,C3,NA,NA
+SOT1C4,SOT1C4,,NA,80,Shrub Litter,Open,1,C,Shrubland,4,NA,N,Y,Y,42,NA,NA,C4,NA,NA
+SOT1C6,SOT1C6,,NA,77,Shrub Litter,Open,1,C,Grassland,6,NA,N,Y,Y,52,NA,NA,C6,NA,NA
+SOT1C1,SOT1C7,,NA,69,Shrub Litter,Open,1,C,Grassland,7,NA,N,Y,Y,39,NA,NA,C7,NA,NA
+SOT1C3,SOT1C8,,NA,254,Shrub Litter,Open,1,C,Grassland,8,NA,N,Y,Y,41,NA,NA,C8,NA,NA
+SOT4C5,SOT4C5,,NA,211,Shrub Litter,Open,1,C,Grassland,5,NA,N,Y,Y,375,NA,NA,NA,NA,NA
+SOT2A8,SOT2A1,,NA,21,Shrub Litter,Open,2,A,Shrubland,1,NA,N,Y,Y,184,NA,NA,NA,A1,A1
+SOT2A2,SOT2A2,,NA,146,Shrub Litter,Open,2,A,Shrubland,2,NA,N,Y,Y,170,NA,NA,NA,A2,A2
+SOT2A7,SOT2A3,,NA,272,Shrub Litter,Open,2,A,Shrubland,3,NA,N,Y,Y,183,NA,NA,NA,A3,A3
+SOT2A4,SOT2A4,,NA,293,Shrub Litter,Open,2,A,Shrubland,4,NA,N,Y,Y,172,NA,NA,NA,A4,A4
+SOT2A5,SOT2A5,,NA,160,Shrub Litter,Open,2,A,Grassland,5,NA,N,Y,Y,181,NA,NA,NA,A5,A5
+SOT2A6,SOT2A6,,NA,132,Shrub Litter,Open,2,A,Grassland,6,NA,N,Y,Y,182,NA,NA,NA,A6,A6
+SOT2A3,SOT2A7,,NA,40,Shrub Litter,Open,2,A,Grassland,7,NA,N,Y,Y,171,NA,NA,NA,A7,A7
+SOT2A1,SOT2A8,,NA,315,Shrub Litter,Open,2,A,Grassland,8,NA,N,Y,Y,169,NA,NA,NA,A8,A8
+SOT2B8,SOT2B1,,NA,291,Shrub Litter,Open,2,B,Shrubland,1,NA,N,Y,Y,188,NA,NA,NA,B1,B1
+SOT2B7,SOT2B2,,NA,309,Shrub Litter,Open,2,B,Shrubland,2,NA,N,Y,Y,187,NA,NA,NA,B2,B2
+SOT2B3,SOT2B3,,NA,15,Shrub Litter,Open,2,B,Shrubland,3,NA,N,Y,Y,175,NA,NA,NA,B3,B3
+SOT2B4,SOT2B4,,NA,48,Shrub Litter,Open,2,B,Shrubland,4,NA,N,Y,Y,176,NA,NA,NA,B4,B4
+SOT2B5,SOT2B5,,NA,104,Shrub Litter,Open,2,B,Grassland,5,NA,N,Y,Y,185,NA,NA,NA,B5,B5
+SOT2B6,SOT2B6,,NA,17,Shrub Litter,Open,2,B,Grassland,6,NA,N,Y,Y,186,NA,NA,NA,B6,B6
+SOT2B2,SOT2B7,,NA,51,Shrub Litter,Open,2,B,Grassland,7,NA,N,Y,Y,174,NA,NA,NA,B7,B7
+SOT2B1,SOT2B8,,NA,266,Shrub Litter,Open,2,B,Grassland,8,NA,N,Y,Y,173,NA,NA,NA,B8,B8
+SOT2C1,SOT2C1,,NA,288,Shrub Litter,Open,2,C,Shrubland,1,NA,N,Y,Y,177,NA,NA,NA,C1,C1
+SOT2C7,SOT2C2,,NA,22,Shrub Litter,Open,2,C,Shrubland,2,NA,N,Y,Y,191,NA,NA,NA,C2,C2
+SOT2C3,SOT2C3,,NA,37,Shrub Litter,Open,2,C,Shrubland,3,NA,N,Y,Y,179,NA,NA,NA,C3,C3
+SOT2C8,SOT2C4,,NA,222,Shrub Litter,Open,2,C,Shrubland,4,NA,N,Y,Y,192,NA,NA,NA,C4,C4
+SOT2C5,SOT2C5,,NA,168,Shrub Litter,Open,2,C,Grassland,5,NA,N,Y,Y,189,NA,NA,NA,C5,C5
+SOT2C6,SOT2C6,,NA,58,Shrub Litter,Open,2,C,Grassland,6,NA,N,Y,Y,190,NA,NA,NA,C6,C6
+SOT2C2,SOT2C7,,NA,305,Shrub Litter,Open,2,C,Grassland,7,NA,N,Y,Y,178,NA,NA,NA,C7,C7
+SOT2C4,SOT2C8,,NA,107,Shrub Litter,Open,2,C,Grassland,8,NA,N,Y,Y,180,NA,NA,NA,C8,C8
+SOT1C5,SOT1C5,,NA,120,Shrub Litter,Open,4,C,Grassland,5,NA,N,Y,Y,51,NA,NA,NA,NA,NA
+SOT4A5,SOT4A1,,NA,28,Shrub Litter,Open,4,A,Shrubland,1,NA,N,Y,Y,367,NA,NA,NA,A1,A1
+SOT4A2,SOT4A2,,NA,31,Shrub Litter,Open,4,A,Shrubland,2,NA,N,Y,Y,356,NA,NA,NA,A2,A2
+SOT4A3,SOT4A3,,NA,19,Shrub Litter,Open,4,A,Shrubland,3,NA,N,Y,Y,357,NA,NA,NA,A3,A3
+SOT4A7,SOT4A4,,NA,46,Shrub Litter,Open,4,A,Shrubland,4,NA,N,Y,Y,369,NA,NA,NA,A4,A4
+SOT4A1,SOT4A5,,NA,13,Shrub Litter,Open,4,A,Grassland,5,NA,Y,N,Y,355,NA,NA,NA,A5,A5
+SOT4A6,SOT4A6,,NA,312,Shrub Litter,Open,4,A,Grassland,6,NA,N,Y,Y,368,NA,NA,NA,A6,A6
+SOT4A4,SOT4A7,,NA,148,Shrub Litter,Open,4,A,Grassland,7,NA,N,Y,Y,358,NA,NA,NA,A7,A7
+SOT4A8,SOT4A8,,NA,190,Shrub Litter,Open,4,A,Grassland,8,NA,N,Y,Y,370,NA,NA,NA,A8,A8
+SOT4B1,SOT4B1,,NA,230,Shrub Litter,Open,4,B,Shrubland,1,NA,N,Y,Y,359,NA,NA,NA,B1,B1
+SOT4B5,SOT4B2,,NA,93,Shrub Litter,Open,4,B,Shrubland,2,NA,N,Y,Y,371,NA,NA,NA,B2,B2
+SOT4B3,SOT4B3,,NA,256,Shrub Litter,Open,4,B,Shrubland,3,NA,N,Y,Y,361,NA,NA,NA,B3,B3
+SOT4B6,SOT4B4,,NA,10,Shrub Litter,Open,4,B,Shrubland,4,NA,N,Y,Y,372,NA,NA,NA,B4,B4
+SOT4B2,SOT4B5,,NA,140,Shrub Litter,Open,4,B,Grassland,5,NA,N,Y,Y,360,NA,NA,NA,B5,B5
+SOT4B4,SOT4B6,,NA,308,Shrub Litter,Open,4,B,Grassland,6,NA,N,Y,Y,362,NA,NA,NA,B6,B6
+SOT4B7,SOT4B7,,NA,204,Shrub Litter,Open,4,B,Grassland,7,NA,N,Y,Y,373,NA,NA,NA,B7,B7
+SOT4B8,SOT4B8,,NA,199,Shrub Litter,Open,4,B,Grassland,8,NA,N,Y,Y,374,NA,NA,NA,B8,B8
+SOT4C7,SOT4C1,,NA,265,Shrub Litter,Open,4,C,Shrubland,1,NA,N,Y,Y,377,NA,NA,NA,C1,C1
+SOT4C2,SOT4C2,,NA,125,Shrub Litter,Open,4,C,Shrubland,2,NA,N,Y,Y,364,NA,NA,NA,C2,C2
+SOT4C6,SOT4C3,,NA,275,Shrub Litter,Open,4,C,Shrubland,3,NA,N,Y,Y,376,NA,NA,NA,C3,C3
+SOT4C4,SOT4C4,,NA,165,Shrub Litter,Open,4,C,Shrubland,4,NA,N,Y,Y,366,NA,NA,NA,C4,C4
+SOT4C3,SOT4C6,,NA,134,Shrub Litter,Open,4,C,Grassland,6,NA,N,Y,Y,365,NA,NA,NA,C6,C6
+SOT4C1,SOT4C7,,NA,115,Shrub Litter,Open,4,C,Grassland,7,NA,N,Y,Y,363,NA,NA,NA,C7,C7
+SOT4C8,SOT4C8,,NA,232,Shrub Litter,Open,4,C,Grassland,8,NA,N,Y,Y,378,NA,NA,NA,C8,C8
+EnvG_T2R1,EnvG_T2R1,,NA,149,Environmental Grass Litter,Environmental Litter,2,A,Grassland,8,NA,N,N,Y,25,NA,NA,NA,A8,A8
+EnvG_T2R2,EnvG_T2R2,,NA,49,Environmental Grass Litter,Environmental Litter,2,A,Grassland,7,NA,N,N,Y,26,NA,NA,NA,A7,A7
+EnvG_T2R3,EnvG_T2R3,,NA,216,Environmental Grass Litter,Environmental Litter,2,B,Grassland,8,NA,N,N,Y,27,NA,NA,NA,B8,B8
+EnvG_T2R4,EnvG_T2R4,,NA,183,Environmental Grass Litter,Environmental Litter,2,B,Grassland,7,NA,N,N,Y,28,NA,NA,NA,B7,B7
+EnvG_T2R5,EnvG_T2R5,,NA,243,Environmental Grass Litter,Environmental Litter,2,C,Grassland,8,NA,N,N,Y,29,NA,NA,NA,C8,C8
+EnvG_T2R6,EnvG_T2R6,,NA,294,Environmental Grass Litter,Environmental Litter,2,C,Grassland,7,NA,N,N,Y,30,NA,NA,NA,C7,C7
+EnvS_T2R1,EnvS_T2R1,,NA,158,Environmental Shrub Litter,Environmental Litter,2,A,Shrubland,1,NA,N,N,Y,19,NA,NA,NA,A1,A1
+EnvS_T2R2,EnvS_T2R2,,NA,97,Environmental Shrub Litter,Environmental Litter,2,A,Shrubland,2,NA,N,N,Y,20,NA,NA,NA,A2,A2
+EnvS_T2R3,EnvS_T2R3,,NA,174,Environmental Shrub Litter,Environmental Litter,2,B,Shrubland,1,NA,N,N,Y,21,NA,NA,NA,B1,B1
+EnvS_T2R4,EnvS_T2R4,,NA,135,Environmental Shrub Litter,Environmental Litter,2,B,Shrubland,2,NA,N,N,Y,22,NA,NA,NA,B2,B2
+EnvS_T2R5,EnvS_T2R5,,NA,90,Environmental Shrub Litter,Environmental Litter,2,C,Shrubland,1,NA,N,N,Y,23,NA,NA,NA,C1,C1
+EnvS_T2R6,EnvS_T2R6,,NA,147,Environmental Shrub Litter,Environmental Litter,2,C,Shrubland,2,NA,N,N,Y,24,NA,NA,NA,C2,C2
+G_T0R1,G_T0R1,,NA,189,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,7,NA,NA,NA,NA,NA
+G_T0R2,G_T0R2,,NA,112,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,8,NA,NA,NA,NA,NA
+G_T0R3,G_T0R3,,NA,79,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,9,NA,NA,NA,NA,NA
+G_T0R4,G_T0R4,,NA,94,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,10,NA,NA,NA,NA,NA
+G_T0R5,G_T0R5,,NA,152,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,11,NA,NA,NA,NA,NA
+G_T0R6,G_T0R6,,NA,66,Grass Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,12,NA,NA,NA,NA,NA
+S_T0R1,S_T0R1,,NA,72,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,1,NA,NA,NA,NA,NA
+S_T0R2,S_T0R2,,NA,307,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,2,NA,NA,NA,NA,NA
+S_T0R3,S_T0R3,,NA,3,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,3,NA,NA,NA,NA,NA
+S_T0R4,S_T0R4,,NA,25,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,4,NA,NA,NA,NA,NA
+S_T0R5,S_T0R5,,NA,122,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,5,NA,NA,NA,NA,NA
+S_T0R6,S_T0R6,,NA,245,Shrub Litter,Initial Litter,0,NA,NA,NA,NA,N,N,Y,6,NA,NA,NA,NA,NA
+Soil_T2R1,Soil_T2R1,,NA,47,Soil,Soil,2,A,Shrubland,1,NA,N,N,Y,13,NA,NA,NA,NA,NA
+Soil_T2R10,Soil_T2R10,,NA,96,Soil,Soil,2,C,Shrubland,2,NA,N,N,Y,18.4,NA,NA,NA,NA,NA
+Soil_T2R11,Soil_T2R11,,NA,75,Soil,Soil,2,C,Grassland,7,NA,N,N,Y,18.5,NA,NA,NA,NA,NA
+Soil_T2R12,Soil_T2R12,,NA,276,Soil,Soil,2,C,Grassland,8,NA,N,N,Y,18.6,NA,NA,NA,NA,NA
+Soil_T2R2,Soil_T2R2,,NA,303,Soil,Soil,2,A,Shrubland,2,NA,N,N,Y,14,NA,NA,NA,NA,NA
+Soil_T2R3,Soil_T2R3,,NA,162,Soil,Soil,2,A,Grassland,7,NA,N,N,Y,15,NA,NA,NA,NA,NA
+Soil_T2R4,Soil_T2R4,,NA,172,Soil,Soil,2,A,Grassland,8,NA,N,N,Y,16,NA,NA,NA,NA,NA
+Soil_T2R5,Soil_T2R5,,NA,283,Soil,Soil,2,B,Shrubland,1,NA,N,N,Y,17,NA,NA,NA,NA,NA
+Soil_T2R6,Soil_T2R6,,NA,302,Soil,Soil,2,B,Shrubland,2,NA,N,N,Y,18,NA,NA,NA,NA,NA
+Soil_T2R7,Soil_T2R7,,NA,99,Soil,Soil,2,B,Grassland,7,NA,N,N,Y,18.1,NA,NA,NA,NA,NA
+Soil_T2R8,Soil_T2R8,,NA,202,Soil,Soil,2,B,Grassland,8,NA,N,N,Y,18.2,NA,NA,NA,NA,NA
+Soil_T2R9,Soil_T2R9,,NA,205,Soil,Soil,2,C,Shrubland,1,NA,N,N,Y,18.3,NA,NA,NA,NA,NA
+GCT1B3,,Yes,NA,NA,,,NA,,,,NA,,,,109,NA,NA,NA,NA,NA
+LDT1R10,,Yes,NA,NA,,,NA,,,,NA,,,,166,NA,NA,NA,NA,NA
+LDT1R11,,Yes,NA,NA,,,NA,,,,NA,,,,167,NA,NA,NA,NA,NA
+LDT1R12,,Yes,NA,NA,,,NA,,,,NA,,,,168,NA,NA,NA,NA,NA
+GCT2A6,,Yes,NA,NA,,,NA,,,,NA,,,,254,NA,NA,NA,NA,NA
+GCT4C8,,Yes,NA,NA,,,NA,,,,NA,,,,450,NA,NA,NA,NA,NA
+LCT1R5,,Yes,NA,NA,,,NA,,,,NA,,,,155,NA,NA,NA,NA,NA
+LCT1R6,,Yes,NA,NA,,,NA,,,,NA,,,,156,NA,NA,NA,NA,NA
+LCT2R6,,Yes,NA,NA,,,NA,,,,NA,,,,294,NA,NA,NA,NA,NA
+LCT3R5,,Yes,NA,NA,,,NA,,,,NA,,,,341,NA,NA,NA,NA,NA
+LCT3R6,,Yes,NA,NA,,,NA,,,,NA,,,,342,NA,NA,NA,NA,NA
+LCT4R6,,Yes,NA,NA,,,NA,,,,NA,,,,480,NA,NA,NA,NA,NA
+LDT1R9,,Yes,NA,NA,,,NA,,,,NA,,,,165,NA,NA,NA,NA,NA
+LDT2R11,,Yes,NA,NA,,,NA,,,,NA,,,,305,NA,NA,NA,NA,NA
+LDT2R12,,Yes,NA,NA,,,NA,,,,NA,,,,306,NA,NA,NA,NA,NA
+LDT3R10,,Yes,NA,NA,,,NA,,,,NA,,,,352,NA,NA,NA,NA,NA
+LDT3R11,,Yes,NA,NA,,,NA,,,,NA,,,,353,NA,NA,NA,NA,NA
+LDT3R12,,Yes,NA,NA,,,NA,,,,NA,,,,354,NA,NA,NA,NA,NA
+LDT3R9,,Yes,NA,NA,,,NA,,,,NA,,,,351,NA,NA,NA,NA,NA
+LDT4R10,,Yes,NA,NA,,,NA,,,,NA,,,,490,NA,NA,NA,NA,NA
+LDT4R11,,Yes,NA,NA,,,NA,,,,NA,,,,491,NA,NA,NA,NA,NA
+LDT4R12,,Yes,NA,NA,,,NA,,,,NA,,,,492,NA,NA,NA,NA,NA
+NA,LCT1R1,NA,NA,NA,Glass Slide,Closed,1,C,Boundary,B,NA,Y,N,Y,NA,NA,5,CB,NA,NA
+NA,LCT1R2,NA,NA,NA,Glass Slide,Closed,1,B,Boundary,B,NA,Y,N,Y,NA,NA,7,BB,NA,NA
+NA,LCT1R3,NA,NA,NA,Glass Slide,Closed,1,C,Boundary,B,NA,Y,N,Y,NA,NA,16,CB,NA,NA
+NA,LCT1R4,NA,NA,NA,Glass Slide,Closed,1,A,Boundary,B,NA,Y,N,Y,NA,NA,2,AB,NA,NA
+NA,LDT1R7AS,NA,NA,NA,Glass Slide,Death,1,A,Shrubland,3,NA,Y,N,Y,NA,NA,13,A3,NA,NA
+NA,SOT1C5,NA,NA,NA,Shrub Litter,Open,1,C,Grassland,5,NA,N,Y,Y,NA,NA,NA,C5,NA,NA
+NA,LCT2R1,NA,NA,NA,Glass Slide,Closed,2,A,Boundary,B,NA,Y,N,Y,NA,NA,40,NA,AB,AB
+NA,LCT2R2,NA,NA,NA,Glass Slide,Closed,2,B,Boundary,B,NA,Y,N,Y,NA,NA,56,NA,BB,BB
+NA,LCT2R3,NA,NA,NA,Glass Slide,Closed,2,B,Boundary,B,NA,Y,N,Y,NA,NA,53,NA,BB,BB
+NA,LCT2R4,NA,NA,NA,Glass Slide,Closed,2,C,Boundary,B,NA,Y,N,Y,NA,NA,39,NA,CB,CB
+NA,LCT2R5,NA,NA,NA,Glass Slide,Closed,2,A,Boundary,B,NA,Y,N,Y,NA,NA,38,NA,AB,AB
+NA,Soil_T2R1,NA,NA,NA,Soil,Soil,2,A,Shrubland,1,NA,N,N,Y,NA,NA,NA,NA,A1,A1
+NA,Soil_T2R10,NA,NA,NA,Soil,Soil,2,C,Shrubland,2,NA,N,N,Y,NA,NA,NA,NA,C2,C2
+NA,Soil_T2R11,NA,NA,NA,Soil,Soil,2,C,Grassland,7,NA,N,N,Y,NA,NA,NA,NA,C7,C7
+NA,Soil_T2R12,NA,NA,NA,Soil,Soil,2,C,Grassland,8,NA,N,N,Y,NA,NA,NA,NA,C8,C8
+NA,Soil_T2R2,NA,NA,NA,Soil,Soil,2,A,Shrubland,2,NA,N,N,Y,NA,NA,NA,NA,A2,A2
+NA,Soil_T2R3,NA,NA,NA,Soil,Soil,2,A,Grassland,7,NA,N,N,Y,NA,NA,NA,NA,A7,A7
+NA,Soil_T2R4,NA,NA,NA,Soil,Soil,2,A,Grassland,8,NA,N,N,Y,NA,NA,NA,NA,A8,A8
+NA,Soil_T2R5,NA,NA,NA,Soil,Soil,2,B,Shrubland,1,NA,N,N,Y,NA,NA,NA,NA,B1,B1
+NA,Soil_T2R6,NA,NA,NA,Soil,Soil,2,B,Shrubland,2,NA,N,N,Y,NA,NA,NA,NA,B2,B2
+NA,Soil_T2R7,NA,NA,NA,Soil,Soil,2,B,Grassland,7,NA,N,N,Y,NA,NA,NA,NA,B7,B7
+NA,Soil_T2R8,NA,NA,NA,Soil,Soil,2,B,Grassland,8,NA,N,N,Y,NA,NA,NA,NA,B8,B8
+NA,Soil_T2R9,NA,NA,NA,Soil,Soil,2,C,Shrubland,1,NA,N,N,Y,NA,NA,NA,NA,C1,C1
+NA,LOT3A4,NA,NA,NA,Glass Slide,Open,3,A,Shrubland,4,NA,Y,N,Y,NA,NA,86,NA,A4,A4
+NA,LCT3R4,NA,NA,NA,Glass Slide,Closed,3,A,Boundary,B,NA,Y,N,Y,NA,NA,96,NA,AB,AB
+NA,LCT3R2,NA,NA,NA,Glass Slide,Closed,3,B,Boundary,B,NA,Y,N,Y,NA,NA,93,NA,BB,BB
+NA,LCT3R1,NA,NA,NA,Glass Slide,Closed,3,C,Boundary,B,NA,Y,N,Y,NA,NA,84,NA,CB,CB
+NA,LCT3R3,NA,NA,NA,Glass Slide,Closed,3,C,Boundary,B,NA,Y,N,Y,NA,NA,104,NA,CB,CB
+NA,AirT4R10,NA,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,NA,NA,NA,NA,TowerTower,TowerTower
+NA,AirT4R11,NA,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,NA,NA,NA,NA,TowerTower,TowerTower
+NA,AirT4R3,NA,NA,NA,Glass Slide,Air,4,Tower,Tower,Tower,NA,N,N,Y,NA,NA,NA,NA,TowerTower,TowerTower
+NA,LCT4R1,NA,NA,NA,Glass Slide,Closed,4,A,Boundary,B,NA,Y,N,Y,NA,NA,145,NA,AB,AB
+NA,LCT4R2,NA,NA,NA,Glass Slide,Closed,4,C,Boundary,B,NA,Y,N,Y,NA,NA,123,NA,CB,CB
+NA,LCT4R3,NA,NA,NA,Glass Slide,Closed,4,A,Boundary,B,NA,Y,N,Y,NA,NA,141,NA,AB,AB
+NA,LCT4R4,NA,NA,NA,Glass Slide,Closed,4,B,Boundary,B,NA,Y,N,Y,NA,NA,139,NA,BB,BB
+NA,LCT4R5,NA,NA,NA,Glass Slide,Closed,4,B,Boundary,B,NA,Y,N,Y,NA,NA,133,NA,BB,BB
+NA,SOT4C5,NA,NA,NA,Shrub Litter,Open,4,C,Grassland,5,NA,N,Y,Y,NA,NA,NA,NA,C5,C5
