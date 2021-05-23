@@ -44,5 +44,8 @@ vignettes/*.pdf
 #LibreOffice
 .~lock
 
+#DS_Store
+.DS_Store
+
 #SourceTracker's bajillion file output
 01_Raw_data/03_Microbial_Community_Composition/glass_slides__16S/source_tracker_contamination/
