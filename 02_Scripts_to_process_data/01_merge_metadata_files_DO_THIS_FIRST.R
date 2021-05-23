@@ -7,12 +7,14 @@ require(tidyverse)
 require(data.table)
 
 # Set up where we are pulling data from
-input.data <- "01_Raw_data/01_metadata_files/01_Primary_Metadata - Sheet1.csv"
-out.data <- "/03_Processed_data/metadata_cleaned.csv"
-out.rda <- "/03_Processed_data/metadata_cleaned.rda"
+setwd("01_Raw_data/01_metadata_files/")
+
+input.data <- "01_Primary_Metadata - Sheet1.csv"
+out.data <- "../../03_Processed_data/metadata_cleaned.csv"
+out.rda <- "../../03_Processed_data/metadata_cleaned.rda"
 
 # Read in the metadata for each timepoint, bind together, and clean up a bit
-files <- list.files("01_Raw_data/01_metadata_files/", pattern = "02_T.*csv")
+files <- list.files(".", pattern = "02_T.*csv")
 timepoints <- map_dfr(files, fread) %>%  # read in and bind together
   select(-c(`Collected?`, V14)) %>% # clean up unneeded columns
   rename(`Random_#_FLow_Cytometry` = `Random_#`) # rename column to be more specific
@@ -26,7 +28,6 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
 
 metadata.together <- fread(input.data) %>% # reading in data
   full_join(timepoints) %>% # merging the two metadata files
-  select(-c(`Random_#`)) %>% 
   mutate_cond(grepl("^[SG]_", New_Sample_ID), 
               Treatment = "Initial Litter",
               Transect = NA, 
@@ -35,7 +36,10 @@ metadata.together <- fread(input.data) %>% # reading in data
   mutate_cond(grepl("Soil", New_Sample_ID), 
               Treatment = "Soil") %>% # filling in metadata for soil samples
   mutate_cond(grepl("^Env[GS]", New_Sample_ID), 
-              Treatment = "Environmental Litter") # filling in metadata for environmental litter
+              Treatment = "Environmental Litter") %>% # filling in metadata for environmental litter
+  mutate(Notes = ifelse(`Random_#_Extractions_Tubes` == "135", "Is actually two samples (135 + 127) combined", Notes)) %>% 
+  mutate(Notes = ifelse(`Random_#_Extractions_Tubes` == "21", "Might be sample 21 + the positive PCR control?", Notes)) 
+
 
 # Write out the ONE metadata table (*chorus chimes*)
 write_csv(metadata.together, out.data)
