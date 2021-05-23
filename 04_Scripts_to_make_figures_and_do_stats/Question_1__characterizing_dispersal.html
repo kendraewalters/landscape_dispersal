@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-05-17" />
+<meta name="date" content="2021-05-23" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-05-17</h4>
+<h4 class="date">2021-05-23</h4>
 
 </div>
 
@@ -269,21 +269,26 @@ td, th { padding : 6px }
 <h1>Purpose</h1>
 <p>To answer our first overarching question for the landscape dispersal project: Is the rate and composition of microbial dispersal into the soil surface spatially heterogeneous?</p>
 <p>Because vegetation appears to be a primary route through which bacteria disperse, we hypothesized that the taxa dispersing and their dispersal rate onto the soil surface will differ between two ecosystems. In fact, we know that bacterial abundance and composition in one grassland and CSS plant litter differs.</p>
-<pre class="r"><code>library(tidyverse)
+<pre class="r"><code>library(knitr)
+library(tidyverse)
 library(data.table)
-library(knitr)
 library(kableExtra)
 require(ggplot2)
 require(gridExtra)
+library(car)
+require(vegan)
 
-knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;../05_output_figures/&quot;)</code></pre>
+knitr::opts_knit$set(root.dir = &quot;../&quot;)
+
+knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;05_output_figures/&quot;)</code></pre>
 </div>
 <div id="abundance-on-glass-slides" class="section level1">
 <h1>Abundance on glass slides</h1>
 <p>First, we’ll look at the abundances on the glass slides over time to see if they are acculumulating or at equilibrium.</p>
 <pre class="r"><code># Load the data
-flow.data &lt;- load(&quot;../03_Processed_data/flow_cytometry_cleaned.rda&quot;)
-metadata &lt;- load(&quot;../03_Processed_data/metadata_cleaned.rda&quot;)
+message(getwd())
+flow.data &lt;- load(&quot;03_Processed_data/flow_cytometry_cleaned.rda&quot;)
+metadata &lt;- load(&quot;03_Processed_data/metadata_cleaned.rda&quot;)
 
 
 # Left join fights me unless both columns are the same data type
@@ -309,7 +314,7 @@ cell.counts.use &lt;- cleaned.cell.counts %&gt;% left_join(metadata.together) %&
 ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;)) +
   geom_boxplot(aes(x = as.factor(Time_Point), y = number_cells_on_glass_slide_cleaned)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
-<p><img src="../05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
+<p><img src="05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
 </div>
 <div id="immigration-rate-calculations-assuming-population-growth" class="section level1">
 <h1>Immigration rate calculations assuming population growth</h1>
@@ -324,7 +329,7 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;
   geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / d) * (1 - exp(-d * x))&quot;, se=F, 
               method.args = list(start=c(Im=2e5, d=0.034))) +
   facet_wrap(vars(Ecosystem)) </code></pre>
-<p><img src="../05_output_figures/scatterplot_abundance_glass_slides_by_ecosystem-1.png" width="672" /></p>
+<p><img src="05_output_figures/scatterplot_abundance_glass_slides_by_ecosystem-1.png" width="672" /></p>
 <pre class="r"><code># Separate into our two ecosystems
 grass.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Grassland&quot;)
 shrub.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Shrubland&quot;)
@@ -369,9 +374,9 @@ Achieved convergence tolerance: 8.027e-06</code></pre>
 intercept.grass &lt;- grass.cells %&gt;% 
   filter(Treatment == &quot;Death&quot;, 
          Time_as_days == 0) %&gt;% 
-  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned)))
+  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned))) %&gt;% pull(mean)
 
-r.grass &lt;- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.grass[[1]]) ~ Time_as_days + 0, 
+r.grass &lt;- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.grass) ~ Time_as_days + 0, 
                grass.cells %&gt;% filter(Treatment == &quot;Death&quot;)) %&gt;% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
 print(paste0(&quot;Continuous death rate for grassland cells is &quot;, round(r.grass, 4), &quot;.&quot;))</code></pre>
 <pre><code>[1] &quot;Continuous death rate for grassland cells is 0.0311.&quot;</code></pre>
@@ -379,14 +384,14 @@ print(paste0(&quot;Continuous death rate for grassland cells is &quot;, round(r.
 intercept.shrub &lt;- shrub.cells %&gt;% 
   filter(Treatment == &quot;Death&quot;, 
          Time_as_days == 0) %&gt;% 
-  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned)))
+  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned))) %&gt;% pull(mean)
 
-r.shrub &lt;- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.shrub[[1]]) ~ Time_as_days + 0, 
+r.shrub &lt;- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.shrub) ~ Time_as_days + 0, 
                shrub.cells %&gt;% filter(Treatment == &quot;Death&quot;)) %&gt;% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
 print(paste0(&quot;Continuous death rate for shrubland cells is &quot;, round(r.shrub, 4), &quot;.&quot;))</code></pre>
 <pre><code>[1] &quot;Continuous death rate for shrubland cells is 0.0237.&quot;</code></pre>
 <pre class="r"><code># creating a mini data frame to give our parameters for the linear models (since we are picky about our intercepts here)
-lm.parameters.death &lt;- data.frame(&quot;Intercept&quot; = c(intercept.grass[[1]], intercept.shrub[[1]]), 
+lm.parameters.death &lt;- data.frame(&quot;Intercept&quot; = c(intercept.grass, intercept.shrub), 
                                   &quot;Slope&quot; = c(r.grass[[1]], r.shrub[[1]]), 
                                   &quot;Ecosystem&quot; = c(&quot;Grassland&quot;, &quot;Shrubland&quot;))
 
@@ -398,7 +403,7 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt
   geom_point() + 
   geom_abline(data = lm.parameters.death, aes(intercept = Intercept, slope = -Slope)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
-<p><img src="../05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
+<p><img src="05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
 <p>Sweet! Now we can use these death rates to input into our model so we are only asking it to find the estimate for the immigration rate. Note how much smaller the standard errors are for these immigration rates!</p>
 <pre class="r"><code># Calculating the death rate and immigration rate coefficients WITH measured death rates
 (nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  
@@ -455,7 +460,7 @@ B &lt;- ggplot(data = shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;) %
   ggtitle(&quot;Shrubland&quot;)
 
 grid.arrange(A,B, nrow = 1)</code></pre>
-<p><img src="../05_output_figures/scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem-1.png" width="672" /></p>
+<p><img src="05_output_figures/scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem-1.png" width="672" /></p>
 </div>
 <div id="immigration-rate-calculations-assuming-equilibrium" class="section level1">
 <h1>Immigration rate calculations assuming equilibrium</h1>
@@ -472,6 +477,239 @@ imm.shrub &lt;- shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;, Time_Po
 
 print(paste0(&quot;The immigration rate for the shrubland is &quot;, imm.shrub, &quot; cells / day.&quot;))</code></pre>
 <pre><code>[1] &quot;The immigration rate for the shrubland is 10861.2794380827 cells / day.&quot;</code></pre>
+</div>
+<div id="death-rates-by-ecosystem" class="section level1">
+<h1>Death rates by ecosystem</h1>
+<p>One potentially interesting question is if death rates (for bacteria) differ by ecosystem. We can answer this question by running an ANCOVA on the abundance in the death slides, to see if there is an interaction between time and ecosystem.</p>
+<pre class="r"><code>cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt;% 
+  mutate(log_abundance_minus_intercept = ifelse(Ecosystem == &quot;Shrubland&quot;, 
+                                            log(number_cells_on_glass_slide_cleaned) - intercept.shrub, 
+                              ifelse(Ecosystem == &quot;Grassland&quot;, 
+                                     log(number_cells_on_glass_slide_cleaned) - intercept.grass, NA))) %&gt;% 
+  lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + Time_as_days + 0, data = .) %&gt;% # independent of order
+  Anova(type = &quot;II&quot;)</code></pre>
+<pre><code>Anova Table (Type II tests)
+
+Response: log_abundance_minus_intercept
+                       Sum Sq Df  F value  Pr(&gt;F)    
+Time_as_days           35.838  1 211.8550 &lt; 2e-16 ***
+Time_as_days:Ecosystem  0.654  1   3.8689 0.05566 .  
+Residuals               7.274 43                     
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt;% 
+  mutate(log_abundance_minus_intercept = ifelse(Ecosystem == &quot;Shrubland&quot;, 
+                                            log(number_cells_on_glass_slide_cleaned) - intercept.shrub, 
+                              ifelse(Ecosystem == &quot;Grassland&quot;, 
+                                     log(number_cells_on_glass_slide_cleaned) - intercept.grass, NA))) %&gt;% 
+  lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + 0, data = .) %&gt;% # independent of order
+  Anova(type = &quot;II&quot;)</code></pre>
+<pre><code>Anova Table (Type II tests)
+
+Response: log_abundance_minus_intercept
+                       Sum Sq Df F value    Pr(&gt;F)    
+Time_as_days:Ecosystem 36.492  2  107.86 &lt; 2.2e-16 ***
+Residuals               7.274 43                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="taxa-dying-at-different-rates" class="section level1">
+<h1>Taxa dying at different rates?</h1>
+<p>Another potentially interesting question is if taxa on the death rate slides die at different rates. We can answer this question by running PERMANOVA on the death rate samples to see if time influences either 16S or ITS composition.</p>
+<pre class="r"><code># Load data
+glass.slides.16S &lt;- &quot;03_Processed_data/16S_glass_slides.rda&quot;
+load(glass.slides.16S)
+
+# Create our visualization, just for fun
+q1.NMDS1 &lt;- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2)</code></pre>
+<pre><code>Run 0 stress 0.184611 
+Run 1 stress 0.1840205 
+... New best solution
+... Procrustes: rmse 0.01815191  max resid 0.1775647 
+Run 2 stress 0.1954214 
+Run 3 stress 0.1911713 
+Run 4 stress 0.1967837 
+Run 5 stress 0.1918709 
+Run 6 stress 0.2013347 
+Run 7 stress 0.1968445 
+Run 8 stress 0.1988129 
+Run 9 stress 0.1870468 
+Run 10 stress 0.1892339 
+Run 11 stress 0.1935835 
+Run 12 stress 0.1896745 
+Run 13 stress 0.2023892 
+Run 14 stress 0.1878936 
+Run 15 stress 0.190776 
+Run 16 stress 0.1957297 
+Run 17 stress 0.1910222 
+Run 18 stress 0.1865509 
+Run 19 stress 0.1854668 
+Run 20 stress 0.1963026 
+*** No convergence -- monoMDS stopping criteria:
+    19: stress ratio &gt; sratmax
+     1: scale factor of the gradient &lt; sfgrmin</code></pre>
+<pre class="r"><code>q1.NMDS1.meta &lt;- data.frame(q1.NMDS1$points[,1:2]) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
+  mutate(TimePoint = str_match(SampleID, &quot;T([0-4])&quot;)[,2]) %&gt;% 
+  mutate(Ecosystem = str_match(SampleID, &quot;R[0-9][A-C]?([GS])&quot;)[,2], 
+         Ecosystem = ifelse(Ecosystem == &quot;G&quot;, &quot;Grassland&quot;, &quot;Shrubland&quot;)) %&gt;% 
+  filter(!(SampleID == &quot;LDT0R5G_oops&quot;))
+
+ggplot(data = q1.NMDS1.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+<p><img src="05_output_figures/NMDS_taxa_specific_death_rates_bacteria-1.png" width="672" /></p>
+<pre class="r"><code># Do the PERMANOVA that will test our hypothesis
+q1.bray.dist.df.death &lt;- as.data.frame(as.matrix(q1.bray.dist)) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
+  filter(!(SampleID == &quot;LDT0R5G_oops&quot;)) %&gt;% 
+  mutate(SampleID = str_remove(SampleID, &quot;_dup_new_protocol&quot;)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;) %&gt;% 
+  select(starts_with(&quot;LD&quot;)) %&gt;%
+  select(!(&quot;LDT0R5G_oops&quot;)) %&gt;% 
+  rename(LDT1R5BG = LDT1R5BG_dup_new_protocol)
+
+      
+adonis(q1.bray.dist.df.death ~ TimePoint, permutations = 10000, 
+       data = q1.NMDS1.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.bray.dist.df.death ~ TimePoint, data = q1.NMDS1.meta,      permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+          Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
+TimePoint  4    2.3570 0.58925  2.1924 0.42223  2e-04 ***
+Residuals 12    3.2252 0.26877         0.57777           
+Total     16    5.5822                 1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.NMDS1.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem),      data = q1.NMDS1.meta, permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+                               Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
+TimePoint                       4    2.3570 0.58925  3.3242 0.42223 9.999e-05
+as.factor(Ecosystem)            1    0.8914 0.89136  5.0285 0.15968 9.999e-05
+TimePoint:as.factor(Ecosystem)  1    0.5613 0.56128  3.1664 0.10055 9.999e-05
+Residuals                      10    1.7726 0.17726         0.31754          
+Total                          16    5.5822                 1.00000          
+                                  
+TimePoint                      ***
+as.factor(Ecosystem)           ***
+TimePoint:as.factor(Ecosystem) ***
+Residuals                         
+Total                             
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># Load data
+glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
+load(glass.slides.ITS)
+
+# Create our visualization, just for fun
+q1.ITS.NMDS1 &lt;- metaMDS(q1.ITS.bray.dist, autotransform = FALSE, k = 2, trymax = 200)</code></pre>
+<pre><code>Run 0 stress 0.1686672 
+Run 1 stress 0.1748943 
+Run 2 stress 0.1998142 
+Run 3 stress 0.1733684 
+Run 4 stress 0.1733534 
+Run 5 stress 0.1741142 
+Run 6 stress 0.176396 
+Run 7 stress 0.1706314 
+Run 8 stress 0.2093767 
+Run 9 stress 0.1757716 
+Run 10 stress 0.177819 
+Run 11 stress 0.1707782 
+Run 12 stress 0.1731314 
+Run 13 stress 0.1758703 
+Run 14 stress 0.4136501 
+Run 15 stress 0.1706246 
+Run 16 stress 0.2044783 
+Run 17 stress 0.1772174 
+Run 18 stress 0.1768273 
+Run 19 stress 0.1686674 
+... Procrustes: rmse 0.0004288042  max resid 0.004413662 
+... Similar to previous best
+Run 20 stress 0.1742231 
+*** Solution reached</code></pre>
+<pre class="r"><code>q1.ITS.NMDS1.meta &lt;- data.frame(q1.ITS.NMDS1$points[,1:2]) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
+  mutate(TimePoint = str_match(SampleID, &quot;T([0-4])&quot;)[,2]) %&gt;% 
+  mutate(Ecosystem = str_match(SampleID, &quot;R[0-9][A-C]?([GS])&quot;)[,2], 
+         Ecosystem = ifelse(Ecosystem == &quot;G&quot;, &quot;Grassland&quot;, &quot;Shrubland&quot;)) %&gt;% 
+  filter(!(SampleID == &quot;LDT0R5G_oops&quot;))
+
+ggplot(data = q1.ITS.NMDS1.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+<p><img src="05_output_figures/NMDS_taxa_specific_death_rates_fungi-1.png" width="672" /></p>
+<pre class="r"><code># Do the PERMANOVA that will test our hypothesis
+q1.bray.dist.df.death &lt;- q1.ITS.bray.dist.df %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;) %&gt;% 
+  select(starts_with(&quot;LD&quot;))
+
+
+adonis(q1.bray.dist.df.death ~ TimePoint, permutations = 10000, 
+       data = q1.ITS.NMDS1.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.bray.dist.df.death ~ TimePoint, data = q1.ITS.NMDS1.meta,      permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+          Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)
+TimePoint  2    0.5367 0.26835  1.1419 0.17192 0.2544
+Residuals 11    2.5851 0.23501         0.82808       
+Total     13    3.1218                 1.00000       </code></pre>
+<pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.ITS.NMDS1.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem),      data = q1.ITS.NMDS1.meta, permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+                               Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
+TimePoint                       2   0.53670 0.26835  2.1840 0.17192    0.0177
+as.factor(Ecosystem)            1   1.27000 1.27000 10.3360 0.40682 9.999e-05
+TimePoint:as.factor(Ecosystem)  1   0.20922 0.20922  1.7027 0.06702    0.1081
+Residuals                       9   1.10584 0.12287         0.35424          
+Total                          13   3.12176                 1.00000          
+                                  
+TimePoint                      *  
+as.factor(Ecosystem)           ***
+TimePoint:as.factor(Ecosystem)    
+Residuals                         
+Total                             
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="dispersal-communities-by-ecosystem" class="section level1">
+<h1>Dispersal communities by ecosystem</h1>
+<p>A key question of this study is - Do different ecosystems (plant communities) have different dispersal communities? To answer this question, we will use a PERMANOVA to see if different ecosystems show different bacterial and fungal communities on the glass slides.</p>
 </div>
 
 

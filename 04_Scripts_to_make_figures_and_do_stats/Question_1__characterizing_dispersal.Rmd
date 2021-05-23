@@ -26,17 +26,20 @@ Because vegetation appears to be a primary route through which bacteria disperse
 
 
 ```{r setup, message=FALSE}
+library(knitr)
 library(tidyverse)
 library(data.table)
-library(knitr)
 library(kableExtra)
 require(ggplot2)
 require(gridExtra)
 library(car)
 require(vegan)
 
+knitr::opts_knit$set(root.dir = "../")
 
-knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "/05_output_figures/")
+knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "05_output_figures/")
+
+
 ```
 
 # Abundance on glass slides
@@ -45,6 +48,7 @@ First, we'll look at the abundances on the glass slides over time to see if they
 
 ```{r boxplot_glass_slide_abundance_by_ecosystem}
 # Load the data
+message(getwd())
 flow.data <- load("03_Processed_data/flow_cytometry_cleaned.rda")
 metadata <- load("03_Processed_data/metadata_cleaned.rda")
 
@@ -206,7 +210,7 @@ print(paste0("The immigration rate for the shrubland is ", imm.shrub, " cells / 
 
 
 # Death rates by ecosystem
-One potentially interesting question is if death rates differ by ecosystem. We can answer this question by running an ANCOVA on the abundance in the death slides, to see if there is an interaction between time and ecosystem. 
+One potentially interesting question is if death rates (for bacteria) differ by ecosystem. We can answer this question by running an ANCOVA on the abundance in the death slides, to see if there is an interaction between time and ecosystem. 
 ```{r death_rates_by_ecosystem}
 cell.counts.use %>% filter(Treatment == "Death") %>% 
   mutate(log_abundance_minus_intercept = ifelse(Ecosystem == "Shrubland", 
@@ -234,7 +238,7 @@ load(glass.slides.16S)
 
 # Create our visualization, just for fun
 q1.NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2)
-q1.NMDS1.meta <- data.frame(NMDS1$points[,1:2]) %>% 
+q1.NMDS1.meta <- data.frame(q1.NMDS1$points[,1:2]) %>% 
   rownames_to_column("SampleID") %>% 
   filter(grepl("LD", SampleID)) %>% 
   mutate(TimePoint = str_match(SampleID, "T([0-4])")[,2]) %>% 
@@ -268,25 +272,39 @@ adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 
 
 
 ```{r NMDS_taxa_specific_death_rates_fungi}
-
-print("I haven't cleaned the data yet so fungal analyses are yet to come. :/")
-
 # Load data
-# glass.slides.16S <- "../../../03_Processed_data/16S_glass_slides.rda"
-# load(glass.slides.16S)
-# 
-# NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2) %>% data.frame(NMDS1$points[,1:2]) %>% 
-#   left_join(metadata.together) %>% 
-#   ggplot(data = .) +
-#   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint)), size = 4) + 
-#   theme_classic() +
-#   scale_color_brewer(palette = "Set1") 
-# 
-# adonis(q1.bray.dist.df ~ TimePoint, permutations = 10000, 
-#        data = metadata.together, na.rm= TRUE)
-# 
-# adonis(q1.bray.dist.df ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
-#        data = metadata.together, na.rm= TRUE)
+glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
+load(glass.slides.ITS)
+
+# Create our visualization, just for fun
+q1.ITS.NMDS1 <- metaMDS(q1.ITS.bray.dist, autotransform = FALSE, k = 2, trymax = 200)
+q1.ITS.NMDS1.meta <- data.frame(q1.ITS.NMDS1$points[,1:2]) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LD", SampleID)) %>% 
+  mutate(TimePoint = str_match(SampleID, "T([0-4])")[,2]) %>% 
+  mutate(Ecosystem = str_match(SampleID, "R[0-9][A-C]?([GS])")[,2], 
+         Ecosystem = ifelse(Ecosystem == "G", "Grassland", "Shrubland")) %>% 
+  filter(!(SampleID == "LDT0R5G_oops"))
+
+ggplot(data = q1.ITS.NMDS1.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") 
+
+# Do the PERMANOVA that will test our hypothesis
+q1.bray.dist.df.death <- q1.ITS.bray.dist.df %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LD", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  select(starts_with("LD"))
+
+
+adonis(q1.bray.dist.df.death ~ TimePoint, permutations = 10000, 
+       data = q1.ITS.NMDS1.meta, na.rm= TRUE)
+
+adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.ITS.NMDS1.meta, na.rm= TRUE)
+
 ```
 
 
