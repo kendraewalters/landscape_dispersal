@@ -46,7 +46,7 @@ vignettes/*.pdf
 
 #DS_Store
 .DS_Store
-*/.DS_Store
+*.DS_Store
 
 
 #SourceTracker's bajillion file output
