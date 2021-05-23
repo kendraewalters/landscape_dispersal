@@ -33,9 +33,10 @@ library(kableExtra)
 require(ggplot2)
 require(gridExtra)
 library(car)
+require(vegan)
 
 
-knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "../05_output_figures/")
+knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "/05_output_figures/")
 ```
 
 # Abundance on glass slides
@@ -44,8 +45,8 @@ First, we'll look at the abundances on the glass slides over time to see if they
 
 ```{r boxplot_glass_slide_abundance_by_ecosystem}
 # Load the data
-flow.data <- load("../03_Processed_data/flow_cytometry_cleaned.rda")
-metadata <- load("../03_Processed_data/metadata_cleaned.rda")
+flow.data <- load("03_Processed_data/flow_cytometry_cleaned.rda")
+metadata <- load("03_Processed_data/metadata_cleaned.rda")
 
 
 # Left join fights me unless both columns are the same data type
@@ -116,9 +117,9 @@ But we don't actually need to have the model guess what the death rate is becaus
 intercept.grass <- grass.cells %>% 
   filter(Treatment == "Death", 
          Time_as_days == 0) %>% 
-  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned)))
+  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned))) %>% pull(mean)
 
-r.grass <- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.grass[[1]]) ~ Time_as_days + 0, 
+r.grass <- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.grass) ~ Time_as_days + 0, 
                grass.cells %>% filter(Treatment == "Death")) %>% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
 print(paste0("Continuous death rate for grassland cells is ", round(r.grass, 4), "."))
   
@@ -127,15 +128,15 @@ print(paste0("Continuous death rate for grassland cells is ", round(r.grass, 4),
 intercept.shrub <- shrub.cells %>% 
   filter(Treatment == "Death", 
          Time_as_days == 0) %>% 
-  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned)))
+  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned))) %>% pull(mean)
 
-r.shrub <- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.shrub[[1]]) ~ Time_as_days + 0, 
+r.shrub <- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.shrub) ~ Time_as_days + 0, 
                shrub.cells %>% filter(Treatment == "Death")) %>% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
 print(paste0("Continuous death rate for shrubland cells is ", round(r.shrub, 4), "."))
 
 
 # creating a mini data frame to give our parameters for the linear models (since we are picky about our intercepts here)
-lm.parameters.death <- data.frame("Intercept" = c(intercept.grass[[1]], intercept.shrub[[1]]), 
+lm.parameters.death <- data.frame("Intercept" = c(intercept.grass, intercept.shrub), 
                                   "Slope" = c(r.grass[[1]], r.shrub[[1]]), 
                                   "Ecosystem" = c("Grassland", "Shrubland"))
 
@@ -208,36 +209,61 @@ print(paste0("The immigration rate for the shrubland is ", imm.shrub, " cells / 
 One potentially interesting question is if death rates differ by ecosystem. We can answer this question by running an ANCOVA on the abundance in the death slides, to see if there is an interaction between time and ecosystem. 
 ```{r death_rates_by_ecosystem}
 cell.counts.use %>% filter(Treatment == "Death") %>% 
-  mutate([SOMETHING] = ifelse([SOMETHING] == "Shrub", [SOMETHING] - intercept.shrub, 
-                              ifelse([SOMETHING] == "Grass", [SOMETHING] - intercept.grass, "WHOOPS"))) %>% 
-  lm(formula = I(log10(Abundance)) ~ Time_as_days:Treatment + Time_as_days + 0, data = .), type = "II") %>% # independent of order
-  Anova
+  mutate(log_abundance_minus_intercept = ifelse(Ecosystem == "Shrubland", 
+                                            log(number_cells_on_glass_slide_cleaned) - intercept.shrub, 
+                              ifelse(Ecosystem == "Grassland", 
+                                     log(number_cells_on_glass_slide_cleaned) - intercept.grass, NA))) %>% 
+  lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + Time_as_days + 0, data = .) %>% # independent of order
+  Anova(type = "II")
   
-intercept.table <- mean(log10(big[big$Time_as_days == 0, ]$Abundance)) # intercept.table and intercept.ground are the same
-Anova(lm(formula = I(log10(Abundance)-intercept.table) ~ Time_as_days:Treatment + Time_as_days + 0, data = big), type = "II") # independent of order  
+cell.counts.use %>% filter(Treatment == "Death") %>% 
+  mutate(log_abundance_minus_intercept = ifelse(Ecosystem == "Shrubland", 
+                                            log(number_cells_on_glass_slide_cleaned) - intercept.shrub, 
+                              ifelse(Ecosystem == "Grassland", 
+                                     log(number_cells_on_glass_slide_cleaned) - intercept.grass, NA))) %>% 
+  lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + 0, data = .) %>% # independent of order
+  Anova(type = "II")
 ```
 
 # Taxa dying at different rates? 
 Another potentially interesting question is if taxa on the death rate slides die at different rates. We can answer this question by running PERMANOVA on the death rate samples to see if time influences either 16S or ITS composition. 
 ```{r NMDS_taxa_specific_death_rates_bacteria}
 # Load data
-glass.slides.16S <- "../../../03_Processed_data/16S_glass_slides.rda"
+glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
 load(glass.slides.16S)
 
 # Create our visualization, just for fun
-NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2) %>% data.frame(NMDS1$points[,1:2]) %>% 
-  left_join(metadata.together) %>% 
-  ggplot(data = .) +
-  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint)), size = 4) + 
+q1.NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2)
+q1.NMDS1.meta <- data.frame(NMDS1$points[,1:2]) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LD", SampleID)) %>% 
+  mutate(TimePoint = str_match(SampleID, "T([0-4])")[,2]) %>% 
+  mutate(Ecosystem = str_match(SampleID, "R[0-9][A-C]?([GS])")[,2], 
+         Ecosystem = ifelse(Ecosystem == "G", "Grassland", "Shrubland")) %>% 
+  filter(!(SampleID == "LDT0R5G_oops"))
+
+ggplot(data = q1.NMDS1.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = "Set1") 
 
 # Do the PERMANOVA that will test our hypothesis
-adonis(q1.bray.dist.df ~ TimePoint, permutations = 10000, 
-       data = metadata.together, na.rm= TRUE)
+q1.bray.dist.df.death <- as.data.frame(as.matrix(q1.bray.dist)) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LD", SampleID)) %>% 
+  filter(!(SampleID == "LDT0R5G_oops")) %>% 
+  mutate(SampleID = str_remove(SampleID, "_dup_new_protocol")) %>% 
+  column_to_rownames("SampleID") %>% 
+  select(starts_with("LD")) %>%
+  select(!("LDT0R5G_oops")) %>% 
+  rename(LDT1R5BG = LDT1R5BG_dup_new_protocol)
 
-adonis(q1.bray.dist.df ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
-       data = metadata.together, na.rm= TRUE)
+      
+adonis(q1.bray.dist.df.death ~ TimePoint, permutations = 10000, 
+       data = q1.NMDS1.meta, na.rm= TRUE)
+
+adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.NMDS1.meta, na.rm= TRUE)
 ```
 
 

@@ -185,8 +185,6 @@ ggplot(data = not.death.and.not.env) +
   scale_color_brewer(palette = "Set1") 
 
 
-Jim 760-898-3593
-
 #Time to make a new plot colored with metadata.
 cols <- c("Timepoint 1"="red3",  "Timepoint 2"="darkorange2",  "Timepoint 3"= "gold", "Timepoint 4" = "green4", "Timepoint 5" = "mediumblue")
 
