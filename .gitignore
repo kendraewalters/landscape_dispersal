@@ -47,8 +47,8 @@ vignettes/*.pdf
 #DS_Store
 .DS_Store
 
-
 #SourceTracker's bajillion file output
 01_Raw_data/03_Microbial_Community_Composition/glass_slides__16S/source_tracker_contamination/[^AELS]*
 01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/source_tracker_contamination/[^AELS]*
 03_Processed_data/16S_glass_slide__dispersal_source_tracker/[^AELS]*
+03_Processed_data/ITS_glass_slide__dispersal_source_tracker/[^AELS]*
