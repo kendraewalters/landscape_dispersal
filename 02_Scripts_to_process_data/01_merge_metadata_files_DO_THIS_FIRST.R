@@ -38,7 +38,17 @@ metadata.together <- fread(input.data) %>% # reading in data
   mutate_cond(grepl("^Env[GS]", New_Sample_ID), 
               Treatment = "Environmental Litter") %>% # filling in metadata for environmental litter
   mutate(Notes = ifelse(`Random_#_Extractions_Tubes` == "135", "Is actually two samples (135 + 127) combined", Notes)) %>% 
-  mutate(Notes = ifelse(`Random_#_Extractions_Tubes` == "21", "Might be sample 21 + the positive PCR control?", Notes)) 
+  mutate(Notes = ifelse(`Random_#_Extractions_Tubes` == "21", "Might be sample 21 + the positive PCR control?", Notes)) %>% 
+  select(!c(Transect_Loc ,Transect_Loc...8, Transect_Loc...2, `Random_#_FLow_Cytometry`)) %>% 
+  mutate(Transect_Loc = paste0(Transect, Location)) %>% 
+  filter(!(is.na(Old_Sample_ID))) %>% 
+  rename(`Random_#_Flow_Cytometry` = `Random_#_Flow`)
+
+# to fix
+# fix duplicated samples, pay attention to which one has the right timepoint (which may NOT match sampleID)
+
+
+  #filter(!(New_Sample_ID == "LOT3A4" & is.na(Old_Sample_ID))) %>% View
 
 
 # Write out the ONE metadata table (*chorus chimes*)
