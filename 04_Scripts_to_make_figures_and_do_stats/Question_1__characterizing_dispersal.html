@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-05-23" />
+<meta name="date" content="2021-05-24" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-05-23</h4>
+<h4 class="date">2021-05-24</h4>
 
 </div>
 
@@ -282,7 +282,7 @@ require(pairwiseAdonis)
 
 knitr::opts_knit$set(root.dir = &quot;../&quot;)
 
-knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;05_output_figures/&quot;)</code></pre>
+knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;../05_output_figures/&quot;)</code></pre>
 </div>
 <div id="abundance-on-glass-slides" class="section level1">
 <h1>Abundance on glass slides</h1>
@@ -316,7 +316,7 @@ cell.counts.use &lt;- cleaned.cell.counts %&gt;% left_join(metadata.together) %&
 ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;)) +
   geom_boxplot(aes(x = as.factor(Time_Point), y = number_cells_on_glass_slide_cleaned)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
-<p><img src="05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
+<p><img src="../05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
 </div>
 <div id="immigration-rate-calculations-assuming-population-growth" class="section level1">
 <h1>Immigration rate calculations assuming population growth</h1>
@@ -331,7 +331,7 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;
   geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / d) * (1 - exp(-d * x))&quot;, se=F, 
               method.args = list(start=c(Im=2e5, d=0.034))) +
   facet_wrap(vars(Ecosystem)) </code></pre>
-<p><img src="05_output_figures/scatterplot_abundance_glass_slides_by_ecosystem-1.png" width="672" /></p>
+<p><img src="../05_output_figures/scatterplot_abundance_glass_slides_by_ecosystem-1.png" width="672" /></p>
 <pre class="r"><code># Separate into our two ecosystems
 grass.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Grassland&quot;)
 shrub.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Shrubland&quot;)
@@ -405,7 +405,7 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt
   geom_point() + 
   geom_abline(data = lm.parameters.death, aes(intercept = Intercept, slope = -Slope)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
-<p><img src="05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
+<p><img src="../05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
 <p>Sweet! Now we can use these death rates to input into our model so we are only asking it to find the estimate for the immigration rate. Note how much smaller the standard errors are for these immigration rates!</p>
 <pre class="r"><code># Calculating the death rate and immigration rate coefficients WITH measured death rates
 (nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  
@@ -462,7 +462,7 @@ B &lt;- ggplot(data = shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;) %
   ggtitle(&quot;Shrubland&quot;)
 
 grid.arrange(A,B, nrow = 1)</code></pre>
-<p><img src="05_output_figures/scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem-1.png" width="672" /></p>
+<p><img src="../05_output_figures/scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem-1.png" width="672" /></p>
 </div>
 <div id="immigration-rate-calculations-assuming-equilibrium" class="section level1">
 <h1>Immigration rate calculations assuming equilibrium</h1>
@@ -525,64 +525,61 @@ load(glass.slides.16S)
 # Create our visualization, just for fun
 q1.NMDS1 &lt;- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2, trymax = 50, verbose = FALSE)</code></pre>
 <pre><code>Run 0 stress 0.184611 
-Run 1 stress 0.2029846 
-Run 2 stress 0.1918859 
-Run 3 stress 0.1844794 
+Run 1 stress 0.1922663 
+Run 2 stress 0.1922014 
+Run 3 stress 0.1950475 
+Run 4 stress 0.1960924 
+Run 5 stress 0.1954309 
+Run 6 stress 0.1871394 
+Run 7 stress 0.1846112 
+... Procrustes: rmse 5.077199e-05  max resid 0.0003742371 
+... Similar to previous best
+Run 8 stress 0.1913298 
+Run 9 stress 0.1915682 
+Run 10 stress 0.1861392 
+Run 11 stress 0.1929995 
+Run 12 stress 0.1871948 
+Run 13 stress 0.1912897 
+Run 14 stress 0.1936832 
+Run 15 stress 0.1869901 
+Run 16 stress 0.1921719 
+Run 17 stress 0.1963572 
+Run 18 stress 0.1844794 
 ... New best solution
-... Procrustes: rmse 0.02426896  max resid 0.1765565 
-Run 4 stress 0.1947632 
-Run 5 stress 0.1921714 
-Run 6 stress 0.1914096 
-Run 7 stress 0.1841654 
+... Procrustes: rmse 0.02427066  max resid 0.1765432 
+Run 19 stress 0.1926139 
+Run 20 stress 0.1905258 
+Run 21 stress 0.1884895 
+Run 22 stress 0.1840205 
 ... New best solution
-... Procrustes: rmse 0.01350159  max resid 0.1246605 
-Run 8 stress 0.1878966 
-Run 9 stress 0.189713 
-Run 10 stress 0.1856318 
-Run 11 stress 0.1953137 
-Run 12 stress 0.1917199 
-Run 13 stress 0.1934812 
-Run 14 stress 0.1883079 
-Run 15 stress 0.1878925 
-Run 16 stress 0.1933934 
-Run 17 stress 0.1869867 
-Run 18 stress 0.1922574 
-Run 19 stress 0.1986293 
-Run 20 stress 0.1948591 
-Run 21 stress 0.2021976 
-Run 22 stress 0.1921003 
-Run 23 stress 0.1869357 
-Run 24 stress 0.1926092 
-Run 25 stress 0.1938112 
-Run 26 stress 0.1927309 
-Run 27 stress 0.192345 
-Run 28 stress 0.1912877 
-Run 29 stress 0.1943344 
-Run 30 stress 0.1951845 
-Run 31 stress 0.1860823 
-Run 32 stress 0.1911436 
-Run 33 stress 0.1870461 
-Run 34 stress 0.1998208 
-Run 35 stress 0.1902421 
-Run 36 stress 0.1912694 
-Run 37 stress 0.1922218 
-Run 38 stress 0.2005651 
-Run 39 stress 0.1905473 
-Run 40 stress 0.1953114 
-Run 41 stress 0.1950272 
-Run 42 stress 0.1922359 
-Run 43 stress 0.1929964 
-Run 44 stress 0.1876828 
-Run 45 stress 0.1879973 
-Run 46 stress 0.2099414 
-Run 47 stress 0.1899497 
-Run 48 stress 0.1949039 
-Run 49 stress 0.1866274 
-Run 50 stress 0.1905506 
-*** No convergence -- monoMDS stopping criteria:
-     1: no. of iterations &gt;= maxit
-    47: stress ratio &gt; sratmax
-     2: scale factor of the gradient &lt; sfgrmin</code></pre>
+... Procrustes: rmse 0.01297646  max resid 0.1243745 
+Run 23 stress 0.1871948 
+Run 24 stress 0.1886782 
+Run 25 stress 0.1926593 
+Run 26 stress 0.1942964 
+Run 27 stress 0.2072483 
+Run 28 stress 0.1939231 
+Run 29 stress 0.193301 
+Run 30 stress 0.1981293 
+Run 31 stress 0.1896744 
+Run 32 stress 0.1933557 
+Run 33 stress 0.1866273 
+Run 34 stress 0.2006837 
+Run 35 stress 0.1916187 
+Run 36 stress 0.1974554 
+Run 37 stress 0.1970956 
+Run 38 stress 0.1965661 
+Run 39 stress 0.1956266 
+Run 40 stress 0.1887552 
+Run 41 stress 0.1890113 
+Run 42 stress 0.1897122 
+Run 43 stress 0.1921054 
+Run 44 stress 0.1913299 
+Run 45 stress 0.1897378 
+Run 46 stress 0.1840206 
+... Procrustes: rmse 0.0001281231  max resid 0.0008917401 
+... Similar to previous best
+*** Solution reached</code></pre>
 <pre class="r"><code>q1.NMDS1.meta &lt;- data.frame(q1.NMDS1$points[,1:2]) %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
   filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
@@ -595,7 +592,7 @@ ggplot(data = q1.NMDS1.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="05_output_figures/NMDS_taxa_specific_death_rates_bacteria-1.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_taxa_specific_death_rates_bacteria-1.png" width="672" /></p>
 <pre class="r"><code># Do the PERMANOVA that will test our hypothesis
 q1.bray.dist.df.death &lt;- as.data.frame(as.matrix(q1.bray.dist)) %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
@@ -620,7 +617,7 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
           Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
-TimePoint  4    2.3570 0.58925  2.1924 0.42223  2e-04 ***
+TimePoint  4    2.3570 0.58925  2.1924 0.42223  4e-04 ***
 Residuals 12    3.2252 0.26877         0.57777           
 Total     16    5.5822                 1.00000           
 ---
@@ -639,7 +636,7 @@ Terms added sequentially (first to last)
                                Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
 TimePoint                       4    2.3570 0.58925  3.3242 0.42223 9.999e-05
 as.factor(Ecosystem)            1    0.8914 0.89136  5.0285 0.15968 9.999e-05
-TimePoint:as.factor(Ecosystem)  1    0.5613 0.56128  3.1664 0.10055 9.999e-05
+TimePoint:as.factor(Ecosystem)  1    0.5613 0.56128  3.1664 0.10055     3e-04
 Residuals                      10    1.7726 0.17726         0.31754          
 Total                          16    5.5822                 1.00000          
                                   
@@ -657,28 +654,129 @@ load(glass.slides.ITS)
 # Create our visualization, just for fun
 q1.ITS.NMDS1 &lt;- metaMDS(q1.ITS.bray.dist, autotransform = FALSE, k = 2, trymax = 200)</code></pre>
 <pre><code>Run 0 stress 0.1686672 
-Run 1 stress 0.1748943 
-Run 2 stress 0.1998142 
-Run 3 stress 0.1733684 
-Run 4 stress 0.1733534 
-Run 5 stress 0.1741142 
-Run 6 stress 0.176396 
-Run 7 stress 0.1706314 
-Run 8 stress 0.2093767 
-Run 9 stress 0.1757716 
-Run 10 stress 0.177819 
-Run 11 stress 0.1707782 
-Run 12 stress 0.1731314 
-Run 13 stress 0.1758703 
-Run 14 stress 0.4136501 
-Run 15 stress 0.1706246 
-Run 16 stress 0.2044783 
-Run 17 stress 0.1772174 
-Run 18 stress 0.1768273 
-Run 19 stress 0.1686674 
-... Procrustes: rmse 0.0004288042  max resid 0.004413662 
+Run 1 stress 0.2076547 
+Run 2 stress 0.1755208 
+Run 3 stress 0.2009008 
+Run 4 stress 0.1706153 
+Run 5 stress 0.2082278 
+Run 6 stress 0.1706246 
+Run 7 stress 0.1733766 
+Run 8 stress 0.2007256 
+Run 9 stress 0.174959 
+Run 10 stress 0.1826117 
+Run 11 stress 0.1744398 
+Run 12 stress 0.1731419 
+Run 13 stress 0.1967994 
+Run 14 stress 0.2070356 
+Run 15 stress 0.1748994 
+Run 16 stress 0.1707778 
+Run 17 stress 0.1689739 
+... Procrustes: rmse 0.0101859  max resid 0.05958361 
+Run 18 stress 0.1813746 
+Run 19 stress 0.1735744 
+Run 20 stress 0.1694741 
+Run 21 stress 0.1706244 
+Run 22 stress 0.1703659 
+Run 23 stress 0.1884172 
+Run 24 stress 0.1731313 
+Run 25 stress 0.1760916 
+Run 26 stress 0.1771036 
+Run 27 stress 0.1795661 
+Run 28 stress 0.1747144 
+Run 29 stress 0.2083389 
+Run 30 stress 0.1703489 
+Run 31 stress 0.2041935 
+Run 32 stress 0.2323356 
+Run 33 stress 0.1731416 
+Run 34 stress 0.1818644 
+Run 35 stress 0.205724 
+Run 36 stress 0.1705496 
+Run 37 stress 0.1740601 
+Run 38 stress 0.1686606 
+... New best solution
+... Procrustes: rmse 0.003562628  max resid 0.02755834 
+Run 39 stress 0.1705492 
+Run 40 stress 0.1999751 
+Run 41 stress 0.1749574 
+Run 42 stress 0.1731836 
+Run 43 stress 0.2060486 
+Run 44 stress 0.1689875 
+... Procrustes: rmse 0.007944753  max resid 0.07059914 
+Run 45 stress 0.2047195 
+Run 46 stress 0.1692644 
+Run 47 stress 0.1689123 
+... Procrustes: rmse 0.007038483  max resid 0.05750278 
+Run 48 stress 0.1731313 
+Run 49 stress 0.170366 
+Run 50 stress 0.1787167 
+Run 51 stress 0.1913119 
+Run 52 stress 0.1833848 
+Run 53 stress 0.1755206 
+Run 54 stress 0.1751691 
+Run 55 stress 0.1813746 
+Run 56 stress 0.1751224 
+Run 57 stress 0.1853203 
+Run 58 stress 0.1741144 
+Run 59 stress 0.1778304 
+Run 60 stress 0.1771442 
+Run 61 stress 0.1800541 
+Run 62 stress 0.2246662 
+Run 63 stress 0.1726817 
+Run 64 stress 0.1689878 
+... Procrustes: rmse 0.007947524  max resid 0.05715945 
+Run 65 stress 0.1742479 
+Run 66 stress 0.1748612 
+Run 67 stress 0.196961 
+Run 68 stress 0.1741144 
+Run 69 stress 0.195575 
+Run 70 stress 0.1741457 
+Run 71 stress 0.2025448 
+Run 72 stress 0.1751461 
+Run 73 stress 0.2216652 
+Run 74 stress 0.1985466 
+Run 75 stress 0.2281948 
+Run 76 stress 0.1731801 
+Run 77 stress 0.1826935 
+Run 78 stress 0.1692464 
+Run 79 stress 0.2039203 
+Run 80 stress 0.170422 
+Run 81 stress 0.1757717 
+Run 82 stress 0.1731417 
+Run 83 stress 0.1706246 
+Run 84 stress 0.1766967 
+Run 85 stress 0.2115457 
+Run 86 stress 0.1783544 
+Run 87 stress 0.1935727 
+Run 88 stress 0.1742596 
+Run 89 stress 0.1763961 
+Run 90 stress 0.1760916 
+Run 91 stress 0.236549 
+Run 92 stress 0.1697627 
+Run 93 stress 0.1731313 
+Run 94 stress 0.1705498 
+Run 95 stress 0.1689814 
+... Procrustes: rmse 0.006005352  max resid 0.0544573 
+Run 96 stress 0.1742596 
+Run 97 stress 0.170684 
+Run 98 stress 0.1939655 
+Run 99 stress 0.1771444 
+Run 100 stress 0.1706246 
+Run 101 stress 0.1905798 
+Run 102 stress 0.4133335 
+Run 103 stress 0.1854366 
+Run 104 stress 0.1743904 
+Run 105 stress 0.176907 
+Run 106 stress 0.1741142 
+Run 107 stress 0.2028514 
+Run 108 stress 0.1931408 
+Run 109 stress 0.1748935 
+Run 110 stress 0.1762893 
+Run 111 stress 0.1731788 
+Run 112 stress 0.1943514 
+Run 113 stress 0.1686603 
+... New best solution
+... Procrustes: rmse 0.0001677119  max resid 0.001295887 
 ... Similar to previous best
-Run 20 stress 0.1742231 
 *** Solution reached</code></pre>
 <pre class="r"><code>q1.ITS.NMDS1.meta &lt;- data.frame(q1.ITS.NMDS1$points[,1:2]) %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
@@ -692,7 +790,7 @@ ggplot(data = q1.ITS.NMDS1.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="05_output_figures/NMDS_taxa_specific_death_rates_fungi-1.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_taxa_specific_death_rates_fungi-1.png" width="672" /></p>
 <pre class="r"><code># Do the PERMANOVA that will test our hypothesis
 q1.bray.dist.df.death &lt;- q1.ITS.bray.dist.df %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
@@ -713,7 +811,7 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
           Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)
-TimePoint  2    0.5367 0.26835  1.1419 0.17192 0.2544
+TimePoint  2    0.5367 0.26835  1.1419 0.17192 0.2654
 Residuals 11    2.5851 0.23501         0.82808       
 Total     13    3.1218                 1.00000       </code></pre>
 <pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
@@ -728,9 +826,9 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
                                Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
-TimePoint                       2   0.53670 0.26835  2.1840 0.17192    0.0177
+TimePoint                       2   0.53670 0.26835  2.1840 0.17192    0.0150
 as.factor(Ecosystem)            1   1.27000 1.27000 10.3360 0.40682 9.999e-05
-TimePoint:as.factor(Ecosystem)  1   0.20922 0.20922  1.7027 0.06702    0.1081
+TimePoint:as.factor(Ecosystem)  1   0.20922 0.20922  1.7027 0.06702    0.1095
 Residuals                       9   1.10584 0.12287         0.35424          
 Total                          13   3.12176                 1.00000          
                                   
@@ -762,111 +860,147 @@ q1.bray.dist.df.dispersal &lt;- q1.bray.dist.df %&gt;%
 q1.dispersal.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
                              autotransform = FALSE, k = 2, trymax = 200)</code></pre>
 <pre><code>Run 0 stress 0.1857125 
-Run 1 stress 0.1855536 
+Run 1 stress 0.19108 
+Run 2 stress 0.1912312 
+Run 3 stress 0.1910801 
+Run 4 stress 0.1907832 
+Run 5 stress 0.1857112 
 ... New best solution
-... Procrustes: rmse 0.01690935  max resid 0.08292035 
-Run 2 stress 0.1893884 
-Run 3 stress 0.1899259 
-Run 4 stress 0.1856794 
-... Procrustes: rmse 0.01832994  max resid 0.08338042 
-Run 5 stress 0.2030757 
-Run 6 stress 0.1850784 
+... Procrustes: rmse 0.00271098  max resid 0.0163212 
+Run 6 stress 0.2044049 
+Run 7 stress 0.1861298 
+... Procrustes: rmse 0.008094335  max resid 0.06728613 
+Run 8 stress 0.1873567 
+Run 9 stress 0.1856848 
 ... New best solution
-... Procrustes: rmse 0.01237426  max resid 0.0728192 
-Run 7 stress 0.1862602 
-Run 8 stress 0.1862473 
-Run 9 stress 0.1918091 
-Run 10 stress 0.1861302 
-Run 11 stress 0.1906278 
-Run 12 stress 0.1857129 
-Run 13 stress 0.186171 
-Run 14 stress 0.1909369 
-Run 15 stress 0.1866251 
-Run 16 stress 0.1861296 
-Run 17 stress 0.1894508 
-Run 18 stress 0.1900704 
-Run 19 stress 0.1910797 
-Run 20 stress 0.1862617 
-Run 21 stress 0.1853963 
-... Procrustes: rmse 0.007877383  max resid 0.0652833 
-Run 22 stress 0.1910261 
-Run 23 stress 0.185554 
-... Procrustes: rmse 0.01234098  max resid 0.07289019 
-Run 24 stress 0.1893893 
-Run 25 stress 0.2266602 
-Run 26 stress 0.1894948 
-Run 27 stress 0.1850893 
-... Procrustes: rmse 0.00516431  max resid 0.0383416 
-Run 28 stress 0.1864984 
-Run 29 stress 0.1855958 
-Run 30 stress 0.1853968 
-... Procrustes: rmse 0.00786697  max resid 0.06529729 
-Run 31 stress 0.1852284 
-... Procrustes: rmse 0.007325062  max resid 0.04152469 
-Run 32 stress 0.1864454 
-Run 33 stress 0.1855522 
-... Procrustes: rmse 0.01253541  max resid 0.07342446 
-Run 34 stress 0.1855534 
-... Procrustes: rmse 0.01266494  max resid 0.07405608 
-Run 35 stress 0.1901596 
-Run 36 stress 0.1858605 
-Run 37 stress 0.18609 
-Run 38 stress 0.1859287 
-Run 39 stress 0.1914894 
-Run 40 stress 0.1863214 
-Run 41 stress 0.1910837 
-Run 42 stress 0.1866716 
-Run 43 stress 0.1861532 
-Run 44 stress 0.1867096 
-Run 45 stress 0.1860897 
-Run 46 stress 0.1866712 
-Run 47 stress 0.185091 
-... Procrustes: rmse 0.003708839  max resid 0.02672927 
-Run 48 stress 0.1861052 
-Run 49 stress 0.1894531 
-Run 50 stress 0.1899374 
-Run 51 stress 0.186711 
-Run 52 stress 0.1907543 
-Run 53 stress 0.2076176 
-Run 54 stress 0.1855526 
-... Procrustes: rmse 0.01256632  max resid 0.07327707 
-Run 55 stress 0.1912323 
-Run 56 stress 0.1857135 
-Run 57 stress 0.1893896 
-Run 58 stress 0.204887 
-Run 59 stress 0.1854183 
-... Procrustes: rmse 0.009268342  max resid 0.06438137 
-Run 60 stress 0.1858947 
-Run 61 stress 0.1866639 
-Run 62 stress 0.1855799 
-Run 63 stress 0.1862394 
-Run 64 stress 0.1871628 
-Run 65 stress 0.1850774 
+... Procrustes: rmse 0.01833138  max resid 0.08542709 
+Run 10 stress 0.18568 
 ... New best solution
-... Procrustes: rmse 0.001625561  max resid 0.01194641 
-Run 66 stress 0.1862585 
-Run 67 stress 0.18671 
-Run 68 stress 0.1854185 
-... Procrustes: rmse 0.009167794  max resid 0.06425016 
-Run 69 stress 0.1984451 
-Run 70 stress 0.1866722 
-Run 71 stress 0.1866644 
-Run 72 stress 0.1905944 
-Run 73 stress 0.1900703 
-Run 74 stress 0.1904382 
-Run 75 stress 0.1861749 
-Run 76 stress 0.2280174 
-Run 77 stress 0.1906179 
-Run 78 stress 0.1910823 
-Run 79 stress 0.185396 
-... Procrustes: rmse 0.00792246  max resid 0.06519536 
-Run 80 stress 0.1867093 
-Run 81 stress 0.1904355 
-Run 82 stress 0.1860616 
-Run 83 stress 0.1903171 
-Run 84 stress 0.1850769 
+... Procrustes: rmse 0.01938127  max resid 0.0857672 
+Run 11 stress 0.1906265 
+Run 12 stress 0.1866714 
+Run 13 stress 0.1856798 
 ... New best solution
-... Procrustes: rmse 0.0001825076  max resid 0.001390624 
+... Procrustes: rmse 0.001502294  max resid 0.01181356 
+Run 14 stress 0.1904069 
+Run 15 stress 0.1857025 
+... Procrustes: rmse 0.01983722  max resid 0.09832298 
+Run 16 stress 0.1905926 
+Run 17 stress 0.1862622 
+Run 18 stress 0.1850917 
+... New best solution
+... Procrustes: rmse 0.0133533  max resid 0.08221905 
+Run 19 stress 0.1909642 
+Run 20 stress 0.2025338 
+Run 21 stress 0.1895621 
+Run 22 stress 0.1894608 
+Run 23 stress 0.1861748 
+Run 24 stress 0.1959392 
+Run 25 stress 0.1871639 
+Run 26 stress 0.1903722 
+Run 27 stress 0.1866837 
+Run 28 stress 0.1895325 
+Run 29 stress 0.1893903 
+Run 30 stress 0.1855541 
+... Procrustes: rmse 0.01128399  max resid 0.072308 
+Run 31 stress 0.1865848 
+Run 32 stress 0.1901601 
+Run 33 stress 0.1910712 
+Run 34 stress 0.1860613 
+Run 35 stress 0.1855535 
+... Procrustes: rmse 0.01170915  max resid 0.07340159 
+Run 36 stress 0.1855524 
+... Procrustes: rmse 0.01155855  max resid 0.07303215 
+Run 37 stress 0.1862602 
+Run 38 stress 0.1857128 
+Run 39 stress 0.1918084 
+Run 40 stress 0.1908989 
+Run 41 stress 0.190021 
+Run 42 stress 0.1855522 
+... Procrustes: rmse 0.01149382  max resid 0.07271263 
+Run 43 stress 0.190664 
+Run 44 stress 0.1910534 
+Run 45 stress 0.1918087 
+Run 46 stress 0.1895424 
+Run 47 stress 0.190624 
+Run 48 stress 0.1855535 
+... Procrustes: rmse 0.0113132  max resid 0.07229671 
+Run 49 stress 0.1852287 
+... Procrustes: rmse 0.005628006  max resid 0.03172053 
+Run 50 stress 0.1865861 
+Run 51 stress 0.1948255 
+Run 52 stress 0.1861305 
+Run 53 stress 0.1861322 
+Run 54 stress 0.185713 
+Run 55 stress 0.1900205 
+Run 56 stress 0.1861745 
+Run 57 stress 0.1946054 
+Run 58 stress 0.1853967 
+... Procrustes: rmse 0.008732774  max resid 0.06574988 
+Run 59 stress 0.1910831 
+Run 60 stress 0.1858598 
+Run 61 stress 0.2012369 
+Run 62 stress 0.2202293 
+Run 63 stress 0.194372 
+Run 64 stress 0.1860902 
+Run 65 stress 0.1901614 
+Run 66 stress 0.1853961 
+... Procrustes: rmse 0.008856618  max resid 0.06614136 
+Run 67 stress 0.1946015 
+Run 68 stress 0.1893896 
+Run 69 stress 0.1918097 
+Run 70 stress 0.1910526 
+Run 71 stress 0.1910805 
+Run 72 stress 0.213116 
+Run 73 stress 0.1900108 
+Run 74 stress 0.1911934 
+Run 75 stress 0.1906008 
+Run 76 stress 0.1858591 
+Run 77 stress 0.1905946 
+Run 78 stress 0.1856803 
+Run 79 stress 0.1943301 
+Run 80 stress 0.191084 
+Run 81 stress 0.1857101 
+Run 82 stress 0.1905205 
+Run 83 stress 0.1857129 
+Run 84 stress 0.1989295 
+Run 85 stress 0.1866708 
+Run 86 stress 0.1957797 
+Run 87 stress 0.190291 
+Run 88 stress 0.1900411 
+Run 89 stress 0.1946056 
+Run 90 stress 0.1948256 
+Run 91 stress 0.1863233 
+Run 92 stress 0.1940288 
+Run 93 stress 0.1904103 
+Run 94 stress 0.1855533 
+... Procrustes: rmse 0.01132697  max resid 0.07240853 
+Run 95 stress 0.1855542 
+... Procrustes: rmse 0.01128257  max resid 0.07225889 
+Run 96 stress 0.185683 
+Run 97 stress 0.1862407 
+Run 98 stress 0.190438 
+Run 99 stress 0.1866634 
+Run 100 stress 0.1907808 
+Run 101 stress 0.1984441 
+Run 102 stress 0.185598 
+Run 103 stress 0.1984454 
+Run 104 stress 0.1862406 
+Run 105 stress 0.1866721 
+Run 106 stress 0.1867081 
+Run 107 stress 0.1850772 
+... New best solution
+... Procrustes: rmse 0.00379372  max resid 0.02729978 
+Run 108 stress 0.1852281 
+... Procrustes: rmse 0.007670493  max resid 0.04248666 
+Run 109 stress 0.1860904 
+Run 110 stress 0.1911355 
+Run 111 stress 0.1948518 
+Run 112 stress 0.1997172 
+Run 113 stress 0.1856802 
+Run 114 stress 0.1850768 
+... New best solution
+... Procrustes: rmse 0.0008721556  max resid 0.006896331 
 ... Similar to previous best
 *** Solution reached</code></pre>
 <pre class="r"><code># Merge with our metatdata and create a new column to specify what we want to look at
@@ -879,12 +1013,12 @@ ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-1.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-2.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-2.png" width="672" /></p>
 <pre class="r"><code># Do the staaaats!!
 adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.NMDS.meta, na.rm= TRUE)</code></pre>
@@ -916,8 +1050,8 @@ Terms added sequentially (first to last)
 
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
 Ecosystem             1    0.7798 0.77980  2.1121 0.02791 9.999e-05 ***
-Time_Point            1    0.5401 0.54013  1.4629 0.01933 0.0006999 ***
-Ecosystem:Time_Point  1    0.4053 0.40533  1.0978 0.01451 0.1278872    
+Time_Point            1    0.5401 0.54013  1.4629 0.01933 0.0008999 ***
+Ecosystem:Time_Point  1    0.4053 0.40533  1.0978 0.01451 0.1364864    
 Residuals            71   26.2140 0.36921         0.93825              
 Total                74   27.9392                 1.00000              
 ---
@@ -937,34 +1071,184 @@ q1.ITS.bray.dist.df.dispersal &lt;- q1.ITS.bray.dist.df %&gt;%
 q1.ITS.dispersal.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
                              autotransform = FALSE, k = 2, trymax = 200)</code></pre>
 <pre><code>Run 0 stress 0.1540828 
-Run 1 stress 0.1622525 
-Run 2 stress 0.1540885 
-... Procrustes: rmse 0.004967373  max resid 0.03069295 
-Run 3 stress 0.1730472 
-Run 4 stress 0.1641882 
-Run 5 stress 0.1665899 
-Run 6 stress 0.1716413 
-Run 7 stress 0.1560724 
-Run 8 stress 0.1624837 
-Run 9 stress 0.1705195 
-Run 10 stress 0.1706415 
-Run 11 stress 0.1665554 
-Run 12 stress 0.1753888 
-Run 13 stress 0.1727726 
-Run 14 stress 0.1845243 
-Run 15 stress 0.1667195 
-Run 16 stress 0.1717441 
-Run 17 stress 0.1610905 
-Run 18 stress 0.1633855 
-Run 19 stress 0.1595664 
-Run 20 stress 0.1646636 
-Run 21 stress 0.1595816 
-Run 22 stress 0.1556303 
-Run 23 stress 0.1649446 
-Run 24 stress 0.1579233 
-Run 25 stress 0.1540828 
-... New best solution
-... Procrustes: rmse 2.086581e-05  max resid 9.186997e-05 
+Run 1 stress 0.1722377 
+Run 2 stress 0.1680062 
+Run 3 stress 0.161079 
+Run 4 stress 0.1630311 
+Run 5 stress 0.1578327 
+Run 6 stress 0.1581573 
+Run 7 stress 0.1571838 
+Run 8 stress 0.1594671 
+Run 9 stress 0.1682057 
+Run 10 stress 0.1623608 
+Run 11 stress 0.1686113 
+Run 12 stress 0.1828203 
+Run 13 stress 0.1835208 
+Run 14 stress 0.1555985 
+Run 15 stress 0.1672626 
+Run 16 stress 0.1611045 
+Run 17 stress 0.1677327 
+Run 18 stress 0.1581736 
+Run 19 stress 0.1599353 
+Run 20 stress 0.1593305 
+Run 21 stress 0.1578466 
+Run 22 stress 0.1541706 
+... Procrustes: rmse 0.006609404  max resid 0.0314847 
+Run 23 stress 0.1650949 
+Run 24 stress 0.1843579 
+Run 25 stress 0.1662667 
+Run 26 stress 0.1679963 
+Run 27 stress 0.1837883 
+Run 28 stress 0.1600242 
+Run 29 stress 0.1636431 
+Run 30 stress 0.1730072 
+Run 31 stress 0.1657731 
+Run 32 stress 0.1621334 
+Run 33 stress 0.1704377 
+Run 34 stress 0.1625801 
+Run 35 stress 0.1827057 
+Run 36 stress 0.1585144 
+Run 37 stress 0.1638956 
+Run 38 stress 0.1667909 
+Run 39 stress 0.1540881 
+... Procrustes: rmse 0.0056819  max resid 0.02963919 
+Run 40 stress 0.1584727 
+Run 41 stress 0.1682836 
+Run 42 stress 0.1633134 
+Run 43 stress 0.1597724 
+Run 44 stress 0.159804 
+Run 45 stress 0.1690691 
+Run 46 stress 0.1581538 
+Run 47 stress 0.1705191 
+Run 48 stress 0.1591791 
+Run 49 stress 0.175953 
+Run 50 stress 0.169484 
+Run 51 stress 0.1791223 
+Run 52 stress 0.1601089 
+Run 53 stress 0.1670504 
+Run 54 stress 0.1598567 
+Run 55 stress 0.1578328 
+Run 56 stress 0.1809885 
+Run 57 stress 0.1592726 
+Run 58 stress 0.1768585 
+Run 59 stress 0.1700571 
+Run 60 stress 0.1687855 
+Run 61 stress 0.1583322 
+Run 62 stress 0.1689533 
+Run 63 stress 0.1750547 
+Run 64 stress 0.1593323 
+Run 65 stress 0.1579185 
+Run 66 stress 0.1610177 
+Run 67 stress 0.1656879 
+Run 68 stress 0.1586885 
+Run 69 stress 0.1708956 
+Run 70 stress 0.1786273 
+Run 71 stress 0.1579569 
+Run 72 stress 0.1633068 
+Run 73 stress 0.1835023 
+Run 74 stress 0.1592637 
+Run 75 stress 0.167824 
+Run 76 stress 0.1579245 
+Run 77 stress 0.1582738 
+Run 78 stress 0.1666367 
+Run 79 stress 0.1856971 
+Run 80 stress 0.1596183 
+Run 81 stress 0.1559984 
+Run 82 stress 0.1575815 
+Run 83 stress 0.1603266 
+Run 84 stress 0.1619105 
+Run 85 stress 0.1579183 
+Run 86 stress 0.1608589 
+Run 87 stress 0.1686036 
+Run 88 stress 0.1555503 
+Run 89 stress 0.1648916 
+Run 90 stress 0.1707857 
+Run 91 stress 0.1680489 
+Run 92 stress 0.1630113 
+Run 93 stress 0.1582674 
+Run 94 stress 0.1639524 
+Run 95 stress 0.1546064 
+Run 96 stress 0.1541801 
+... Procrustes: rmse 0.006266814  max resid 0.03175439 
+Run 97 stress 0.1802281 
+Run 98 stress 0.1853708 
+Run 99 stress 0.1736532 
+Run 100 stress 0.1698612 
+Run 101 stress 0.1598692 
+Run 102 stress 0.1678139 
+Run 103 stress 0.1597326 
+Run 104 stress 0.1714303 
+Run 105 stress 0.1717919 
+Run 106 stress 0.1699286 
+Run 107 stress 0.1696275 
+Run 108 stress 0.169952 
+Run 109 stress 0.1811843 
+Run 110 stress 0.1584796 
+Run 111 stress 0.1855733 
+Run 112 stress 0.1662071 
+Run 113 stress 0.1848732 
+Run 114 stress 0.1675346 
+Run 115 stress 0.1555415 
+Run 116 stress 0.1583488 
+Run 117 stress 0.1746183 
+Run 118 stress 0.1583137 
+Run 119 stress 0.1847201 
+Run 120 stress 0.1593515 
+Run 121 stress 0.1681483 
+Run 122 stress 0.1578306 
+Run 123 stress 0.1614248 
+Run 124 stress 0.1714289 
+Run 125 stress 0.1748622 
+Run 126 stress 0.1788341 
+Run 127 stress 0.1726375 
+Run 128 stress 0.1730467 
+Run 129 stress 0.1576922 
+Run 130 stress 0.1769011 
+Run 131 stress 0.1577644 
+Run 132 stress 0.1785447 
+Run 133 stress 0.1596424 
+Run 134 stress 0.1803608 
+Run 135 stress 0.1729028 
+Run 136 stress 0.1664226 
+Run 137 stress 0.1692027 
+Run 138 stress 0.1603403 
+Run 139 stress 0.1620824 
+Run 140 stress 0.1583892 
+Run 141 stress 0.1793454 
+Run 142 stress 0.1705189 
+Run 143 stress 0.1708719 
+Run 144 stress 0.1602461 
+Run 145 stress 0.1719308 
+Run 146 stress 0.1578325 
+Run 147 stress 0.1594331 
+Run 148 stress 0.1586341 
+Run 149 stress 0.1603715 
+Run 150 stress 0.1590642 
+Run 151 stress 0.1755572 
+Run 152 stress 0.1788822 
+Run 153 stress 0.1606662 
+Run 154 stress 0.1665582 
+Run 155 stress 0.1718466 
+Run 156 stress 0.1568415 
+Run 157 stress 0.1597279 
+Run 158 stress 0.1541714 
+... Procrustes: rmse 0.004737897  max resid 0.03143567 
+Run 159 stress 0.1646151 
+Run 160 stress 0.4091489 
+Run 161 stress 0.1560399 
+Run 162 stress 0.168442 
+Run 163 stress 0.1764186 
+Run 164 stress 0.1770546 
+Run 165 stress 0.168178 
+Run 166 stress 0.1838532 
+Run 167 stress 0.1698635 
+Run 168 stress 0.1592782 
+Run 169 stress 0.1651112 
+Run 170 stress 0.409155 
+Run 171 stress 0.18107 
+Run 172 stress 0.1736687 
+Run 173 stress 0.154083 
+... Procrustes: rmse 0.0001187946  max resid 0.0004652394 
 ... Similar to previous best
 *** Solution reached</code></pre>
 <pre class="r"><code># Merge with our metatdata and create a new column to specify what we want to look at
@@ -977,12 +1261,12 @@ ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-1.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-2.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-2.png" width="672" /></p>
 <pre class="r"><code># Do the staaaats!!
 adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.ITS.NMDS.meta, na.rm= TRUE)</code></pre>
@@ -1015,7 +1299,7 @@ Terms added sequentially (first to last)
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
 Ecosystem             1    1.4956 1.49559 10.3117 0.11781 9.999e-05 ***
 Time_Point            1    0.6317 0.63174  4.3557 0.04976 9.999e-05 ***
-Ecosystem:Time_Point  1    0.2699 0.26990  1.8609 0.02126    0.0151 *  
+Ecosystem:Time_Point  1    0.2699 0.26990  1.8609 0.02126    0.0156 *  
 Residuals            71   10.2977 0.14504         0.81117              
 Total                74   12.6949                 1.00000              
 ---
@@ -1114,66 +1398,110 @@ q1.bray.dist.df.source &lt;- q1.bray.dist.df %&gt;%
 q1.source.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.bray.dist.df.source)), 
                              autotransform = FALSE, k = 2, trymax = 200)</code></pre>
 <pre><code>Run 0 stress 0.1784405 
-Run 1 stress 0.1848329 
-Run 2 stress 0.1900917 
-Run 3 stress 0.201064 
-Run 4 stress 0.1872516 
-Run 5 stress 0.181421 
-Run 6 stress 0.1775794 
+Run 1 stress 0.189401 
+Run 2 stress 0.1900918 
+Run 3 stress 0.1826899 
+Run 4 stress 0.1985426 
+Run 5 stress 0.1884862 
+Run 6 stress 0.1796289 
+Run 7 stress 0.1797591 
+Run 8 stress 0.199005 
+Run 9 stress 0.2286441 
+Run 10 stress 0.1947539 
+Run 11 stress 0.1775591 
 ... New best solution
-... Procrustes: rmse 0.01620914  max resid 0.15461 
-Run 7 stress 0.1829255 
-Run 8 stress 0.1824932 
-Run 9 stress 0.195683 
-Run 10 stress 0.1786467 
-Run 11 stress 0.1863811 
-Run 12 stress 0.1775595 
+... Procrustes: rmse 0.01652304  max resid 0.1549327 
+Run 12 stress 0.1927134 
+Run 13 stress 0.1934507 
+Run 14 stress 0.1774967 
 ... New best solution
-... Procrustes: rmse 0.004680632  max resid 0.02833621 
-Run 13 stress 0.1893134 
-Run 14 stress 0.1796833 
-Run 15 stress 0.1931503 
-Run 16 stress 0.194716 
-Run 17 stress 0.1891123 
-Run 18 stress 0.1825168 
-Run 19 stress 0.2099702 
-Run 20 stress 0.1966492 
-Run 21 stress 0.1937112 
-Run 22 stress 0.1865669 
-Run 23 stress 0.1786475 
-Run 24 stress 0.1924572 
-Run 25 stress 0.1853316 
-Run 26 stress 0.1880364 
-Run 27 stress 0.1826903 
-Run 28 stress 0.181592 
-Run 29 stress 0.1907389 
-Run 30 stress 0.1815045 
-Run 31 stress 0.1903477 
-Run 32 stress 0.1774964 
+... Procrustes: rmse 0.003607083  max resid 0.02728979 
+Run 15 stress 0.1826902 
+Run 16 stress 0.1775592 
+... Procrustes: rmse 0.003605264  max resid 0.02747298 
+Run 17 stress 0.1784985 
+Run 18 stress 0.1942028 
+Run 19 stress 0.1820679 
+Run 20 stress 0.1826479 
+Run 21 stress 0.1814212 
+Run 22 stress 0.1787263 
+Run 23 stress 0.1993968 
+Run 24 stress 0.1850138 
+Run 25 stress 0.187021 
+Run 26 stress 0.1797817 
+Run 27 stress 0.1824898 
+Run 28 stress 0.1850143 
+Run 29 stress 0.1851753 
+Run 30 stress 0.1887645 
+Run 31 stress 0.1785739 
+Run 32 stress 0.1826897 
+Run 33 stress 0.1787265 
+Run 34 stress 0.1827085 
+Run 35 stress 0.1775592 
+... Procrustes: rmse 0.003609612  max resid 0.0274673 
+Run 36 stress 0.1907392 
+Run 37 stress 0.1853508 
+Run 38 stress 0.1925502 
+Run 39 stress 0.1882769 
+Run 40 stress 0.2011661 
+Run 41 stress 0.1787258 
+Run 42 stress 0.1825904 
+Run 43 stress 0.187822 
+Run 44 stress 0.1884861 
+Run 45 stress 0.1865712 
+Run 46 stress 0.1818788 
+Run 47 stress 0.1911839 
+Run 48 stress 0.1775595 
+... Procrustes: rmse 0.003630384  max resid 0.02732859 
+Run 49 stress 0.1776409 
+... Procrustes: rmse 0.004815175  max resid 0.02946236 
+Run 50 stress 0.1891702 
+Run 51 stress 0.1853187 
+Run 52 stress 0.1815927 
+Run 53 stress 0.1938858 
+Run 54 stress 0.1815043 
+Run 55 stress 0.1826479 
+Run 56 stress 0.1890823 
+Run 57 stress 0.177641 
+... Procrustes: rmse 0.004819748  max resid 0.02945643 
+Run 58 stress 0.1944965 
+Run 59 stress 0.1848329 
+Run 60 stress 0.1886419 
+Run 61 stress 0.1775788 
+... Procrustes: rmse 0.003178744  max resid 0.02927291 
+Run 62 stress 0.1947156 
+Run 63 stress 0.1786467 
+Run 64 stress 0.1787263 
+Run 65 stress 0.1868292 
+Run 66 stress 0.187307 
+Run 67 stress 0.1915491 
+Run 68 stress 0.1845581 
+Run 69 stress 0.1912161 
+Run 70 stress 0.1956776 
+Run 71 stress 0.1848332 
+Run 72 stress 0.2279398 
+Run 73 stress 0.1950663 
+Run 74 stress 0.1867795 
+Run 75 stress 0.1787256 
+Run 76 stress 0.1983697 
+Run 77 stress 0.1826483 
+Run 78 stress 0.1955123 
+Run 79 stress 0.1951028 
+Run 80 stress 0.1796988 
+Run 81 stress 0.1886416 
+Run 82 stress 0.1823599 
+Run 83 stress 0.1894741 
+Run 84 stress 0.182666 
+Run 85 stress 0.1870211 
+Run 86 stress 0.1848334 
+Run 87 stress 0.1863079 
+Run 88 stress 0.1826905 
+Run 89 stress 0.1787255 
+Run 90 stress 0.1850145 
+Run 91 stress 0.2037443 
+Run 92 stress 0.1774964 
 ... New best solution
-... Procrustes: rmse 0.003611276  max resid 0.02722805 
-Run 33 stress 0.1964757 
-Run 34 stress 0.1878865 
-Run 35 stress 0.1900915 
-Run 36 stress 0.1911454 
-Run 37 stress 0.1926102 
-Run 38 stress 0.1832835 
-Run 39 stress 0.1796904 
-Run 40 stress 0.187641 
-Run 41 stress 0.199913 
-Run 42 stress 0.1884559 
-Run 43 stress 0.1895532 
-Run 44 stress 0.1775594 
-... Procrustes: rmse 0.00360158  max resid 0.02745468 
-Run 45 stress 0.1853506 
-Run 46 stress 0.1935277 
-Run 47 stress 0.1931223 
-Run 48 stress 0.1878223 
-Run 49 stress 0.1852926 
-Run 50 stress 0.182591 
-Run 51 stress 0.1881869 
-Run 52 stress 0.1774965 
-... Procrustes: rmse 0.0003827588  max resid 0.002636582 
+... Procrustes: rmse 0.0004996106  max resid 0.003661031 
 ... Similar to previous best
 *** Solution reached</code></pre>
 <pre class="r"><code># Merge with our metatdata and create a new column to specify what we want to look at
@@ -1190,7 +1518,7 @@ ggplot(data = q1.source.NMDS.meta) +
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;)  +
   ggtitle(&quot;Bacteria, glass slide communities + dispersal sources&quot;)</code></pre>
-<p><img src="05_output_figures/NMDS_dispersal_sources_bacteria-1.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_dispersal_sources_bacteria-1.png" width="672" /></p>
 <pre class="r"><code># Doing the stats to test differences among groups
 adonis(q1.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
        data = q1.source.NMDS.meta, na.rm= TRUE)</code></pre>
@@ -1228,18 +1556,18 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 15                                           Open_Grassland vs Soil  1
      SumsOfSqs   F.Model        R2 p.value p.adjusted sig
 1  0.005840203 17.212055 0.6566465   0.003      0.045   .
-2  0.004299403 10.990642 0.5497894   0.004      0.060    
-3  0.008744688 10.113011 0.2059131   0.002      0.030   .
+2  0.004299403 10.990642 0.5497894   0.002      0.030   .
+3  0.008744688 10.113011 0.2059131   0.001      0.015   .
 4  0.009626093 15.177112 0.2654403   0.001      0.015   .
 5  0.012409379 36.796226 0.7104036   0.001      0.015   .
-6  0.001197215  4.186387 0.2950989   0.004      0.060    
-7  0.008228917  9.955660 0.1992899   0.002      0.030   .
+6  0.001197215  4.186387 0.2950989   0.001      0.015   .
+7  0.008228917  9.955660 0.1992899   0.001      0.015   .
 8  0.012317914 20.389484 0.3216541   0.001      0.015   .
 9  0.017422542 63.386638 0.7984547   0.001      0.015   .
-10 0.006334252  7.556705 0.1588988   0.001      0.015   .
+10 0.006334252  7.556705 0.1588988   0.004      0.060    
 11 0.010379049 16.876802 0.2818588   0.001      0.015   .
 12 0.013304078 43.757193 0.7322498   0.001      0.015   .
-13 0.002660468  3.428498 0.0448589   0.018      0.270    
+13 0.002660468  3.428498 0.0448589   0.022      0.330    
 14 0.009533810 12.506147 0.2137578   0.001      0.015   .
 15 0.007265208 12.722052 0.2061184   0.001      0.015   .</code></pre>
 <pre class="r"><code>pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)</code></pre>
@@ -1253,7 +1581,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1 0.0058402 0.0058402  17.212 0.65665  0.004 **
+Source_Sink  1 0.0058402 0.0058402  17.212 0.65665  0.005 **
 Residuals    9 0.0030538 0.0003393         0.34335          
 Total       10 0.0088940                   1.00000          
 ---
@@ -1265,10 +1593,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1 0.0042994 0.0042994  10.991 0.54979  0.001 ***
-Residuals    9 0.0035207 0.0003912         0.45021           
-Total       10 0.0078201                   1.00000           
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1 0.0042994 0.0042994  10.991 0.54979  0.003 **
+Residuals    9 0.0035207 0.0003912         0.45021          
+Total       10 0.0078201                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1317,10 +1645,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs    MeanSqs F.Model     R2 Pr(&gt;F)   
-Source_Sink  1 0.0011972 0.00119722  4.1864 0.2951  0.002 **
-Residuals   10 0.0028598 0.00028598         0.7049          
-Total       11 0.0040570                    1.0000          
+            Df SumsOfSqs    MeanSqs F.Model     R2 Pr(&gt;F)    
+Source_Sink  1 0.0011972 0.00119722  4.1864 0.2951  0.001 ***
+Residuals   10 0.0028598 0.00028598         0.7049           
+Total       11 0.0040570                    1.0000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1330,10 +1658,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.008229 0.0082289  9.9557 0.19929  0.001 ***
-Residuals   40  0.033062 0.0008266         0.80071           
-Total       41  0.041291                   1.00000           
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.008229 0.0082289  9.9557 0.19929  0.002 **
+Residuals   40  0.033062 0.0008266         0.80071          
+Total       41  0.041291                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1409,7 +1737,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.002660 0.00266047  3.4285 0.04486  0.026 *
+Source_Sink  1  0.002660 0.00266047  3.4285 0.04486   0.02 *
 Residuals   73  0.056647 0.00077599         0.95514         
 Total       74  0.059307                    1.00000         
 ---
@@ -1456,7 +1784,7 @@ ggplot(data = q1.proportions) +
   theme_classic() + 
   scale_fill_brewer(palette = &quot;Set1&quot;) +
   ggtitle(&quot;BActeria, Source Tracker dispersal sources&quot;)</code></pre>
-<p><img src="05_output_figures/NMDS_dispersal_sources_bacteria-2.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_dispersal_sources_bacteria-2.png" width="672" /></p>
 <pre class="r"><code># Load data
 glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
 load(glass.slides.ITS)
@@ -1472,45 +1800,39 @@ q1.ITS.bray.dist.df.source &lt;- q1.ITS.bray.dist.df %&gt;%
 q1.ITS.source.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.source)), 
                              autotransform = FALSE, k = 2, trymax = 200)</code></pre>
 <pre><code>Run 0 stress 0.1689735 
-Run 1 stress 0.1652835 
+Run 1 stress 0.1637046 
 ... New best solution
-... Procrustes: rmse 0.03457441  max resid 0.2438547 
-Run 2 stress 0.1755303 
-Run 3 stress 0.1625639 
+... Procrustes: rmse 0.03072441  max resid 0.2152366 
+Run 2 stress 0.1694176 
+Run 3 stress 0.1625819 
 ... New best solution
-... Procrustes: rmse 0.02159488  max resid 0.1147162 
-Run 4 stress 0.1821969 
-Run 5 stress 0.1951204 
-Run 6 stress 0.1646569 
-Run 7 stress 0.1718901 
-Run 8 stress 0.1713211 
-Run 9 stress 0.2021845 
-Run 10 stress 0.2009744 
-Run 11 stress 0.1646507 
-Run 12 stress 0.1678447 
-Run 13 stress 0.1614176 
+... Procrustes: rmse 0.03440205  max resid 0.216251 
+Run 4 stress 0.1686274 
+Run 5 stress 0.1757294 
+Run 6 stress 0.164728 
+Run 7 stress 0.1674213 
+Run 8 stress 0.1744962 
+Run 9 stress 0.1678524 
+Run 10 stress 0.160053 
 ... New best solution
-... Procrustes: rmse 0.02409794  max resid 0.2186763 
-Run 14 stress 0.1673407 
-Run 15 stress 0.17553 
-Run 16 stress 0.1648234 
-Run 17 stress 0.1651186 
-Run 18 stress 0.1678522 
-Run 19 stress 0.167837 
-Run 20 stress 0.1895739 
-Run 21 stress 0.1757454 
-Run 22 stress 0.1652955 
-Run 23 stress 0.1695262 
-Run 24 stress 0.1625792 
-Run 25 stress 0.1686843 
+... Procrustes: rmse 0.03730958  max resid 0.2201164 
+Run 11 stress 0.1667187 
+Run 12 stress 0.1712746 
+Run 13 stress 0.162564 
+Run 14 stress 0.16378 
+Run 15 stress 0.1744723 
+Run 16 stress 0.174497 
+Run 17 stress 0.1736511 
+Run 18 stress 0.181516 
+Run 19 stress 0.1678057 
+Run 20 stress 0.1606244 
+Run 21 stress 0.1688786 
+Run 22 stress 0.1612385 
+Run 23 stress 0.1892545 
+Run 24 stress 0.1680407 
+Run 25 stress 0.189898 
 Run 26 stress 0.1600533 
-... New best solution
-... Procrustes: rmse 0.02709294  max resid 0.2120691 
-Run 27 stress 0.1716503 
-Run 28 stress 0.1655111 
-Run 29 stress 0.1600532 
-... New best solution
-... Procrustes: rmse 0.0004173385  max resid 0.003032284 
+... Procrustes: rmse 0.000145426  max resid 0.0009501322 
 ... Similar to previous best
 *** Solution reached</code></pre>
 <pre class="r"><code># Merge with our metatdata and create a new column to specify what we want to look at
@@ -1527,7 +1849,7 @@ ggplot(data = q1.ITS.source.NMDS.meta) +
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) +
   ggtitle(&quot;Fungi, glass slide communities + dispersal sources&quot;)</code></pre>
-<p><img src="05_output_figures/NMDS_dispersal_sources_fungi-1.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_dispersal_sources_fungi-1.png" width="672" /></p>
 <pre class="r"><code># Doing the stats to test differences among groups
 adonis(q1.ITS.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
        data = q1.ITS.source.NMDS.meta, na.rm= TRUE)</code></pre>
@@ -1564,18 +1886,18 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 14                                           Open_Shrubland vs Soil  1
 15                                           Open_Grassland vs Soil  1
      SumsOfSqs    F.Model         R2 p.value p.adjusted sig
-1  0.006922631   3.995019 0.23506998   0.025      0.375    
-2  0.034128177  18.866664 0.59205017   0.002      0.030   .
-3  0.011137503   3.820787 0.08160449   0.028      0.420    
+1  0.006922631   3.995019 0.23506998   0.021      0.315    
+2  0.034128177  18.866664 0.59205017   0.001      0.015   .
+3  0.011137503   3.820787 0.08160449   0.029      0.435    
 4  0.043604177  29.757293 0.39279774   0.001      0.015   .
 5  0.059529743  40.598887 0.68120210   0.001      0.015   .
-6  0.019231642   9.310531 0.48214786   0.007      0.105    
+6  0.019231642   9.310531 0.48214786   0.011      0.165    
 7  0.018446705   6.024206 0.13089212   0.007      0.105    
 8  0.047339690  31.537806 0.42311154   0.001      0.015   .
 9  0.030274387  19.376058 0.54771671   0.001      0.015   .
 10 0.064276226  20.822734 0.34235116   0.001      0.015   .
 11 0.134889936  88.507416 0.67302224   0.001      0.015   .
-12 0.004923355   3.031074 0.15926973   0.059      0.885    
+12 0.004923355   3.031074 0.15926973   0.052      0.780    
 13 0.072094576  31.446165 0.30107534   0.001      0.015   .
 14 0.130819285  47.080565 0.50580446   0.001      0.015   .
 15 0.254302734 178.323021 0.78444770   0.001      0.015   .</code></pre>
@@ -1590,7 +1912,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0069226 0.0069226   3.995 0.23507   0.03 *
+Source_Sink  1 0.0069226 0.0069226   3.995 0.23507  0.021 *
 Residuals   13 0.0225266 0.0017328         0.76493         
 Total       14 0.0294492                   1.00000         
 ---
@@ -1602,10 +1924,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.034128 0.034128  18.867 0.59205  0.001 ***
-Residuals   13  0.023516 0.001809         0.40795           
-Total       14  0.057644                  1.00000           
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.034128 0.034128  18.867 0.59205  0.002 **
+Residuals   13  0.023516 0.001809         0.40795          
+Total       14  0.057644                  1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1616,7 +1938,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)  
-Source_Sink  1  0.011138 0.011137  3.8208 0.0816  0.024 *
+Source_Sink  1  0.011138 0.011137  3.8208 0.0816  0.026 *
 Residuals   43  0.125344 0.002915         0.9184         
 Total       44  0.136481                  1.0000         
 ---
@@ -1655,7 +1977,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.019232 0.0192316  9.3105 0.48215  0.009 **
+Source_Sink  1  0.019232 0.0192316  9.3105 0.48215  0.008 **
 Residuals   10  0.020656 0.0020656         0.51785          
 Total       11  0.039887                   1.00000          
 ---
@@ -1667,10 +1989,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.018447 0.0184467  6.0242 0.13089  0.005 **
-Residuals   40  0.122484 0.0030621         0.86911          
-Total       41  0.140931                   1.00000          
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
+Source_Sink  1  0.018447 0.0184467  6.0242 0.13089  0.011 *
+Residuals   40  0.122484 0.0030621         0.86911         
+Total       41  0.140931                   1.00000         
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1733,7 +2055,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0049234 0.0049234  3.0311 0.15927  0.058 .
+Source_Sink  1 0.0049234 0.0049234  3.0311 0.15927  0.061 .
 Residuals   16 0.0259887 0.0016243         0.84073         
 Total       17 0.0309121                   1.00000         
 ---
@@ -1793,7 +2115,7 @@ ggplot(data = q1.ITS.proportions) +
   theme_classic() + 
   scale_fill_brewer(palette = &quot;Set1&quot;) +
   ggtitle(&quot;Fungi, Source Tracker dispersal sources&quot;)</code></pre>
-<p><img src="05_output_figures/NMDS_dispersal_sources_fungi-2.png" width="672" /></p>
+<p><img src="../05_output_figures/NMDS_dispersal_sources_fungi-2.png" width="672" /></p>
 </div>
 
 

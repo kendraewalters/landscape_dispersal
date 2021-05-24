@@ -39,7 +39,7 @@ require(pairwiseAdonis)
 
 knitr::opts_knit$set(root.dir = "../")
 
-knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "05_output_figures/")
+knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "../05_output_figures/")
 
 
 ```
