@@ -239,7 +239,7 @@ glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
 load(glass.slides.16S)
 
 # Create our visualization, just for fun
-q1.NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2, trymax = 50, verbose = FALSE)
+q1.NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2, trymax = 50, trace = 0)
 q1.NMDS1.meta <- data.frame(q1.NMDS1$points[,1:2]) %>% 
   rownames_to_column("SampleID") %>% 
   filter(grepl("LD", SampleID)) %>% 
@@ -279,7 +279,7 @@ glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
 load(glass.slides.ITS)
 
 # Create our visualization, just for fun
-q1.ITS.NMDS1 <- metaMDS(q1.ITS.bray.dist, autotransform = FALSE, k = 2, trymax = 200)
+q1.ITS.NMDS1 <- metaMDS(q1.ITS.bray.dist, autotransform = FALSE, k = 2, trymax = 200, trace = 0)
 q1.ITS.NMDS1.meta <- data.frame(q1.ITS.NMDS1$points[,1:2]) %>% 
   rownames_to_column("SampleID") %>% 
   filter(grepl("LD", SampleID)) %>% 
@@ -329,7 +329,8 @@ q1.bray.dist.df.dispersal <- q1.bray.dist.df %>%
 
 # Do the NMDS
 q1.dispersal.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
-                             autotransform = FALSE, k = 2, trymax = 200)
+                             autotransform = FALSE, k = 2, trymax = 200, 
+                             trace = 0)
 
 # Merge with our metatdata and create a new column to specify what we want to look at
 q1.NMDS.meta <- data.frame(q1.dispersal.NMDS$points[,1:2]) %>% 
@@ -369,7 +370,7 @@ q1.ITS.bray.dist.df.dispersal <- q1.ITS.bray.dist.df %>%
 
 # Do the NMDS
 q1.ITS.dispersal.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
-                             autotransform = FALSE, k = 2, trymax = 200)
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
 
 # Merge with our metatdata and create a new column to specify what we want to look at
 q1.ITS.NMDS.meta <- data.frame(q1.ITS.dispersal.NMDS$points[,1:2]) %>% 
@@ -463,7 +464,7 @@ q1.bray.dist.df.source <- q1.bray.dist.df %>%
 
 # Do the NMDS
 q1.source.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.source)), 
-                             autotransform = FALSE, k = 2, trymax = 200)
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
 
 # Merge with our metatdata and create a new column to specify what we want to look at
 q1.source.NMDS.meta <- data.frame(q1.source.NMDS$points[,1:2]) %>% 
@@ -517,7 +518,7 @@ q1.ITS.bray.dist.df.source <- q1.ITS.bray.dist.df %>%
 
 # Do the NMDS
 q1.ITS.source.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.source)), 
-                             autotransform = FALSE, k = 2, trymax = 200)
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
 
 # Merge with our metatdata and create a new column to specify what we want to look at
 q1.ITS.source.NMDS.meta <- data.frame(q1.ITS.source.NMDS$points[,1:2]) %>% 
