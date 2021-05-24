@@ -34,6 +34,8 @@ require(ggplot2)
 require(gridExtra)
 library(car)
 require(vegan)
+require(magrittr)
+require(pairwiseAdonis)
 
 knitr::opts_knit$set(root.dir = "../")
 
@@ -237,7 +239,7 @@ glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
 load(glass.slides.16S)
 
 # Create our visualization, just for fun
-q1.NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2)
+q1.NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2, trymax = 50, verbose = FALSE)
 q1.NMDS1.meta <- data.frame(q1.NMDS1$points[,1:2]) %>% 
   rownames_to_column("SampleID") %>% 
   filter(grepl("LD", SampleID)) %>% 
@@ -310,3 +312,248 @@ adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 
 
 # Dispersal communities by ecosystem
 A key question of this study is - Do different ecosystems (plant communities) have different dispersal communities? To answer this question, we will use a PERMANOVA to see if different ecosystems show different bacterial and fungal communities on the glass slides. 
+
+```{r NMDS_dispersal_communities_by_ecosystem_bacteria}
+# Load data
+glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
+load(glass.slides.16S)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.dispersal <- q1.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.dispersal.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
+                             autotransform = FALSE, k = 2, trymax = 200)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.NMDS.meta <- data.frame(q1.dispersal.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") 
+
+ggplot(data = q1.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") 
+
+# Do the staaaats!!
+adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)
+
+adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)
+```
+
+```{r NMDS_dispersal_communities_by_ecosystem_fungi}
+# Load data
+glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
+load(glass.slides.ITS)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.dispersal <- q1.ITS.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.ITS.dispersal.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
+                             autotransform = FALSE, k = 2, trymax = 200)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.NMDS.meta <- data.frame(q1.ITS.dispersal.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.ITS.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") 
+
+
+ggplot(data = q1.ITS.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") 
+
+# Do the staaaats!!
+adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)
+
+adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)
+```
+
+# Beta-diversity of dispersal community by ecosystem
+We hypothesize that dispersal communities will show higher beta-diversity in the shrubland because the plant community is more heterogeneous in the shrubland. So let's test that with our good friend, PERMDISP!
+
+```{r betadisper_bacteria}
+# Load data
+glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
+load(glass.slides.16S)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.dispersal <- q1.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+q1.permdisp.meta <- data.frame("New_Sample_ID" = names(q1.bray.dist.df.dispersal)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Test betadiversity
+betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
+           q1.permdisp.meta$Ecosystem, 
+           type = c("centroid")) %>% anova
+```
+
+
+```{r betadisper_fungi}
+# Load data
+glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
+load(glass.slides.ITS)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.dispersal <- q1.ITS.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+q1.ITS.permdisp.meta <- data.frame("New_Sample_ID" = names(q1.ITS.bray.dist.df.dispersal)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Test betadiversity
+betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
+           q1.ITS.permdisp.meta$Ecosystem, 
+           type = c("centroid")) %T>% print %>% anova %>% print
+```
+
+# Dispersal sources - Air, Environmental Litter, and Soil
+Let's check out how our dispersal slides compare to the dispersal sources! We'll look at this with an NMDS, and maybe a PERMANOVA, and then with SourceTracker to get % of source communities. 
+
+```{r NMDS_dispersal_sources_bacteria}
+# Load data
+glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
+load(glass.slides.16S)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.source <- q1.bray.dist.df %>% 
+  select(!(contains("LD"))) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(!(grepl("LD", SampleID))) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.source.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.source)), 
+                             autotransform = FALSE, k = 2, trymax = 200)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.source.NMDS.meta <- data.frame(q1.source.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem, Treatment)) %>% 
+  mutate(Source_Sink = ifelse(Treatment == "Open" | Treatment == "Environmental Litter",
+                                     paste0(Treatment, "_", Ecosystem),
+                                     Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.source.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Source_Sink)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1")  +
+  ggtitle("Bacteria, glass slide communities + dispersal sources")
+
+# Doing the stats to test differences among groups
+adonis(q1.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
+       data = q1.source.NMDS.meta, na.rm= TRUE)
+
+pairwise.adonis(q1.bray.dist.df.source, q1.source.NMDS.meta$Source_Sink)
+
+pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)
+
+# Looking at the SourceTracker analysis
+q1.proportions <- as.data.frame(fread("03_Processed_data/16S_glass_slide__dispersal_source_tracker/mixing_proportions.txt")) %>% 
+  rename(Environmental_Grass = EnvG,
+         Environmental_Shrub = EnvS) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID")) %>% 
+  pivot_longer(Air:Unknown, names_to = "Source", values_to = "Proportion")
+
+ggplot(data = q1.proportions) + 
+  geom_boxplot(color = "black", aes(x = Ecosystem, y = Proportion, fill = Source)) + 
+  theme_classic() + 
+  scale_fill_brewer(palette = "Set1") +
+  ggtitle("BActeria, Source Tracker dispersal sources")
+```
+
+```{r NMDS_dispersal_sources_fungi}
+# Load data
+glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
+load(glass.slides.ITS)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.source <- q1.ITS.bray.dist.df %>% 
+  select(!(contains("LD"))) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(!(grepl("LD", SampleID))) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.ITS.source.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.source)), 
+                             autotransform = FALSE, k = 2, trymax = 200)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.source.NMDS.meta <- data.frame(q1.ITS.source.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem, Treatment)) %>% 
+  mutate(Source_Sink = ifelse(Treatment == "Open" | Treatment == "Environmental Litter",
+                                     paste0(Treatment, "_", Ecosystem),
+                                     Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.ITS.source.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Source_Sink)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, glass slide communities + dispersal sources")
+
+# Doing the stats to test differences among groups
+adonis(q1.ITS.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
+       data = q1.ITS.source.NMDS.meta, na.rm= TRUE)
+
+pairwise.adonis(q1.ITS.bray.dist.df.source, q1.ITS.source.NMDS.meta$Source_Sink)
+
+pairwise.adonis2(q1.ITS.bray.dist.df.source ~ Source_Sink, data = q1.ITS.source.NMDS.meta)
+
+
+# Looking at the SourceTracker analysis
+q1.ITS.proportions <- as.data.frame(fread("03_Processed_data/ITS_glass_slide__dispersal_source_tracker/mixing_proportions.txt")) %>% 
+  rename(Environmental_Grass = EnvG,
+         Environmental_Shrub = EnvS) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID")) %>% 
+  pivot_longer(Air:Unknown, names_to = "Source", values_to = "Proportion")
+
+ggplot(data = q1.ITS.proportions) + 
+  geom_boxplot(color = "black", aes(x = Ecosystem, y = Proportion, fill = Source)) + 
+  theme_classic() + 
+  scale_fill_brewer(palette = "Set1") +
+  ggtitle("Fungi, Source Tracker dispersal sources")
+```

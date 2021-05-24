@@ -277,6 +277,8 @@ require(ggplot2)
 require(gridExtra)
 library(car)
 require(vegan)
+require(magrittr)
+require(pairwiseAdonis)
 
 knitr::opts_knit$set(root.dir = &quot;../&quot;)
 
@@ -521,33 +523,66 @@ glass.slides.16S &lt;- &quot;03_Processed_data/16S_glass_slides.rda&quot;
 load(glass.slides.16S)
 
 # Create our visualization, just for fun
-q1.NMDS1 &lt;- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2)</code></pre>
+q1.NMDS1 &lt;- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2, trymax = 50, verbose = FALSE)</code></pre>
 <pre><code>Run 0 stress 0.184611 
-Run 1 stress 0.1840205 
+Run 1 stress 0.2029846 
+Run 2 stress 0.1918859 
+Run 3 stress 0.1844794 
 ... New best solution
-... Procrustes: rmse 0.01815191  max resid 0.1775647 
-Run 2 stress 0.1954214 
-Run 3 stress 0.1911713 
-Run 4 stress 0.1967837 
-Run 5 stress 0.1918709 
-Run 6 stress 0.2013347 
-Run 7 stress 0.1968445 
-Run 8 stress 0.1988129 
-Run 9 stress 0.1870468 
-Run 10 stress 0.1892339 
-Run 11 stress 0.1935835 
-Run 12 stress 0.1896745 
-Run 13 stress 0.2023892 
-Run 14 stress 0.1878936 
-Run 15 stress 0.190776 
-Run 16 stress 0.1957297 
-Run 17 stress 0.1910222 
-Run 18 stress 0.1865509 
-Run 19 stress 0.1854668 
-Run 20 stress 0.1963026 
+... Procrustes: rmse 0.02426896  max resid 0.1765565 
+Run 4 stress 0.1947632 
+Run 5 stress 0.1921714 
+Run 6 stress 0.1914096 
+Run 7 stress 0.1841654 
+... New best solution
+... Procrustes: rmse 0.01350159  max resid 0.1246605 
+Run 8 stress 0.1878966 
+Run 9 stress 0.189713 
+Run 10 stress 0.1856318 
+Run 11 stress 0.1953137 
+Run 12 stress 0.1917199 
+Run 13 stress 0.1934812 
+Run 14 stress 0.1883079 
+Run 15 stress 0.1878925 
+Run 16 stress 0.1933934 
+Run 17 stress 0.1869867 
+Run 18 stress 0.1922574 
+Run 19 stress 0.1986293 
+Run 20 stress 0.1948591 
+Run 21 stress 0.2021976 
+Run 22 stress 0.1921003 
+Run 23 stress 0.1869357 
+Run 24 stress 0.1926092 
+Run 25 stress 0.1938112 
+Run 26 stress 0.1927309 
+Run 27 stress 0.192345 
+Run 28 stress 0.1912877 
+Run 29 stress 0.1943344 
+Run 30 stress 0.1951845 
+Run 31 stress 0.1860823 
+Run 32 stress 0.1911436 
+Run 33 stress 0.1870461 
+Run 34 stress 0.1998208 
+Run 35 stress 0.1902421 
+Run 36 stress 0.1912694 
+Run 37 stress 0.1922218 
+Run 38 stress 0.2005651 
+Run 39 stress 0.1905473 
+Run 40 stress 0.1953114 
+Run 41 stress 0.1950272 
+Run 42 stress 0.1922359 
+Run 43 stress 0.1929964 
+Run 44 stress 0.1876828 
+Run 45 stress 0.1879973 
+Run 46 stress 0.2099414 
+Run 47 stress 0.1899497 
+Run 48 stress 0.1949039 
+Run 49 stress 0.1866274 
+Run 50 stress 0.1905506 
 *** No convergence -- monoMDS stopping criteria:
-    19: stress ratio &gt; sratmax
-     1: scale factor of the gradient &lt; sfgrmin</code></pre>
+     1: no. of iterations &gt;= maxit
+    47: stress ratio &gt; sratmax
+     2: scale factor of the gradient &lt; sfgrmin</code></pre>
 <pre class="r"><code>q1.NMDS1.meta &lt;- data.frame(q1.NMDS1$points[,1:2]) %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
   filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
@@ -710,6 +745,1055 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <div id="dispersal-communities-by-ecosystem" class="section level1">
 <h1>Dispersal communities by ecosystem</h1>
 <p>A key question of this study is - Do different ecosystems (plant communities) have different dispersal communities? To answer this question, we will use a PERMANOVA to see if different ecosystems show different bacterial and fungal communities on the glass slides.</p>
+<pre class="r"><code># Load data
+glass.slides.16S &lt;- &quot;03_Processed_data/16S_glass_slides.rda&quot;
+load(glass.slides.16S)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.dispersal &lt;- q1.bray.dist.df %&gt;% 
+  select(contains(&quot;LO&quot;)) %&gt;% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  mutate(SampleID = ifelse(SampleID == &quot;LOT1A3_dup_new_protocol&quot;, &quot;LOT1A3&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;)
+
+# Do the NMDS
+q1.dispersal.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
+                             autotransform = FALSE, k = 2, trymax = 200)</code></pre>
+<pre><code>Run 0 stress 0.1857125 
+Run 1 stress 0.1855536 
+... New best solution
+... Procrustes: rmse 0.01690935  max resid 0.08292035 
+Run 2 stress 0.1893884 
+Run 3 stress 0.1899259 
+Run 4 stress 0.1856794 
+... Procrustes: rmse 0.01832994  max resid 0.08338042 
+Run 5 stress 0.2030757 
+Run 6 stress 0.1850784 
+... New best solution
+... Procrustes: rmse 0.01237426  max resid 0.0728192 
+Run 7 stress 0.1862602 
+Run 8 stress 0.1862473 
+Run 9 stress 0.1918091 
+Run 10 stress 0.1861302 
+Run 11 stress 0.1906278 
+Run 12 stress 0.1857129 
+Run 13 stress 0.186171 
+Run 14 stress 0.1909369 
+Run 15 stress 0.1866251 
+Run 16 stress 0.1861296 
+Run 17 stress 0.1894508 
+Run 18 stress 0.1900704 
+Run 19 stress 0.1910797 
+Run 20 stress 0.1862617 
+Run 21 stress 0.1853963 
+... Procrustes: rmse 0.007877383  max resid 0.0652833 
+Run 22 stress 0.1910261 
+Run 23 stress 0.185554 
+... Procrustes: rmse 0.01234098  max resid 0.07289019 
+Run 24 stress 0.1893893 
+Run 25 stress 0.2266602 
+Run 26 stress 0.1894948 
+Run 27 stress 0.1850893 
+... Procrustes: rmse 0.00516431  max resid 0.0383416 
+Run 28 stress 0.1864984 
+Run 29 stress 0.1855958 
+Run 30 stress 0.1853968 
+... Procrustes: rmse 0.00786697  max resid 0.06529729 
+Run 31 stress 0.1852284 
+... Procrustes: rmse 0.007325062  max resid 0.04152469 
+Run 32 stress 0.1864454 
+Run 33 stress 0.1855522 
+... Procrustes: rmse 0.01253541  max resid 0.07342446 
+Run 34 stress 0.1855534 
+... Procrustes: rmse 0.01266494  max resid 0.07405608 
+Run 35 stress 0.1901596 
+Run 36 stress 0.1858605 
+Run 37 stress 0.18609 
+Run 38 stress 0.1859287 
+Run 39 stress 0.1914894 
+Run 40 stress 0.1863214 
+Run 41 stress 0.1910837 
+Run 42 stress 0.1866716 
+Run 43 stress 0.1861532 
+Run 44 stress 0.1867096 
+Run 45 stress 0.1860897 
+Run 46 stress 0.1866712 
+Run 47 stress 0.185091 
+... Procrustes: rmse 0.003708839  max resid 0.02672927 
+Run 48 stress 0.1861052 
+Run 49 stress 0.1894531 
+Run 50 stress 0.1899374 
+Run 51 stress 0.186711 
+Run 52 stress 0.1907543 
+Run 53 stress 0.2076176 
+Run 54 stress 0.1855526 
+... Procrustes: rmse 0.01256632  max resid 0.07327707 
+Run 55 stress 0.1912323 
+Run 56 stress 0.1857135 
+Run 57 stress 0.1893896 
+Run 58 stress 0.204887 
+Run 59 stress 0.1854183 
+... Procrustes: rmse 0.009268342  max resid 0.06438137 
+Run 60 stress 0.1858947 
+Run 61 stress 0.1866639 
+Run 62 stress 0.1855799 
+Run 63 stress 0.1862394 
+Run 64 stress 0.1871628 
+Run 65 stress 0.1850774 
+... New best solution
+... Procrustes: rmse 0.001625561  max resid 0.01194641 
+Run 66 stress 0.1862585 
+Run 67 stress 0.18671 
+Run 68 stress 0.1854185 
+... Procrustes: rmse 0.009167794  max resid 0.06425016 
+Run 69 stress 0.1984451 
+Run 70 stress 0.1866722 
+Run 71 stress 0.1866644 
+Run 72 stress 0.1905944 
+Run 73 stress 0.1900703 
+Run 74 stress 0.1904382 
+Run 75 stress 0.1861749 
+Run 76 stress 0.2280174 
+Run 77 stress 0.1906179 
+Run 78 stress 0.1910823 
+Run 79 stress 0.185396 
+... Procrustes: rmse 0.00792246  max resid 0.06519536 
+Run 80 stress 0.1867093 
+Run 81 stress 0.1904355 
+Run 82 stress 0.1860616 
+Run 83 stress 0.1903171 
+Run 84 stress 0.1850769 
+... New best solution
+... Procrustes: rmse 0.0001825076  max resid 0.001390624 
+... Similar to previous best
+*** Solution reached</code></pre>
+<pre class="r"><code># Merge with our metatdata and create a new column to specify what we want to look at
+q1.NMDS.meta &lt;- data.frame(q1.dispersal.NMDS$points[,1:2]) %&gt;% 
+  rownames_to_column(&quot;New_Sample_ID&quot;) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(data = q1.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-2.png" width="672" /></p>
+<pre class="r"><code># Do the staaaats!!
+adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.bray.dist.df.dispersal ~ Ecosystem, data = q1.NMDS.meta,      permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+          Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Ecosystem  1    0.7798 0.77980   2.096 0.02791 9.999e-05 ***
+Residuals 73   27.1594 0.37205         0.97209              
+Total     74   27.9392                 1.00000              
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point,      data = q1.NMDS.meta, permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+                     Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Ecosystem             1    0.7798 0.77980  2.1121 0.02791 9.999e-05 ***
+Time_Point            1    0.5401 0.54013  1.4629 0.01933 0.0006999 ***
+Ecosystem:Time_Point  1    0.4053 0.40533  1.0978 0.01451 0.1278872    
+Residuals            71   26.2140 0.36921         0.93825              
+Total                74   27.9392                 1.00000              
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># Load data
+glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
+load(glass.slides.ITS)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.dispersal &lt;- q1.ITS.bray.dist.df %&gt;% 
+  select(contains(&quot;LO&quot;)) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;)
+
+# Do the NMDS
+q1.ITS.dispersal.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
+                             autotransform = FALSE, k = 2, trymax = 200)</code></pre>
+<pre><code>Run 0 stress 0.1540828 
+Run 1 stress 0.1622525 
+Run 2 stress 0.1540885 
+... Procrustes: rmse 0.004967373  max resid 0.03069295 
+Run 3 stress 0.1730472 
+Run 4 stress 0.1641882 
+Run 5 stress 0.1665899 
+Run 6 stress 0.1716413 
+Run 7 stress 0.1560724 
+Run 8 stress 0.1624837 
+Run 9 stress 0.1705195 
+Run 10 stress 0.1706415 
+Run 11 stress 0.1665554 
+Run 12 stress 0.1753888 
+Run 13 stress 0.1727726 
+Run 14 stress 0.1845243 
+Run 15 stress 0.1667195 
+Run 16 stress 0.1717441 
+Run 17 stress 0.1610905 
+Run 18 stress 0.1633855 
+Run 19 stress 0.1595664 
+Run 20 stress 0.1646636 
+Run 21 stress 0.1595816 
+Run 22 stress 0.1556303 
+Run 23 stress 0.1649446 
+Run 24 stress 0.1579233 
+Run 25 stress 0.1540828 
+... New best solution
+... Procrustes: rmse 2.086581e-05  max resid 9.186997e-05 
+... Similar to previous best
+*** Solution reached</code></pre>
+<pre class="r"><code># Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.NMDS.meta &lt;- data.frame(q1.ITS.dispersal.NMDS$points[,1:2]) %&gt;% 
+  rownames_to_column(&quot;New_Sample_ID&quot;) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.ITS.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(data = q1.ITS.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-2.png" width="672" /></p>
+<pre class="r"><code># Do the staaaats!!
+adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.ITS.bray.dist.df.dispersal ~ Ecosystem, data = q1.ITS.NMDS.meta,      permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+          Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Ecosystem  1    1.4956 1.49559  9.7486 0.11781 9.999e-05 ***
+Residuals 73   11.1994 0.15342         0.88219              
+Total     74   12.6949                 1.00000              
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.ITS.bray.dist.df.dispersal ~ Ecosystem *      Time_Point, data = q1.ITS.NMDS.meta, permutations = 10000,      na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+                     Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Ecosystem             1    1.4956 1.49559 10.3117 0.11781 9.999e-05 ***
+Time_Point            1    0.6317 0.63174  4.3557 0.04976 9.999e-05 ***
+Ecosystem:Time_Point  1    0.2699 0.26990  1.8609 0.02126    0.0151 *  
+Residuals            71   10.2977 0.14504         0.81117              
+Total                74   12.6949                 1.00000              
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="beta-diversity-of-dispersal-community-by-ecosystem" class="section level1">
+<h1>Beta-diversity of dispersal community by ecosystem</h1>
+<p>We hypothesize that dispersal communities will show higher beta-diversity in the shrubland because the plant community is more heterogeneous in the shrubland. So let’s test that with our good friend, PERMDISP!</p>
+<pre class="r"><code># Load data
+glass.slides.16S &lt;- &quot;03_Processed_data/16S_glass_slides.rda&quot;
+load(glass.slides.16S)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.dispersal &lt;- q1.bray.dist.df %&gt;% 
+  select(contains(&quot;LO&quot;)) %&gt;% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  mutate(SampleID = ifelse(SampleID == &quot;LOT1A3_dup_new_protocol&quot;, &quot;LOT1A3&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;)
+
+q1.permdisp.meta &lt;- data.frame(&quot;New_Sample_ID&quot; = names(q1.bray.dist.df.dispersal)) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Test betadiversity
+betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
+           q1.permdisp.meta$Ecosystem, 
+           type = c(&quot;centroid&quot;)) %&gt;% anova</code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: Distances
+          Df  Sum Sq   Mean Sq F value Pr(&gt;F)
+Groups     1 0.00120 0.0011997  0.5848 0.4469
+Residuals 73 0.14976 0.0020515               </code></pre>
+<pre class="r"><code># Load data
+glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
+load(glass.slides.ITS)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.dispersal &lt;- q1.ITS.bray.dist.df %&gt;% 
+  select(contains(&quot;LO&quot;)) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;)
+
+q1.ITS.permdisp.meta &lt;- data.frame(&quot;New_Sample_ID&quot; = names(q1.ITS.bray.dist.df.dispersal)) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Test betadiversity
+betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
+           q1.ITS.permdisp.meta$Ecosystem, 
+           type = c(&quot;centroid&quot;)) %T&gt;% print %&gt;% anova %&gt;% print</code></pre>
+<pre><code>
+    Homogeneity of multivariate dispersions
+
+Call: betadisper(d = as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)),
+group = q1.ITS.permdisp.meta$Ecosystem, type = c(&quot;centroid&quot;))
+
+No. of Positive Eigenvalues: 74
+No. of Negative Eigenvalues: 0
+
+Average distance to centroid:
+Grassland Shrubland 
+   0.3339    0.4275 
+
+Eigenvalues for PCoA axes:
+(Showing 8 of 74 eigenvalues)
+ PCoA1  PCoA2  PCoA3  PCoA4  PCoA5  PCoA6  PCoA7  PCoA8 
+2.2391 1.0949 0.7930 0.5262 0.4724 0.4058 0.3933 0.3287 
+Analysis of Variance Table
+
+Response: Distances
+          Df  Sum Sq  Mean Sq F value    Pr(&gt;F)    
+Groups     1 0.16383 0.163834  43.834 5.219e-09 ***
+Residuals 73 0.27285 0.003738                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="dispersal-sources---air-environmental-litter-and-soil" class="section level1">
+<h1>Dispersal sources - Air, Environmental Litter, and Soil</h1>
+<p>Let’s check out how our dispersal slides compare to the dispersal sources! We’ll look at this with an NMDS, and maybe a PERMANOVA, and then with SourceTracker to get % of source communities.</p>
+<pre class="r"><code># Load data
+glass.slides.16S &lt;- &quot;03_Processed_data/16S_glass_slides.rda&quot;
+load(glass.slides.16S)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.source &lt;- q1.bray.dist.df %&gt;% 
+  select(!(contains(&quot;LD&quot;))) %&gt;% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(!(grepl(&quot;LD&quot;, SampleID))) %&gt;% 
+  mutate(SampleID = ifelse(SampleID == &quot;LOT1A3_dup_new_protocol&quot;, &quot;LOT1A3&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;)
+
+# Do the NMDS
+q1.source.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.bray.dist.df.source)), 
+                             autotransform = FALSE, k = 2, trymax = 200)</code></pre>
+<pre><code>Run 0 stress 0.1784405 
+Run 1 stress 0.1848329 
+Run 2 stress 0.1900917 
+Run 3 stress 0.201064 
+Run 4 stress 0.1872516 
+Run 5 stress 0.181421 
+Run 6 stress 0.1775794 
+... New best solution
+... Procrustes: rmse 0.01620914  max resid 0.15461 
+Run 7 stress 0.1829255 
+Run 8 stress 0.1824932 
+Run 9 stress 0.195683 
+Run 10 stress 0.1786467 
+Run 11 stress 0.1863811 
+Run 12 stress 0.1775595 
+... New best solution
+... Procrustes: rmse 0.004680632  max resid 0.02833621 
+Run 13 stress 0.1893134 
+Run 14 stress 0.1796833 
+Run 15 stress 0.1931503 
+Run 16 stress 0.194716 
+Run 17 stress 0.1891123 
+Run 18 stress 0.1825168 
+Run 19 stress 0.2099702 
+Run 20 stress 0.1966492 
+Run 21 stress 0.1937112 
+Run 22 stress 0.1865669 
+Run 23 stress 0.1786475 
+Run 24 stress 0.1924572 
+Run 25 stress 0.1853316 
+Run 26 stress 0.1880364 
+Run 27 stress 0.1826903 
+Run 28 stress 0.181592 
+Run 29 stress 0.1907389 
+Run 30 stress 0.1815045 
+Run 31 stress 0.1903477 
+Run 32 stress 0.1774964 
+... New best solution
+... Procrustes: rmse 0.003611276  max resid 0.02722805 
+Run 33 stress 0.1964757 
+Run 34 stress 0.1878865 
+Run 35 stress 0.1900915 
+Run 36 stress 0.1911454 
+Run 37 stress 0.1926102 
+Run 38 stress 0.1832835 
+Run 39 stress 0.1796904 
+Run 40 stress 0.187641 
+Run 41 stress 0.199913 
+Run 42 stress 0.1884559 
+Run 43 stress 0.1895532 
+Run 44 stress 0.1775594 
+... Procrustes: rmse 0.00360158  max resid 0.02745468 
+Run 45 stress 0.1853506 
+Run 46 stress 0.1935277 
+Run 47 stress 0.1931223 
+Run 48 stress 0.1878223 
+Run 49 stress 0.1852926 
+Run 50 stress 0.182591 
+Run 51 stress 0.1881869 
+Run 52 stress 0.1774965 
+... Procrustes: rmse 0.0003827588  max resid 0.002636582 
+... Similar to previous best
+*** Solution reached</code></pre>
+<pre class="r"><code># Merge with our metatdata and create a new column to specify what we want to look at
+q1.source.NMDS.meta &lt;- data.frame(q1.source.NMDS$points[,1:2]) %&gt;% 
+  rownames_to_column(&quot;New_Sample_ID&quot;) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Time_Point, Ecosystem, Treatment)) %&gt;% 
+  mutate(Source_Sink = ifelse(Treatment == &quot;Open&quot; | Treatment == &quot;Environmental Litter&quot;,
+                                     paste0(Treatment, &quot;_&quot;, Ecosystem),
+                                     Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.source.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Source_Sink)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = &quot;Set1&quot;)  +
+  ggtitle(&quot;Bacteria, glass slide communities + dispersal sources&quot;)</code></pre>
+<p><img src="05_output_figures/NMDS_dispersal_sources_bacteria-1.png" width="672" /></p>
+<pre class="r"><code># Doing the stats to test differences among groups
+adonis(q1.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
+       data = q1.source.NMDS.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta,      permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+             Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Source_Sink   5     5.900  1.1800  3.3995 0.14781 9.999e-05 ***
+Residuals    98    34.015  0.3471         0.85219              
+Total       103    39.915                 1.00000              
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>pairwise.adonis(q1.bray.dist.df.source, q1.source.NMDS.meta$Source_Sink)</code></pre>
+<pre><code>                                                              pairs Df
+1                             Air vs Environmental Litter_Grassland  1
+2                             Air vs Environmental Litter_Shrubland  1
+3                                             Air vs Open_Shrubland  1
+4                                             Air vs Open_Grassland  1
+5                                                       Air vs Soil  1
+6  Environmental Litter_Grassland vs Environmental Litter_Shrubland  1
+7                  Environmental Litter_Grassland vs Open_Shrubland  1
+8                  Environmental Litter_Grassland vs Open_Grassland  1
+9                            Environmental Litter_Grassland vs Soil  1
+10                 Environmental Litter_Shrubland vs Open_Shrubland  1
+11                 Environmental Litter_Shrubland vs Open_Grassland  1
+12                           Environmental Litter_Shrubland vs Soil  1
+13                                 Open_Shrubland vs Open_Grassland  1
+14                                           Open_Shrubland vs Soil  1
+15                                           Open_Grassland vs Soil  1
+     SumsOfSqs   F.Model        R2 p.value p.adjusted sig
+1  0.005840203 17.212055 0.6566465   0.003      0.045   .
+2  0.004299403 10.990642 0.5497894   0.004      0.060    
+3  0.008744688 10.113011 0.2059131   0.002      0.030   .
+4  0.009626093 15.177112 0.2654403   0.001      0.015   .
+5  0.012409379 36.796226 0.7104036   0.001      0.015   .
+6  0.001197215  4.186387 0.2950989   0.004      0.060    
+7  0.008228917  9.955660 0.1992899   0.002      0.030   .
+8  0.012317914 20.389484 0.3216541   0.001      0.015   .
+9  0.017422542 63.386638 0.7984547   0.001      0.015   .
+10 0.006334252  7.556705 0.1588988   0.001      0.015   .
+11 0.010379049 16.876802 0.2818588   0.001      0.015   .
+12 0.013304078 43.757193 0.7322498   0.001      0.015   .
+13 0.002660468  3.428498 0.0448589   0.018      0.270    
+14 0.009533810 12.506147 0.2137578   0.001      0.015   .
+15 0.007265208 12.722052 0.2061184   0.001      0.015   .</code></pre>
+<pre class="r"><code>pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)</code></pre>
+<pre><code>$parent_call
+[1] &quot;q1.bray.dist.df.source ~ Source_Sink , strata = Null&quot;
+
+$`Air_vs_Environmental Litter_Grassland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1 0.0058402 0.0058402  17.212 0.65665  0.004 **
+Residuals    9 0.0030538 0.0003393         0.34335          
+Total       10 0.0088940                   1.00000          
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Air_vs_Environmental Litter_Shrubland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1 0.0042994 0.0042994  10.991 0.54979  0.001 ***
+Residuals    9 0.0035207 0.0003912         0.45021           
+Total       10 0.0078201                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Air_vs_Open_Shrubland
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.008745 0.0087447  10.113 0.20591  0.001 ***
+Residuals   39  0.033723 0.0008647         0.79409           
+Total       40  0.042468                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Air_vs_Open_Grassland
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.009626 0.0096261  15.177 0.26544  0.001 ***
+Residuals   42  0.026639 0.0006343         0.73456           
+Total       43  0.036265                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Air_vs_Soil
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model     R2 Pr(&gt;F)    
+Source_Sink  1 0.0124094 0.0124094  36.796 0.7104  0.001 ***
+Residuals   15 0.0050587 0.0003372         0.2896           
+Total       16 0.0174681                   1.0000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Grassland_vs_Environmental Litter_Shrubland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs    MeanSqs F.Model     R2 Pr(&gt;F)   
+Source_Sink  1 0.0011972 0.00119722  4.1864 0.2951  0.002 **
+Residuals   10 0.0028598 0.00028598         0.7049          
+Total       11 0.0040570                    1.0000          
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Grassland_vs_Open_Shrubland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.008229 0.0082289  9.9557 0.19929  0.001 ***
+Residuals   40  0.033062 0.0008266         0.80071           
+Total       41  0.041291                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Grassland_vs_Open_Grassland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.012318 0.0123179   20.39 0.32165  0.001 ***
+Residuals   43  0.025978 0.0006041         0.67835           
+Total       44  0.038296                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Grassland_vs_Soil`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1 0.0174225 0.0174225  63.387 0.79845  0.001 ***
+Residuals   16 0.0043978 0.0002749         0.20155           
+Total       17 0.0218203                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Shrubland_vs_Open_Shrubland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model     R2 Pr(&gt;F)   
+Source_Sink  1  0.006334 0.0063343  7.5567 0.1589  0.002 **
+Residuals   40  0.033529 0.0008382         0.8411          
+Total       41  0.039863                   1.0000          
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Shrubland_vs_Open_Grassland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.010379 0.010379  16.877 0.28186  0.001 ***
+Residuals   43  0.026445 0.000615         0.71814           
+Total       44  0.036824                  1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Shrubland_vs_Soil`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1 0.0133041 0.013304  43.757 0.73225  0.001 ***
+Residuals   16 0.0048647 0.000304         0.26775           
+Total       17 0.0181688                  1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Open_Shrubland_vs_Open_Grassland
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)  
+Source_Sink  1  0.002660 0.00266047  3.4285 0.04486  0.026 *
+Residuals   73  0.056647 0.00077599         0.95514         
+Total       74  0.059307                    1.00000         
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Open_Shrubland_vs_Soil
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.009534 0.0095338  12.506 0.21376  0.001 ***
+Residuals   46  0.035067 0.0007623         0.78624           
+Total       47  0.044601                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Open_Grassland_vs_Soil
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.007265 0.0072652  12.722 0.20612  0.001 ***
+Residuals   49  0.027983 0.0005711         0.79388           
+Total       50  0.035248                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+attr(,&quot;class&quot;)
+[1] &quot;pwadstrata&quot; &quot;list&quot;      </code></pre>
+<pre class="r"><code># Looking at the SourceTracker analysis
+q1.proportions &lt;- as.data.frame(fread(&quot;03_Processed_data/16S_glass_slide__dispersal_source_tracker/mixing_proportions.txt&quot;)) %&gt;% 
+  rename(Environmental_Grass = EnvG,
+         Environmental_Shrub = EnvS) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Ecosystem), 
+            by = c(&quot;SampleID&quot; = &quot;New_Sample_ID&quot;)) %&gt;% 
+  pivot_longer(Air:Unknown, names_to = &quot;Source&quot;, values_to = &quot;Proportion&quot;)
+
+ggplot(data = q1.proportions) + 
+  geom_boxplot(color = &quot;black&quot;, aes(x = Ecosystem, y = Proportion, fill = Source)) + 
+  theme_classic() + 
+  scale_fill_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;BActeria, Source Tracker dispersal sources&quot;)</code></pre>
+<p><img src="05_output_figures/NMDS_dispersal_sources_bacteria-2.png" width="672" /></p>
+<pre class="r"><code># Load data
+glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
+load(glass.slides.ITS)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.source &lt;- q1.ITS.bray.dist.df %&gt;% 
+  select(!(contains(&quot;LD&quot;))) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(!(grepl(&quot;LD&quot;, SampleID))) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;)
+
+# Do the NMDS
+q1.ITS.source.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.source)), 
+                             autotransform = FALSE, k = 2, trymax = 200)</code></pre>
+<pre><code>Run 0 stress 0.1689735 
+Run 1 stress 0.1652835 
+... New best solution
+... Procrustes: rmse 0.03457441  max resid 0.2438547 
+Run 2 stress 0.1755303 
+Run 3 stress 0.1625639 
+... New best solution
+... Procrustes: rmse 0.02159488  max resid 0.1147162 
+Run 4 stress 0.1821969 
+Run 5 stress 0.1951204 
+Run 6 stress 0.1646569 
+Run 7 stress 0.1718901 
+Run 8 stress 0.1713211 
+Run 9 stress 0.2021845 
+Run 10 stress 0.2009744 
+Run 11 stress 0.1646507 
+Run 12 stress 0.1678447 
+Run 13 stress 0.1614176 
+... New best solution
+... Procrustes: rmse 0.02409794  max resid 0.2186763 
+Run 14 stress 0.1673407 
+Run 15 stress 0.17553 
+Run 16 stress 0.1648234 
+Run 17 stress 0.1651186 
+Run 18 stress 0.1678522 
+Run 19 stress 0.167837 
+Run 20 stress 0.1895739 
+Run 21 stress 0.1757454 
+Run 22 stress 0.1652955 
+Run 23 stress 0.1695262 
+Run 24 stress 0.1625792 
+Run 25 stress 0.1686843 
+Run 26 stress 0.1600533 
+... New best solution
+... Procrustes: rmse 0.02709294  max resid 0.2120691 
+Run 27 stress 0.1716503 
+Run 28 stress 0.1655111 
+Run 29 stress 0.1600532 
+... New best solution
+... Procrustes: rmse 0.0004173385  max resid 0.003032284 
+... Similar to previous best
+*** Solution reached</code></pre>
+<pre class="r"><code># Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.source.NMDS.meta &lt;- data.frame(q1.ITS.source.NMDS$points[,1:2]) %&gt;% 
+  rownames_to_column(&quot;New_Sample_ID&quot;) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Time_Point, Ecosystem, Treatment)) %&gt;% 
+  mutate(Source_Sink = ifelse(Treatment == &quot;Open&quot; | Treatment == &quot;Environmental Litter&quot;,
+                                     paste0(Treatment, &quot;_&quot;, Ecosystem),
+                                     Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.ITS.source.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Source_Sink)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;Fungi, glass slide communities + dispersal sources&quot;)</code></pre>
+<p><img src="05_output_figures/NMDS_dispersal_sources_fungi-1.png" width="672" /></p>
+<pre class="r"><code># Doing the stats to test differences among groups
+adonis(q1.ITS.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
+       data = q1.ITS.source.NMDS.meta, na.rm= TRUE)</code></pre>
+<pre><code>
+Call:
+adonis(formula = q1.ITS.bray.dist.df.source ~ Source_Sink, data = q1.ITS.source.NMDS.meta,      permutations = 10000, na.rm = TRUE) 
+
+Permutation: free
+Number of permutations: 10000
+
+Terms added sequentially (first to last)
+
+             Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Source_Sink   5    6.8353 1.36706  7.7646 0.27569 9.999e-05 ***
+Residuals   102   17.9585 0.17606         0.72431              
+Total       107   24.7938                 1.00000              
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>pairwise.adonis(q1.ITS.bray.dist.df.source, q1.ITS.source.NMDS.meta$Source_Sink)</code></pre>
+<pre><code>                                                              pairs Df
+1                             Air vs Environmental Litter_Grassland  1
+2                             Air vs Environmental Litter_Shrubland  1
+3                                             Air vs Open_Shrubland  1
+4                                             Air vs Open_Grassland  1
+5                                                       Air vs Soil  1
+6  Environmental Litter_Grassland vs Environmental Litter_Shrubland  1
+7                  Environmental Litter_Grassland vs Open_Shrubland  1
+8                  Environmental Litter_Grassland vs Open_Grassland  1
+9                            Environmental Litter_Grassland vs Soil  1
+10                 Environmental Litter_Shrubland vs Open_Shrubland  1
+11                 Environmental Litter_Shrubland vs Open_Grassland  1
+12                           Environmental Litter_Shrubland vs Soil  1
+13                                 Open_Shrubland vs Open_Grassland  1
+14                                           Open_Shrubland vs Soil  1
+15                                           Open_Grassland vs Soil  1
+     SumsOfSqs    F.Model         R2 p.value p.adjusted sig
+1  0.006922631   3.995019 0.23506998   0.025      0.375    
+2  0.034128177  18.866664 0.59205017   0.002      0.030   .
+3  0.011137503   3.820787 0.08160449   0.028      0.420    
+4  0.043604177  29.757293 0.39279774   0.001      0.015   .
+5  0.059529743  40.598887 0.68120210   0.001      0.015   .
+6  0.019231642   9.310531 0.48214786   0.007      0.105    
+7  0.018446705   6.024206 0.13089212   0.007      0.105    
+8  0.047339690  31.537806 0.42311154   0.001      0.015   .
+9  0.030274387  19.376058 0.54771671   0.001      0.015   .
+10 0.064276226  20.822734 0.34235116   0.001      0.015   .
+11 0.134889936  88.507416 0.67302224   0.001      0.015   .
+12 0.004923355   3.031074 0.15926973   0.059      0.885    
+13 0.072094576  31.446165 0.30107534   0.001      0.015   .
+14 0.130819285  47.080565 0.50580446   0.001      0.015   .
+15 0.254302734 178.323021 0.78444770   0.001      0.015   .</code></pre>
+<pre class="r"><code>pairwise.adonis2(q1.ITS.bray.dist.df.source ~ Source_Sink, data = q1.ITS.source.NMDS.meta)</code></pre>
+<pre><code>$parent_call
+[1] &quot;q1.ITS.bray.dist.df.source ~ Source_Sink , strata = Null&quot;
+
+$`Air_vs_Environmental Litter_Grassland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
+Source_Sink  1 0.0069226 0.0069226   3.995 0.23507   0.03 *
+Residuals   13 0.0225266 0.0017328         0.76493         
+Total       14 0.0294492                   1.00000         
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Air_vs_Environmental Litter_Shrubland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.034128 0.034128  18.867 0.59205  0.001 ***
+Residuals   13  0.023516 0.001809         0.40795           
+Total       14  0.057644                  1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Air_vs_Open_Shrubland
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)  
+Source_Sink  1  0.011138 0.011137  3.8208 0.0816  0.024 *
+Residuals   43  0.125344 0.002915         0.9184         
+Total       44  0.136481                  1.0000         
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Air_vs_Open_Grassland
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)    
+Source_Sink  1  0.043604 0.043604  29.757 0.3928  0.001 ***
+Residuals   46  0.067405 0.001465         0.6072           
+Total       47  0.111009                  1.0000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Air_vs_Soil
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)    
+Source_Sink  1  0.059530 0.059530  40.599 0.6812  0.001 ***
+Residuals   19  0.027860 0.001466         0.3188           
+Total       20  0.087389                  1.0000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Grassland_vs_Environmental Litter_Shrubland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.019232 0.0192316  9.3105 0.48215  0.009 **
+Residuals   10  0.020656 0.0020656         0.51785          
+Total       11  0.039887                   1.00000          
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Grassland_vs_Open_Shrubland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.018447 0.0184467  6.0242 0.13089  0.005 **
+Residuals   40  0.122484 0.0030621         0.86911          
+Total       41  0.140931                   1.00000          
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Grassland_vs_Open_Grassland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.047340 0.047340  31.538 0.42311  0.001 ***
+Residuals   43  0.064545 0.001501         0.57689           
+Total       44  0.111885                  1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Grassland_vs_Soil`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.030274 0.0302744  19.376 0.54772  0.001 ***
+Residuals   16  0.024999 0.0015625         0.45228           
+Total       17  0.055274                   1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Shrubland_vs_Open_Shrubland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.064276 0.064276  20.823 0.34235  0.001 ***
+Residuals   40  0.123473 0.003087         0.65765           
+Total       41  0.187749                  1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Shrubland_vs_Open_Grassland`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.134890 0.134890  88.507 0.67302  0.001 ***
+Residuals   43  0.065534 0.001524         0.32698           
+Total       44  0.200424                  1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$`Environmental Litter_Shrubland_vs_Soil`
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
+Source_Sink  1 0.0049234 0.0049234  3.0311 0.15927  0.058 .
+Residuals   16 0.0259887 0.0016243         0.84073         
+Total       17 0.0309121                   1.00000         
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Open_Shrubland_vs_Open_Grassland
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.072095 0.072095  31.446 0.30108  0.001 ***
+Residuals   73  0.167362 0.002293         0.69892           
+Total       74  0.239457                  1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Open_Shrubland_vs_Soil
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)    
+Source_Sink  1   0.13082 0.130819  47.081 0.5058  0.001 ***
+Residuals   46   0.12782 0.002779         0.4942           
+Total       47   0.25864                  1.0000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+$Open_Grassland_vs_Soil
+Permutation: free
+Number of permutations: 999
+
+Terms added sequentially (first to last)
+
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1   0.25430 0.254303  178.32 0.78445  0.001 ***
+Residuals   49   0.06988 0.001426         0.21555           
+Total       50   0.32418                  1.00000           
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+attr(,&quot;class&quot;)
+[1] &quot;pwadstrata&quot; &quot;list&quot;      </code></pre>
+<pre class="r"><code># Looking at the SourceTracker analysis
+q1.ITS.proportions &lt;- as.data.frame(fread(&quot;03_Processed_data/ITS_glass_slide__dispersal_source_tracker/mixing_proportions.txt&quot;)) %&gt;% 
+  rename(Environmental_Grass = EnvG,
+         Environmental_Shrub = EnvS) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Ecosystem), 
+            by = c(&quot;SampleID&quot; = &quot;New_Sample_ID&quot;)) %&gt;% 
+  pivot_longer(Air:Unknown, names_to = &quot;Source&quot;, values_to = &quot;Proportion&quot;)
+
+ggplot(data = q1.ITS.proportions) + 
+  geom_boxplot(color = &quot;black&quot;, aes(x = Ecosystem, y = Proportion, fill = Source)) + 
+  theme_classic() + 
+  scale_fill_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;Fungi, Source Tracker dispersal sources&quot;)</code></pre>
+<p><img src="05_output_figures/NMDS_dispersal_sources_fungi-2.png" width="672" /></p>
 </div>
 
 
