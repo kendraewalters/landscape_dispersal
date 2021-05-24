@@ -131,8 +131,8 @@ save(metadata.together, q1.ITS.alpha, q1.ITS.rarefied, q1.ITS.bray.dist, q1.ITS.
 data.frame(c("# Constructed from biom file")) %>% write_tsv(source.tracker.q1.ITS.file, col_names = FALSE)
 q1.ITS.rarefied %>% 
   filter(!(grepl("LD", row.names(.)))) %>% 
-  rownames_to_column("SampleID") %>% as_tibble() %>%
-  rename("#SampleID" = SampleID) %>% 
+  t %>% as.data.frame() %>% 
+  rownames_to_column("#OTU ID") %>% 
   write_tsv(source.tracker.q1.ITS.file, append = TRUE, col_names = TRUE)
 
 key <- c("1" = "Shrubland", "2" = "Shrubland", "3" = "Shrubland", "4" = "Shrubland",
@@ -149,5 +149,10 @@ data.frame("SampleID" = row.names(q1.ITS.rarefied %>%
                       Env)) %>%
   rename("#SampleID" = SampleID) %>% 
   write_tsv(source.tracker.q1.ITS.meta)
+
+# Run:
+# source activate st2
+# biom convert -i ITS_glass_slides_q1__source_tracker.tsv  -o ITS_glass_slides_q1__source_tracker.biom --to-hdf5 --table-type="OTU table"
+# sourcetracker2 gibbs -i ITS_glass_slides_q1__source_tracker.biom -m ITS_glass_slides_q1__source_tracker_map.tsv --source_rarefaction_depth 0 --sink_rarefaction_depth 0 --jobs 2 -o ITS_glass_slide__dispersal_source_tracker/
 
 

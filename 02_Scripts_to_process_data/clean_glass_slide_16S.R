@@ -73,7 +73,7 @@ data.frame("SampleID" = names(q1.source.tracker %>% select(!(contains("OTU")))))
 # biom convert -i 16S_glass_slides__for_source_tracker.tsv -o 16S_glass_slides__for_source_tracker.biom --to-hdf5 --table-type="OTU table"
 # source activate st2
 # sourcetracker2 gibbs -i 16S_glass_slides__for_source_tracker.biom -m map_16S_glass_slides__sourcetracker.txt --source_rarefaction_depth 0 --sink_rarefaction_depth 0  -o source_tracker_contamination/
-# Note: this took over 24 hours to run on a single core on my lil MacBook
+# Note: this took over 48 hours to run on a single core on my lil MacBook
 
 
 
@@ -146,8 +146,11 @@ data.frame(c("# Constructed from biom file")) %>% write_tsv(source.tracker.q1.fi
 q1.rarefied %>% 
   filter(!(grepl("LD", row.names(.)))) %>% 
   rownames_to_column("SampleID") %>% as_tibble() %>%
-  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>%
-  rename("#SampleID" = SampleID) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rownames_to_column("#OTU ID") %>% 
   write_tsv(source.tracker.q1.file, append = TRUE, col_names = TRUE)
 
 key <- c("1" = "Shrubland", "2" = "Shrubland", "3" = "Shrubland", "4" = "Shrubland",
@@ -163,7 +166,10 @@ data.frame("SampleID" = row.names(q1.rarefied %>%
   mutate(Env = ifelse(grepl("LO", Env), 
                       key[str_match(SampleID, "[ABC]([1-8])")[,2]], # converting from place on transect to ecosystem
                       Env)) %>%
-  rename("#SampleID" = SampleID) %>% View
+  rename("#SampleID" = SampleID) %>%
   write_tsv(source.tracker.q1.meta)
-  
+# Run:
+# source activate st2
+# biom convert -i 16S_glass_slides_q1__source_tracker.tsv -o 16S_glass_slides_q1__source_tracker.biom --to-hdf5 --table-type="OTU table"
+# sourcetracker2 gibbs -i 16S_glass_slides_q1__source_tracker.biom -m 16S_glass_slides_q1__source_tracker_map.tsv --source_rarefaction_depth 0 --sink_rarefaction_depth 0 --jobs 2 -o 16S_glass_slide__dispersal_source_tracker/
 
