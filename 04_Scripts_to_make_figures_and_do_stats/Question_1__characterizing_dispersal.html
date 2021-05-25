@@ -561,7 +561,7 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
           Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
-TimePoint  4    2.3570 0.58925  2.1924 0.42223  2e-04 ***
+TimePoint  4    2.3570 0.58925  2.1924 0.42223  4e-04 ***
 Residuals 12    3.2252 0.26877         0.57777           
 Total     16    5.5822                 1.00000           
 ---
@@ -630,7 +630,7 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
           Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)
-TimePoint  2    0.5367 0.26835  1.1419 0.17192 0.2542
+TimePoint  2    0.5367 0.26835  1.1419 0.17192 0.2622
 Residuals 11    2.5851 0.23501         0.82808       
 Total     13    3.1218                 1.00000       </code></pre>
 <pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
@@ -645,9 +645,9 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
                                Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
-TimePoint                       2   0.53670 0.26835  2.1840 0.17192    0.0167
+TimePoint                       2   0.53670 0.26835  2.1840 0.17192    0.0139
 as.factor(Ecosystem)            1   1.27000 1.27000 10.3360 0.40682 9.999e-05
-TimePoint:as.factor(Ecosystem)  1   0.20922 0.20922  1.7027 0.06702    0.1115
+TimePoint:as.factor(Ecosystem)  1   0.20922 0.20922  1.7027 0.06702    0.1122
 Residuals                       9   1.10584 0.12287         0.35424          
 Total                          13   3.12176                 1.00000          
                                   
@@ -727,8 +727,8 @@ Terms added sequentially (first to last)
 
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
 Ecosystem             1    0.7798 0.77980  2.1121 0.02791 9.999e-05 ***
-Time_Point            1    0.5401 0.54013  1.4629 0.01933 0.0006999 ***
-Ecosystem:Time_Point  1    0.4053 0.40533  1.0978 0.01451 0.1281872    
+Time_Point            1    0.5401 0.54013  1.4629 0.01933    0.0013 ** 
+Ecosystem:Time_Point  1    0.4053 0.40533  1.0978 0.01451    0.1281    
 Residuals            71   26.2140 0.36921         0.93825              
 Total                74   27.9392                 1.00000              
 ---
@@ -796,7 +796,7 @@ Terms added sequentially (first to last)
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
 Ecosystem             1    1.4956 1.49559 10.3117 0.11781 9.999e-05 ***
 Time_Point            1    0.6317 0.63174  4.3557 0.04976 9.999e-05 ***
-Ecosystem:Time_Point  1    0.2699 0.26990  1.8609 0.02126     0.016 *  
+Ecosystem:Time_Point  1    0.2699 0.26990  1.8609 0.02126    0.0157 *  
 Residuals            71   10.2977 0.14504         0.81117              
 Total                74   12.6949                 1.00000              
 ---
@@ -946,19 +946,19 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 14                                           Open_Shrubland vs Soil  1
 15                                           Open_Grassland vs Soil  1
      SumsOfSqs   F.Model        R2 p.value p.adjusted sig
-1  0.005840203 17.212055 0.6566465   0.004      0.060    
+1  0.005840203 17.212055 0.6566465   0.001      0.015   .
 2  0.004299403 10.990642 0.5497894   0.003      0.045   .
 3  0.008744688 10.113011 0.2059131   0.001      0.015   .
 4  0.009626093 15.177112 0.2654403   0.001      0.015   .
 5  0.012409379 36.796226 0.7104036   0.001      0.015   .
-6  0.001197215  4.186387 0.2950989   0.003      0.045   .
-7  0.008228917  9.955660 0.1992899   0.001      0.015   .
+6  0.001197215  4.186387 0.2950989   0.004      0.060    
+7  0.008228917  9.955660 0.1992899   0.002      0.030   .
 8  0.012317914 20.389484 0.3216541   0.001      0.015   .
 9  0.017422542 63.386638 0.7984547   0.001      0.015   .
 10 0.006334252  7.556705 0.1588988   0.002      0.030   .
 11 0.010379049 16.876802 0.2818588   0.001      0.015   .
 12 0.013304078 43.757193 0.7322498   0.001      0.015   .
-13 0.002660468  3.428498 0.0448589   0.017      0.255    
+13 0.002660468  3.428498 0.0448589   0.020      0.300    
 14 0.009533810 12.506147 0.2137578   0.001      0.015   .
 15 0.007265208 12.722052 0.2061184   0.001      0.015   .</code></pre>
 <pre class="r"><code>pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)</code></pre>
@@ -985,7 +985,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1 0.0042994 0.0042994  10.991 0.54979  0.003 **
+Source_Sink  1 0.0042994 0.0042994  10.991 0.54979  0.004 **
 Residuals    9 0.0035207 0.0003912         0.45021          
 Total       10 0.0078201                   1.00000          
 ---
@@ -1036,10 +1036,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs    MeanSqs F.Model     R2 Pr(&gt;F)    
-Source_Sink  1 0.0011972 0.00119722  4.1864 0.2951  0.001 ***
-Residuals   10 0.0028598 0.00028598         0.7049           
-Total       11 0.0040570                    1.0000           
+            Df SumsOfSqs    MeanSqs F.Model     R2 Pr(&gt;F)   
+Source_Sink  1 0.0011972 0.00119722  4.1864 0.2951  0.006 **
+Residuals   10 0.0028598 0.00028598         0.7049          
+Total       11 0.0040570                    1.0000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1128,7 +1128,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.002660 0.00266047  3.4285 0.04486  0.024 *
+Source_Sink  1  0.002660 0.00266047  3.4285 0.04486   0.02 *
 Residuals   73  0.056647 0.00077599         0.95514         
 Total       74  0.059307                    1.00000         
 ---
@@ -1242,18 +1242,18 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 14                                           Open_Shrubland vs Soil  1
 15                                           Open_Grassland vs Soil  1
      SumsOfSqs    F.Model         R2 p.value p.adjusted sig
-1  0.006922631   3.995019 0.23506998   0.024      0.360    
+1  0.006922631   3.995019 0.23506998   0.026      0.390    
 2  0.034128177  18.866664 0.59205017   0.001      0.015   .
-3  0.011137503   3.820787 0.08160449   0.038      0.570    
+3  0.011137503   3.820787 0.08160449   0.029      0.435    
 4  0.043604177  29.757293 0.39279774   0.001      0.015   .
 5  0.059529743  40.598887 0.68120210   0.001      0.015   .
-6  0.019231642   9.310531 0.48214786   0.012      0.180    
-7  0.018446705   6.024206 0.13089212   0.012      0.180    
+6  0.019231642   9.310531 0.48214786   0.011      0.165    
+7  0.018446705   6.024206 0.13089212   0.007      0.105    
 8  0.047339690  31.537806 0.42311154   0.001      0.015   .
 9  0.030274387  19.376058 0.54771671   0.001      0.015   .
 10 0.064276226  20.822734 0.34235116   0.001      0.015   .
 11 0.134889936  88.507416 0.67302224   0.001      0.015   .
-12 0.004923355   3.031074 0.15926973   0.052      0.780    
+12 0.004923355   3.031074 0.15926973   0.050      0.750    
 13 0.072094576  31.446165 0.30107534   0.001      0.015   .
 14 0.130819285  47.080565 0.50580446   0.001      0.015   .
 15 0.254302734 178.323021 0.78444770   0.001      0.015   .</code></pre>
@@ -1268,7 +1268,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0069226 0.0069226   3.995 0.23507  0.014 *
+Source_Sink  1 0.0069226 0.0069226   3.995 0.23507  0.024 *
 Residuals   13 0.0225266 0.0017328         0.76493         
 Total       14 0.0294492                   1.00000         
 ---
@@ -1294,7 +1294,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)  
-Source_Sink  1  0.011138 0.011137  3.8208 0.0816  0.034 *
+Source_Sink  1  0.011138 0.011137  3.8208 0.0816  0.038 *
 Residuals   43  0.125344 0.002915         0.9184         
 Total       44  0.136481                  1.0000         
 ---
@@ -1333,7 +1333,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.019232 0.0192316  9.3105 0.48215  0.007 **
+Source_Sink  1  0.019232 0.0192316  9.3105 0.48215  0.005 **
 Residuals   10  0.020656 0.0020656         0.51785          
 Total       11  0.039887                   1.00000          
 ---
@@ -1346,7 +1346,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.018447 0.0184467  6.0242 0.13089  0.004 **
+Source_Sink  1  0.018447 0.0184467  6.0242 0.13089  0.008 **
 Residuals   40  0.122484 0.0030621         0.86911          
 Total       41  0.140931                   1.00000          
 ---
@@ -1411,7 +1411,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0049234 0.0049234  3.0311 0.15927  0.054 .
+Source_Sink  1 0.0049234 0.0049234  3.0311 0.15927  0.045 *
 Residuals   16 0.0259887 0.0016243         0.84073         
 Total       17 0.0309121                   1.00000         
 ---
