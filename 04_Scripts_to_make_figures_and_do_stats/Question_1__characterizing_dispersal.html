@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-05-24" />
+<meta name="date" content="2021-05-25" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-05-24</h4>
+<h4 class="date">2021-05-25</h4>
 
 </div>
 
@@ -282,7 +282,7 @@ require(pairwiseAdonis)
 
 knitr::opts_knit$set(root.dir = &quot;../&quot;)
 
-knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;../05_output_figures/&quot;)</code></pre>
+knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;05_output_figures/&quot;)</code></pre>
 </div>
 <div id="abundance-on-glass-slides" class="section level1">
 <h1>Abundance on glass slides</h1>
@@ -316,7 +316,7 @@ cell.counts.use &lt;- cleaned.cell.counts %&gt;% left_join(metadata.together) %&
 ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;)) +
   geom_boxplot(aes(x = as.factor(Time_Point), y = number_cells_on_glass_slide_cleaned)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
-<p><img src="../05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
+<p><img src="05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
 </div>
 <div id="immigration-rate-calculations-assuming-population-growth" class="section level1">
 <h1>Immigration rate calculations assuming population growth</h1>
@@ -331,7 +331,7 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;
   geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / d) * (1 - exp(-d * x))&quot;, se=F, 
               method.args = list(start=c(Im=2e5, d=0.034))) +
   facet_wrap(vars(Ecosystem)) </code></pre>
-<p><img src="../05_output_figures/scatterplot_abundance_glass_slides_by_ecosystem-1.png" width="672" /></p>
+<p><img src="05_output_figures/scatterplot_abundance_glass_slides_by_ecosystem-1.png" width="672" /></p>
 <pre class="r"><code># Separate into our two ecosystems
 grass.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Grassland&quot;)
 shrub.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Shrubland&quot;)
@@ -405,7 +405,7 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt
   geom_point() + 
   geom_abline(data = lm.parameters.death, aes(intercept = Intercept, slope = -Slope)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
-<p><img src="../05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
+<p><img src="05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
 <p>Sweet! Now we can use these death rates to input into our model so we are only asking it to find the estimate for the immigration rate. Note how much smaller the standard errors are for these immigration rates!</p>
 <pre class="r"><code># Calculating the death rate and immigration rate coefficients WITH measured death rates
 (nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  
@@ -462,7 +462,7 @@ B &lt;- ggplot(data = shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;) %
   ggtitle(&quot;Shrubland&quot;)
 
 grid.arrange(A,B, nrow = 1)</code></pre>
-<p><img src="../05_output_figures/scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem-1.png" width="672" /></p>
+<p><img src="05_output_figures/scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem-1.png" width="672" /></p>
 </div>
 <div id="immigration-rate-calculations-assuming-equilibrium" class="section level1">
 <h1>Immigration rate calculations assuming equilibrium</h1>
@@ -536,7 +536,7 @@ ggplot(data = q1.NMDS1.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="../05_output_figures/NMDS_taxa_specific_death_rates_bacteria-1.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_taxa_specific_death_rates_bacteria-1.png" width="672" /></p>
 <pre class="r"><code># Do the PERMANOVA that will test our hypothesis
 q1.bray.dist.df.death &lt;- as.data.frame(as.matrix(q1.bray.dist)) %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
@@ -560,10 +560,10 @@ Number of permutations: 10000
 
 Terms added sequentially (first to last)
 
-          Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
-TimePoint  4    2.3570 0.58925  2.1924 0.42223 0.0005999 ***
-Residuals 12    3.2252 0.26877         0.57777              
-Total     16    5.5822                 1.00000              
+          Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
+TimePoint  4    2.3570 0.58925  2.1924 0.42223  2e-04 ***
+Residuals 12    3.2252 0.26877         0.57777           
+Total     16    5.5822                 1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
@@ -580,7 +580,7 @@ Terms added sequentially (first to last)
                                Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
 TimePoint                       4    2.3570 0.58925  3.3242 0.42223 9.999e-05
 as.factor(Ecosystem)            1    0.8914 0.89136  5.0285 0.15968 9.999e-05
-TimePoint:as.factor(Ecosystem)  1    0.5613 0.56128  3.1664 0.10055 9.999e-05
+TimePoint:as.factor(Ecosystem)  1    0.5613 0.56128  3.1664 0.10055     2e-04
 Residuals                      10    1.7726 0.17726         0.31754          
 Total                          16    5.5822                 1.00000          
                                   
@@ -609,7 +609,7 @@ ggplot(data = q1.ITS.NMDS1.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="../05_output_figures/NMDS_taxa_specific_death_rates_fungi-1.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_taxa_specific_death_rates_fungi-1.png" width="672" /></p>
 <pre class="r"><code># Do the PERMANOVA that will test our hypothesis
 q1.bray.dist.df.death &lt;- q1.ITS.bray.dist.df %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
@@ -630,7 +630,7 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
           Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)
-TimePoint  2    0.5367 0.26835  1.1419 0.17192  0.259
+TimePoint  2    0.5367 0.26835  1.1419 0.17192 0.2542
 Residuals 11    2.5851 0.23501         0.82808       
 Total     13    3.1218                 1.00000       </code></pre>
 <pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
@@ -645,9 +645,9 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
                                Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
-TimePoint                       2   0.53670 0.26835  2.1840 0.17192    0.0125
+TimePoint                       2   0.53670 0.26835  2.1840 0.17192    0.0167
 as.factor(Ecosystem)            1   1.27000 1.27000 10.3360 0.40682 9.999e-05
-TimePoint:as.factor(Ecosystem)  1   0.20922 0.20922  1.7027 0.06702    0.1198
+TimePoint:as.factor(Ecosystem)  1   0.20922 0.20922  1.7027 0.06702    0.1115
 Residuals                       9   1.10584 0.12287         0.35424          
 Total                          13   3.12176                 1.00000          
                                   
@@ -690,12 +690,12 @@ ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="../05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-1.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="../05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-2.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-2.png" width="672" /></p>
 <pre class="r"><code># Do the staaaats!!
 adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.NMDS.meta, na.rm= TRUE)</code></pre>
@@ -727,8 +727,8 @@ Terms added sequentially (first to last)
 
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
 Ecosystem             1    0.7798 0.77980  2.1121 0.02791 9.999e-05 ***
-Time_Point            1    0.5401 0.54013  1.4629 0.01933    0.0004 ***
-Ecosystem:Time_Point  1    0.4053 0.40533  1.0978 0.01451    0.1348    
+Time_Point            1    0.5401 0.54013  1.4629 0.01933 0.0006999 ***
+Ecosystem:Time_Point  1    0.4053 0.40533  1.0978 0.01451 0.1281872    
 Residuals            71   26.2140 0.36921         0.93825              
 Total                74   27.9392                 1.00000              
 ---
@@ -758,12 +758,12 @@ ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="../05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-1.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
-<p><img src="../05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-2.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-2.png" width="672" /></p>
 <pre class="r"><code># Do the staaaats!!
 adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.ITS.NMDS.meta, na.rm= TRUE)</code></pre>
@@ -796,7 +796,7 @@ Terms added sequentially (first to last)
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
 Ecosystem             1    1.4956 1.49559 10.3117 0.11781 9.999e-05 ***
 Time_Point            1    0.6317 0.63174  4.3557 0.04976 9.999e-05 ***
-Ecosystem:Time_Point  1    0.2699 0.26990  1.8609 0.02126    0.0157 *  
+Ecosystem:Time_Point  1    0.2699 0.26990  1.8609 0.02126     0.016 *  
 Residuals            71   10.2977 0.14504         0.81117              
 Total                74   12.6949                 1.00000              
 ---
@@ -909,7 +909,7 @@ ggplot(data = q1.source.NMDS.meta) +
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;)  +
   ggtitle(&quot;Bacteria, glass slide communities + dispersal sources&quot;)</code></pre>
-<p><img src="../05_output_figures/NMDS_dispersal_sources_bacteria-1.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_dispersal_sources_bacteria-1.png" width="672" /></p>
 <pre class="r"><code># Doing the stats to test differences among groups
 adonis(q1.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
        data = q1.source.NMDS.meta, na.rm= TRUE)</code></pre>
@@ -946,19 +946,19 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 14                                           Open_Shrubland vs Soil  1
 15                                           Open_Grassland vs Soil  1
      SumsOfSqs   F.Model        R2 p.value p.adjusted sig
-1  0.005840203 17.212055 0.6566465   0.003      0.045   .
-2  0.004299403 10.990642 0.5497894   0.002      0.030   .
+1  0.005840203 17.212055 0.6566465   0.004      0.060    
+2  0.004299403 10.990642 0.5497894   0.003      0.045   .
 3  0.008744688 10.113011 0.2059131   0.001      0.015   .
 4  0.009626093 15.177112 0.2654403   0.001      0.015   .
 5  0.012409379 36.796226 0.7104036   0.001      0.015   .
-6  0.001197215  4.186387 0.2950989   0.001      0.015   .
+6  0.001197215  4.186387 0.2950989   0.003      0.045   .
 7  0.008228917  9.955660 0.1992899   0.001      0.015   .
 8  0.012317914 20.389484 0.3216541   0.001      0.015   .
 9  0.017422542 63.386638 0.7984547   0.001      0.015   .
-10 0.006334252  7.556705 0.1588988   0.004      0.060    
+10 0.006334252  7.556705 0.1588988   0.002      0.030   .
 11 0.010379049 16.876802 0.2818588   0.001      0.015   .
 12 0.013304078 43.757193 0.7322498   0.001      0.015   .
-13 0.002660468  3.428498 0.0448589   0.022      0.330    
+13 0.002660468  3.428498 0.0448589   0.017      0.255    
 14 0.009533810 12.506147 0.2137578   0.001      0.015   .
 15 0.007265208 12.722052 0.2061184   0.001      0.015   .</code></pre>
 <pre class="r"><code>pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)</code></pre>
@@ -972,7 +972,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1 0.0058402 0.0058402  17.212 0.65665  0.005 **
+Source_Sink  1 0.0058402 0.0058402  17.212 0.65665  0.003 **
 Residuals    9 0.0030538 0.0003393         0.34335          
 Total       10 0.0088940                   1.00000          
 ---
@@ -1049,10 +1049,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.008229 0.0082289  9.9557 0.19929  0.002 **
-Residuals   40  0.033062 0.0008266         0.80071          
-Total       41  0.041291                   1.00000          
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.008229 0.0082289  9.9557 0.19929  0.001 ***
+Residuals   40  0.033062 0.0008266         0.80071           
+Total       41  0.041291                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1088,10 +1088,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model     R2 Pr(&gt;F)   
-Source_Sink  1  0.006334 0.0063343  7.5567 0.1589  0.002 **
-Residuals   40  0.033529 0.0008382         0.8411          
-Total       41  0.039863                   1.0000          
+            Df SumsOfSqs   MeanSqs F.Model     R2 Pr(&gt;F)    
+Source_Sink  1  0.006334 0.0063343  7.5567 0.1589  0.001 ***
+Residuals   40  0.033529 0.0008382         0.8411           
+Total       41  0.039863                   1.0000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1128,7 +1128,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.002660 0.00266047  3.4285 0.04486   0.02 *
+Source_Sink  1  0.002660 0.00266047  3.4285 0.04486  0.024 *
 Residuals   73  0.056647 0.00077599         0.95514         
 Total       74  0.059307                    1.00000         
 ---
@@ -1175,7 +1175,7 @@ ggplot(data = q1.proportions) +
   theme_classic() + 
   scale_fill_brewer(palette = &quot;Set1&quot;) +
   ggtitle(&quot;BActeria, Source Tracker dispersal sources&quot;)</code></pre>
-<p><img src="../05_output_figures/NMDS_dispersal_sources_bacteria-2.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_dispersal_sources_bacteria-2.png" width="672" /></p>
 <pre class="r"><code># Load data
 glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
 load(glass.slides.ITS)
@@ -1205,7 +1205,7 @@ ggplot(data = q1.ITS.source.NMDS.meta) +
   theme_classic() +
   scale_color_brewer(palette = &quot;Set1&quot;) +
   ggtitle(&quot;Fungi, glass slide communities + dispersal sources&quot;)</code></pre>
-<p><img src="../05_output_figures/NMDS_dispersal_sources_fungi-1.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_dispersal_sources_fungi-1.png" width="672" /></p>
 <pre class="r"><code># Doing the stats to test differences among groups
 adonis(q1.ITS.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
        data = q1.ITS.source.NMDS.meta, na.rm= TRUE)</code></pre>
@@ -1242,13 +1242,13 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 14                                           Open_Shrubland vs Soil  1
 15                                           Open_Grassland vs Soil  1
      SumsOfSqs    F.Model         R2 p.value p.adjusted sig
-1  0.006922631   3.995019 0.23506998   0.021      0.315    
+1  0.006922631   3.995019 0.23506998   0.024      0.360    
 2  0.034128177  18.866664 0.59205017   0.001      0.015   .
-3  0.011137503   3.820787 0.08160449   0.029      0.435    
+3  0.011137503   3.820787 0.08160449   0.038      0.570    
 4  0.043604177  29.757293 0.39279774   0.001      0.015   .
 5  0.059529743  40.598887 0.68120210   0.001      0.015   .
-6  0.019231642   9.310531 0.48214786   0.011      0.165    
-7  0.018446705   6.024206 0.13089212   0.007      0.105    
+6  0.019231642   9.310531 0.48214786   0.012      0.180    
+7  0.018446705   6.024206 0.13089212   0.012      0.180    
 8  0.047339690  31.537806 0.42311154   0.001      0.015   .
 9  0.030274387  19.376058 0.54771671   0.001      0.015   .
 10 0.064276226  20.822734 0.34235116   0.001      0.015   .
@@ -1268,7 +1268,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0069226 0.0069226   3.995 0.23507  0.021 *
+Source_Sink  1 0.0069226 0.0069226   3.995 0.23507  0.014 *
 Residuals   13 0.0225266 0.0017328         0.76493         
 Total       14 0.0294492                   1.00000         
 ---
@@ -1280,10 +1280,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.034128 0.034128  18.867 0.59205  0.002 **
-Residuals   13  0.023516 0.001809         0.40795          
-Total       14  0.057644                  1.00000          
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.034128 0.034128  18.867 0.59205  0.001 ***
+Residuals   13  0.023516 0.001809         0.40795           
+Total       14  0.057644                  1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1294,7 +1294,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)  
-Source_Sink  1  0.011138 0.011137  3.8208 0.0816  0.026 *
+Source_Sink  1  0.011138 0.011137  3.8208 0.0816  0.034 *
 Residuals   43  0.125344 0.002915         0.9184         
 Total       44  0.136481                  1.0000         
 ---
@@ -1333,7 +1333,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.019232 0.0192316  9.3105 0.48215  0.008 **
+Source_Sink  1  0.019232 0.0192316  9.3105 0.48215  0.007 **
 Residuals   10  0.020656 0.0020656         0.51785          
 Total       11  0.039887                   1.00000          
 ---
@@ -1345,10 +1345,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.018447 0.0184467  6.0242 0.13089  0.011 *
-Residuals   40  0.122484 0.0030621         0.86911         
-Total       41  0.140931                   1.00000         
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.018447 0.0184467  6.0242 0.13089  0.004 **
+Residuals   40  0.122484 0.0030621         0.86911          
+Total       41  0.140931                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1411,7 +1411,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0049234 0.0049234  3.0311 0.15927  0.061 .
+Source_Sink  1 0.0049234 0.0049234  3.0311 0.15927  0.054 .
 Residuals   16 0.0259887 0.0016243         0.84073         
 Total       17 0.0309121                   1.00000         
 ---
@@ -1471,7 +1471,7 @@ ggplot(data = q1.ITS.proportions) +
   theme_classic() + 
   scale_fill_brewer(palette = &quot;Set1&quot;) +
   ggtitle(&quot;Fungi, Source Tracker dispersal sources&quot;)</code></pre>
-<p><img src="../05_output_figures/NMDS_dispersal_sources_fungi-2.png" width="672" /></p>
+<p><img src="05_output_figures/NMDS_dispersal_sources_fungi-2.png" width="672" /></p>
 </div>
 
 
