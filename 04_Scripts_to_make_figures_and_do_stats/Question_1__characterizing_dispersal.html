@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-05-25" />
+<meta name="date" content="2021-05-26" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-05-25</h4>
+<h4 class="date">2021-05-26</h4>
 
 </div>
 
@@ -278,6 +278,7 @@ require(gridExtra)
 library(car)
 require(vegan)
 require(magrittr)
+library(indicspecies)
 require(pairwiseAdonis)
 
 knitr::opts_knit$set(root.dir = &quot;../&quot;)
@@ -288,9 +289,8 @@ knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, f
 <h1>Abundance on glass slides</h1>
 <p>First, we’ll look at the abundances on the glass slides over time to see if they are acculumulating or at equilibrium.</p>
 <pre class="r"><code># Load the data
-message(getwd())
-flow.data &lt;- load(&quot;03_Processed_data/flow_cytometry_cleaned.rda&quot;)
-metadata &lt;- load(&quot;03_Processed_data/metadata_cleaned.rda&quot;)
+load(&quot;03_Processed_data/flow_cytometry_cleaned.rda&quot;)
+load(&quot;03_Processed_data/metadata_cleaned.rda&quot;)
 
 
 # Left join fights me unless both columns are the same data type
@@ -309,12 +309,13 @@ cell.counts.use &lt;- cleaned.cell.counts %&gt;% left_join(metadata.together) %&
                             ifelse(grepl(&quot;^s&quot;, `Random_#_Flow`), &quot;Shrubland&quot;, Ecosystem))) %&gt;%
   select(number_cells_on_glass_slide_cleaned, Treatment, Ecosystem, Time_Point) %&gt;% # reduce to only columns we need
   filter(Treatment != &quot;Closed&quot;) %&gt;% # remove this negative control (should have been removed prior to this script)
-  mutate(Time_as_days = days.key[as.character(Time_Point)]) # make column that lists # of days
+  mutate(Time_as_days = days.key[as.character(Time_Point)]) %&gt;% # make column that lists # of days
+  mutate(cells_per_sq_cm = number_cells_on_glass_slide_cleaned / (7.5 * 2.5))
 
 
 # Plot this as a boxplot to give a general sense of what the abundance on the glass slides are doing
 ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;)) +
-  geom_boxplot(aes(x = as.factor(Time_Point), y = number_cells_on_glass_slide_cleaned)) + 
+  geom_boxplot(aes(x = as.factor(Time_Point), y = cells_per_sq_cm)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
 <p><img src="05_output_figures/boxplot_glass_slide_abundance_by_ecosystem-1.png" width="672" /></p>
 </div>
@@ -326,7 +327,7 @@ ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;)) +
 <pre class="r"><code># plotting our data with our fancy integral equation going through the origin
 ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
-       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
   geom_point() + 
   geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / d) * (1 - exp(-d * x))&quot;, se=F, 
               method.args = list(start=c(Im=2e5, d=0.034))) +
@@ -338,60 +339,64 @@ shrub.cells &lt;- cell.counts.use %&gt;% filter(Ecosystem == &quot;Shrubland&quo
 
 
 # Calculating the death rate and immigration rate coefficients
-(nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  Im/d * (1 - exp(-d * Time_as_days)), 
+(nls.shrub &lt;- nls(cells_per_sq_cm ~  Im/d * (1 - exp(-d * Time_as_days)), 
                data = shrub.cells[shrub.cells$Treatment == &quot;Open&quot;, ],
                start = list(Im = 2e5, d = 0.034)) %&gt;% summary) </code></pre>
 <pre><code>
-Formula: number_cells_on_glass_slide_cleaned ~ Im/d * (1 - exp(-d * Time_as_days))
+Formula: cells_per_sq_cm ~ Im/d * (1 - exp(-d * Time_as_days))
 
 Parameters:
     Estimate Std. Error t value Pr(&gt;|t|)   
-Im 2.002e+04  7.059e+03   2.836  0.00676 **
+Im 1.068e+03  3.765e+02   2.836  0.00676 **
 d  3.097e-02  2.036e-02   1.521  0.13499   
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
-Residual standard error: 243700 on 46 degrees of freedom
+Residual standard error: 13000 on 46 degrees of freedom
 
 Number of iterations to convergence: 6 
-Achieved convergence tolerance: 5.734e-06</code></pre>
-<pre class="r"><code>(nls.grass &lt;- nls(number_cells_on_glass_slide_cleaned ~  Im/d * (1 - exp(-d * Time_as_days)), 
+Achieved convergence tolerance: 6.089e-06</code></pre>
+<pre class="r"><code>(nls.grass &lt;- nls(cells_per_sq_cm ~  Im/d * (1 - exp(-d * Time_as_days)), 
                data = grass.cells[grass.cells$Treatment == &quot;Open&quot;, ],
                start = list(Im = 2e5, d = 0.034)) %&gt;% summary)</code></pre>
 <pre><code>
-Formula: number_cells_on_glass_slide_cleaned ~ Im/d * (1 - exp(-d * Time_as_days))
+Formula: cells_per_sq_cm ~ Im/d * (1 - exp(-d * Time_as_days))
 
 Parameters:
     Estimate Std. Error t value Pr(&gt;|t|)
-Im 3.732e+04  2.354e+04   1.586    0.120
-d  6.902e-02  5.500e-02   1.255    0.216
+Im 1.990e+03  1.255e+03   1.586    0.120
+d  6.901e-02  5.500e-02   1.255    0.216
 
-Residual standard error: 453700 on 46 degrees of freedom
+Residual standard error: 24190 on 46 degrees of freedom
 
-Number of iterations to convergence: 17 
-Achieved convergence tolerance: 8.027e-06</code></pre>
+Number of iterations to convergence: 18 
+Achieved convergence tolerance: 6.225e-06</code></pre>
 <pre class="r"><code># note: use summary(model) to look at standard error, which is HUGE for the death rate and fairly large for the immigration rate</code></pre>
 <p>But we don’t actually need to have the model guess what the death rate is because we measured death rate with our death rate glass slides. So let’s plot that data now and calculate our death rate for the grassland and shrubland.</p>
 <pre class="r"><code># Calculating death rate for the grassland death slides
 intercept.grass &lt;- grass.cells %&gt;% 
   filter(Treatment == &quot;Death&quot;, 
          Time_as_days == 0) %&gt;% 
-  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned))) %&gt;% pull(mean)
+  summarize(mean = mean(log(cells_per_sq_cm))) %&gt;% pull(mean)
 
-r.grass &lt;- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.grass) ~ Time_as_days + 0, 
+r.grass &lt;- lm(I(log(cells_per_sq_cm) - intercept.grass) ~ Time_as_days + 0, 
                grass.cells %&gt;% filter(Treatment == &quot;Death&quot;)) %&gt;% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
 print(paste0(&quot;Continuous death rate for grassland cells is &quot;, round(r.grass, 4), &quot;.&quot;))</code></pre>
 <pre><code>[1] &quot;Continuous death rate for grassland cells is 0.0311.&quot;</code></pre>
+<pre class="r"><code>print(paste0(&quot;Daily death rate for grassland cells is &quot; , round(-100*(1 - exp(r.grass * 1)), 2), &quot;% per day.&quot;))</code></pre>
+<pre><code>[1] &quot;Daily death rate for grassland cells is 3.16% per day.&quot;</code></pre>
 <pre class="r"><code># Calculating death rate for the grassland death slides
 intercept.shrub &lt;- shrub.cells %&gt;% 
   filter(Treatment == &quot;Death&quot;, 
          Time_as_days == 0) %&gt;% 
-  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned))) %&gt;% pull(mean)
+  summarize(mean = mean(log(cells_per_sq_cm))) %&gt;% pull(mean)
 
-r.shrub &lt;- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.shrub) ~ Time_as_days + 0, 
+r.shrub &lt;- lm(I(log(cells_per_sq_cm) - intercept.shrub) ~ Time_as_days + 0, 
                shrub.cells %&gt;% filter(Treatment == &quot;Death&quot;)) %&gt;% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
 print(paste0(&quot;Continuous death rate for shrubland cells is &quot;, round(r.shrub, 4), &quot;.&quot;))</code></pre>
 <pre><code>[1] &quot;Continuous death rate for shrubland cells is 0.0237.&quot;</code></pre>
+<pre class="r"><code>print(paste0(&quot;Daily death rate for grassland cells is &quot; , round(-100*(1 - exp(r.shrub * 1)), 2), &quot;% per day.&quot;))</code></pre>
+<pre><code>[1] &quot;Daily death rate for grassland cells is 2.4% per day.&quot;</code></pre>
 <pre class="r"><code># creating a mini data frame to give our parameters for the linear models (since we are picky about our intercepts here)
 lm.parameters.death &lt;- data.frame(&quot;Intercept&quot; = c(intercept.grass, intercept.shrub), 
                                   &quot;Slope&quot; = c(r.grass[[1]], r.shrub[[1]]), 
@@ -401,53 +406,51 @@ lm.parameters.death &lt;- data.frame(&quot;Intercept&quot; = c(intercept.grass, 
 # plotting our death rate data
 ggplot(data = cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt;% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
-       aes(x = Time_as_days, y = log(number_cells_on_glass_slide_cleaned))) +
+       aes(x = Time_as_days, y = log(cells_per_sq_cm))) +
   geom_point() + 
   geom_abline(data = lm.parameters.death, aes(intercept = Intercept, slope = -Slope)) + 
   facet_wrap(vars(Ecosystem))</code></pre>
 <p><img src="05_output_figures/scatterplot_death_rate_by_ecosystem-1.png" width="672" /></p>
 <p>Sweet! Now we can use these death rates to input into our model so we are only asking it to find the estimate for the immigration rate. Note how much smaller the standard errors are for these immigration rates!</p>
 <pre class="r"><code># Calculating the death rate and immigration rate coefficients WITH measured death rates
-(nls.shrub &lt;- nls(number_cells_on_glass_slide_cleaned ~  
+(nls.shrub &lt;- nls(cells_per_sq_cm ~  
                     Im/0.02372169 * (1 - exp(-0.02372169 * Time_as_days)), 
                data = shrub.cells[shrub.cells$Treatment == &quot;Open&quot;, ],
                start = list(Im = 2e5)) %&gt;% summary) </code></pre>
 <pre><code>
-Formula: number_cells_on_glass_slide_cleaned ~ Im/0.02372169 * (1 - exp(-0.02372169 * 
-    Time_as_days))
+Formula: cells_per_sq_cm ~ Im/0.02372169 * (1 - exp(-0.02372169 * Time_as_days))
 
 Parameters:
    Estimate Std. Error t value Pr(&gt;|t|)    
-Im    17625       1477   11.93 7.89e-16 ***
+Im   940.00      78.76   11.93 7.89e-16 ***
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
-Residual standard error: 241300 on 47 degrees of freedom
+Residual standard error: 12870 on 47 degrees of freedom
 
 Number of iterations to convergence: 1 
-Achieved convergence tolerance: 7.677e-08</code></pre>
-<pre class="r"><code>(nls.grass &lt;- nls(number_cells_on_glass_slide_cleaned ~ 
+Achieved convergence tolerance: 1.578e-06</code></pre>
+<pre class="r"><code>(nls.grass &lt;- nls(cells_per_sq_cm ~ 
                     Im/0.03106574 * (1 - exp(-0.03106574 * Time_as_days)), 
                data = grass.cells[grass.cells$Treatment == &quot;Open&quot;, ],
                start = list(Im = 2e5)) %&gt;% summary)</code></pre>
 <pre><code>
-Formula: number_cells_on_glass_slide_cleaned ~ Im/0.03106574 * (1 - exp(-0.03106574 * 
-    Time_as_days))
+Formula: cells_per_sq_cm ~ Im/0.03106574 * (1 - exp(-0.03106574 * Time_as_days))
 
 Parameters:
    Estimate Std. Error t value Pr(&gt;|t|)    
-Im    21918       3170   6.915  1.1e-08 ***
+Im   1169.0      169.1   6.915  1.1e-08 ***
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
-Residual standard error: 454700 on 47 degrees of freedom
+Residual standard error: 24250 on 47 degrees of freedom
 
 Number of iterations to convergence: 1 
-Achieved convergence tolerance: 2.33e-08</code></pre>
+Achieved convergence tolerance: 4.923e-07</code></pre>
 <pre class="r"><code># Graph the new curves that we made
 A &lt;- ggplot(data = grass.cells %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
-       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
   geom_point() + 
   geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / 0.03106574) * (1 - exp(-0.03106574 * x))&quot;, se=F, 
               method.args = list(start=c(Im=2e5))) +
@@ -455,7 +458,7 @@ A &lt;- ggplot(data = grass.cells %&gt;% filter(Treatment == &quot;Open&quot;) %
 
 B &lt;- ggplot(data = shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
-       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
   geom_point() + 
   geom_smooth(method = &quot;nls&quot;, formula = &quot;y ~  (Im / 0.02372169) * (1 - exp(-0.02372169 * x))&quot;, se=F, 
               method.args = list(start=c(Im=2e5))) +
@@ -469,27 +472,27 @@ grid.arrange(A,B, nrow = 1)</code></pre>
 <p>Looking at the first graph of abundance on the glass slides above, it seems that, on and after the third time point, the abundance on the glass slides is at equilibrium. Actually, for the grassland, it looks like abundance dips a little, either driven by higher death rate or lower immigration rate, so we can just use the third timepoint to calculate our immigration rate at equilibrium.</p>
 <pre class="r"><code># Calculate immigration rate for the grassland 
 imm.grass &lt;- grass.cells %&gt;% filter(Treatment == &quot;Open&quot;, Time_Point %in% c(&quot;3&quot;)) %&gt;% 
-  summarize(mean = mean(number_cells_on_glass_slide_cleaned)) * r.grass
+  summarize(mean = mean(cells_per_sq_cm)) * r.grass
 
-print(paste0(&quot;The immigration rate for the grassland is &quot;, imm.grass, &quot; cells / day.&quot;))</code></pre>
-<pre><code>[1] &quot;The immigration rate for the grassland is 20287.3196400304 cells / day.&quot;</code></pre>
+print(paste0(&quot;The immigration rate for the grassland is &quot;, imm.grass, &quot; cells / cm^2 / day.&quot;))</code></pre>
+<pre><code>[1] &quot;The immigration rate for the grassland is 1081.99038080162 cells / cm^2 / day.&quot;</code></pre>
 <pre class="r"><code># Calculate immigration rate for the shrubland 
 imm.shrub &lt;- shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;, Time_Point %in% c(&quot;3&quot;)) %&gt;% 
-  summarize(mean = mean(number_cells_on_glass_slide_cleaned)) * r.shrub
+  summarize(mean = mean(cells_per_sq_cm)) * r.shrub
 
-print(paste0(&quot;The immigration rate for the shrubland is &quot;, imm.shrub, &quot; cells / day.&quot;))</code></pre>
-<pre><code>[1] &quot;The immigration rate for the shrubland is 10861.2794380827 cells / day.&quot;</code></pre>
+print(paste0(&quot;The immigration rate for the shrubland is &quot;, imm.shrub, &quot; cells / cm^2 / day.&quot;))</code></pre>
+<pre><code>[1] &quot;The immigration rate for the shrubland is 579.268236697744 cells / cm^2 / day.&quot;</code></pre>
 </div>
 <div id="death-rates-by-ecosystem" class="section level1">
 <h1>Death rates by ecosystem</h1>
 <p>One potentially interesting question is if death rates (for bacteria) differ by ecosystem. We can answer this question by running an ANCOVA on the abundance in the death slides, to see if there is an interaction between time and ecosystem.</p>
 <pre class="r"><code>cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt;% 
   mutate(log_abundance_minus_intercept = ifelse(Ecosystem == &quot;Shrubland&quot;, 
-                                            log(number_cells_on_glass_slide_cleaned) - intercept.shrub, 
+                                            log(cells_per_sq_cm) - intercept.shrub, 
                               ifelse(Ecosystem == &quot;Grassland&quot;, 
-                                     log(number_cells_on_glass_slide_cleaned) - intercept.grass, NA))) %&gt;% 
+                                     log(cells_per_sq_cm) - intercept.grass, NA))) %&gt;% 
   lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + Time_as_days + 0, data = .) %&gt;% # independent of order
-  Anova(type = &quot;II&quot;)</code></pre>
+  Anova(type = &quot;II&quot;) # MARGINALLY SIGNIFICANT</code></pre>
 <pre><code>Anova Table (Type II tests)
 
 Response: log_abundance_minus_intercept
@@ -499,43 +502,42 @@ Time_as_days:Ecosystem  0.654  1   3.8689 0.05566 .
 Residuals               7.274 43                     
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>cell.counts.use %&gt;% filter(Treatment == &quot;Death&quot;) %&gt;% 
-  mutate(log_abundance_minus_intercept = ifelse(Ecosystem == &quot;Shrubland&quot;, 
-                                            log(number_cells_on_glass_slide_cleaned) - intercept.shrub, 
-                              ifelse(Ecosystem == &quot;Grassland&quot;, 
-                                     log(number_cells_on_glass_slide_cleaned) - intercept.grass, NA))) %&gt;% 
-  lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + 0, data = .) %&gt;% # independent of order
-  Anova(type = &quot;II&quot;)</code></pre>
-<pre><code>Anova Table (Type II tests)
-
-Response: log_abundance_minus_intercept
-                       Sum Sq Df F value    Pr(&gt;F)    
-Time_as_days:Ecosystem 36.492  2  107.86 &lt; 2.2e-16 ***
-Residuals               7.274 43                      
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="taxa-dying-at-different-rates" class="section level1">
 <h1>Taxa dying at different rates?</h1>
-<p>Another potentially interesting question is if taxa on the death rate slides die at different rates. We can answer this question by running PERMANOVA on the death rate samples to see if time influences either 16S or ITS composition.</p>
+<p>Another potentially interesting question is if taxa on the death rate slides die at different rates. We can answer this question by running PERMANOVA on the death rate samples to see if time influences either 16S or ITS composition. Because there are so few samples that sequenced well after timepoint 1, we are grouping 2-4 to run the PERMANOVA.</p>
 <pre class="r"><code># Load data
-glass.slides.16S &lt;- &quot;03_Processed_data/16S_glass_slides.rda&quot;
-load(glass.slides.16S)
+load(&quot;03_Processed_data/16S_glass_slides.rda&quot;)
+
+tmp &lt;- q1.bray.dist.df %&gt;%  select(starts_with(&quot;LD&quot;)) %&gt;% 
+                                       select(!(&quot;LDT0R5G_oops&quot;)) %&gt;% 
+                                       rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+                                       filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
+                                       filter(!(SampleID == &quot;LDT0R5G_oops&quot;)) %&gt;% 
+                                       column_to_rownames(&quot;SampleID&quot;)
+
 
 # Create our visualization, just for fun
-q1.NMDS1 &lt;- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2, trymax = 50, trace = 0)
-q1.NMDS1.meta &lt;- data.frame(q1.NMDS1$points[,1:2]) %&gt;% 
+q1.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.bray.dist.df %&gt;% 
+                                       select(starts_with(&quot;LD&quot;)) %&gt;% 
+                                       select(!(&quot;LDT0R5G_oops&quot;)) %&gt;% 
+                                       rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+                                       filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
+                                       filter(!(SampleID == &quot;LDT0R5G_oops&quot;)) %&gt;% 
+                                       column_to_rownames(&quot;SampleID&quot;))), 
+                   autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+q1.NMDS.meta &lt;- data.frame(q1.NMDS$points[,1:2]) %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
-  filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
   mutate(TimePoint = str_match(SampleID, &quot;T([0-4])&quot;)[,2]) %&gt;% 
   mutate(Ecosystem = str_match(SampleID, &quot;R[0-9][A-C]?([GS])&quot;)[,2], 
          Ecosystem = ifelse(Ecosystem == &quot;G&quot;, &quot;Grassland&quot;, &quot;Shrubland&quot;)) %&gt;% 
-  filter(!(SampleID == &quot;LDT0R5G_oops&quot;))
+  mutate(TimePoint_grouped = ifelse(grepl(&quot;0|1&quot;, TimePoint), TimePoint, &quot;2_through_4&quot;))
 
-ggplot(data = q1.NMDS1.meta) +
+ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+  scale_color_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;Bacteria, death slides over time&quot;)</code></pre>
 <p><img src="05_output_figures/NMDS_taxa_specific_death_rates_bacteria-1.png" width="672" /></p>
 <pre class="r"><code># Do the PERMANOVA that will test our hypothesis
 q1.bray.dist.df.death &lt;- as.data.frame(as.matrix(q1.bray.dist)) %&gt;% 
@@ -549,66 +551,71 @@ q1.bray.dist.df.death &lt;- as.data.frame(as.matrix(q1.bray.dist)) %&gt;%
   rename(LDT1R5BG = LDT1R5BG_dup_new_protocol)
 
       
-adonis(q1.bray.dist.df.death ~ TimePoint, permutations = 10000, 
-       data = q1.NMDS1.meta, na.rm= TRUE)</code></pre>
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)</code></pre>
 <pre><code>
 Call:
-adonis(formula = q1.bray.dist.df.death ~ TimePoint, data = q1.NMDS1.meta,      permutations = 10000, na.rm = TRUE) 
+adonis(formula = q1.bray.dist.df.death ~ TimePoint_grouped, data = q1.NMDS.meta,      permutations = 10000, na.rm = TRUE) 
 
 Permutation: free
 Number of permutations: 10000
 
 Terms added sequentially (first to last)
 
-          Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
-TimePoint  4    2.3570 0.58925  2.1924 0.42223  4e-04 ***
-Residuals 12    3.2252 0.26877         0.57777           
-Total     16    5.5822                 1.00000           
+                  Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
+TimePoint_grouped  2    1.5746 0.78729  2.7517 0.28218  3e-04 ***
+Residuals         14    4.0055 0.28611         0.71782           
+Total             16    5.5801                 1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
-       data = q1.NMDS1.meta, na.rm= TRUE)</code></pre>
+<pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint_grouped * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)</code></pre>
 <pre><code>
 Call:
-adonis(formula = q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem),      data = q1.NMDS1.meta, permutations = 10000, na.rm = TRUE) 
+adonis(formula = q1.bray.dist.df.death ~ TimePoint_grouped *      as.factor(Ecosystem), data = q1.NMDS.meta, permutations = 10000,      na.rm = TRUE) 
 
 Permutation: free
 Number of permutations: 10000
 
 Terms added sequentially (first to last)
 
-                               Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
-TimePoint                       4    2.3570 0.58925  3.3242 0.42223 9.999e-05
-as.factor(Ecosystem)            1    0.8914 0.89136  5.0285 0.15968 9.999e-05
-TimePoint:as.factor(Ecosystem)  1    0.5613 0.56128  3.1664 0.10055     2e-04
-Residuals                      10    1.7726 0.17726         0.31754          
-Total                          16    5.5822                 1.00000          
-                                  
-TimePoint                      ***
-as.factor(Ecosystem)           ***
-TimePoint:as.factor(Ecosystem) ***
-Residuals                         
-Total                             
+                                       Df SumsOfSqs MeanSqs F.Model      R2
+TimePoint_grouped                       2    1.5746 0.78729  3.5686 0.28218
+as.factor(Ecosystem)                    1    0.8137 0.81375  3.6886 0.14583
+TimePoint_grouped:as.factor(Ecosystem)  1    0.5444 0.54441  2.4677 0.09756
+Residuals                              12    2.6474 0.22061         0.47443
+Total                                  16    5.5801                 1.00000
+                                          Pr(&gt;F)    
+TimePoint_grouped                      9.999e-05 ***
+as.factor(Ecosystem)                    0.000200 ***
+TimePoint_grouped:as.factor(Ecosystem)  0.005399 ** 
+Residuals                                           
+Total                                               
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code># Load data
-glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
-load(glass.slides.ITS)
+load(&quot;03_Processed_data/ITS_glass_slides.rda&quot;)
 
 # Create our visualization, just for fun
-q1.ITS.NMDS1 &lt;- metaMDS(q1.ITS.bray.dist, autotransform = FALSE, k = 2, trymax = 200, trace = 0)
-q1.ITS.NMDS1.meta &lt;- data.frame(q1.ITS.NMDS1$points[,1:2]) %&gt;% 
+q1.ITS.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df %&gt;% 
+                                           select(starts_with(&quot;LD&quot;)) %&gt;% 
+                                           rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+                                           filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
+                                           column_to_rownames(&quot;SampleID&quot;))), 
+                       autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+q1.ITS.NMDS.meta &lt;- data.frame(q1.ITS.NMDS$points[,1:2]) %&gt;% 
   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
-  filter(grepl(&quot;LD&quot;, SampleID)) %&gt;% 
   mutate(TimePoint = str_match(SampleID, &quot;T([0-4])&quot;)[,2]) %&gt;% 
   mutate(Ecosystem = str_match(SampleID, &quot;R[0-9][A-C]?([GS])&quot;)[,2], 
          Ecosystem = ifelse(Ecosystem == &quot;G&quot;, &quot;Grassland&quot;, &quot;Shrubland&quot;)) %&gt;% 
-  filter(!(SampleID == &quot;LDT0R5G_oops&quot;))
+  mutate(TimePoint_grouped = ifelse(grepl(&quot;0|1&quot;, TimePoint), TimePoint, &quot;2_through_4&quot;))
 
-ggplot(data = q1.ITS.NMDS1.meta) +
+ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+  scale_color_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;Fungi, death slides over time&quot;)</code></pre>
 <p><img src="05_output_figures/NMDS_taxa_specific_death_rates_fungi-1.png" width="672" /></p>
 <pre class="r"><code># Do the PERMANOVA that will test our hypothesis
 q1.bray.dist.df.death &lt;- q1.ITS.bray.dist.df %&gt;% 
@@ -618,53 +625,52 @@ q1.bray.dist.df.death &lt;- q1.ITS.bray.dist.df %&gt;%
   select(starts_with(&quot;LD&quot;))
 
 
-adonis(q1.bray.dist.df.death ~ TimePoint, permutations = 10000, 
-       data = q1.ITS.NMDS1.meta, na.rm= TRUE)</code></pre>
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)</code></pre>
 <pre><code>
 Call:
-adonis(formula = q1.bray.dist.df.death ~ TimePoint, data = q1.ITS.NMDS1.meta,      permutations = 10000, na.rm = TRUE) 
+adonis(formula = q1.bray.dist.df.death ~ TimePoint_grouped, data = q1.ITS.NMDS.meta,      permutations = 10000, na.rm = TRUE) 
 
 Permutation: free
 Number of permutations: 10000
 
 Terms added sequentially (first to last)
 
-          Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)
-TimePoint  2    0.5367 0.26835  1.1419 0.17192 0.2622
-Residuals 11    2.5851 0.23501         0.82808       
-Total     13    3.1218                 1.00000       </code></pre>
-<pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
-       data = q1.ITS.NMDS1.meta, na.rm= TRUE)</code></pre>
+                  Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)
+TimePoint_grouped  2   0.53725 0.26862  1.1431 0.17207 0.2583
+Residuals         11   2.58503 0.23500         0.82793       
+Total             13   3.12227                 1.00000       </code></pre>
+<pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint_grouped * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)</code></pre>
 <pre><code>
 Call:
-adonis(formula = q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem),      data = q1.ITS.NMDS1.meta, permutations = 10000, na.rm = TRUE) 
+adonis(formula = q1.bray.dist.df.death ~ TimePoint_grouped *      as.factor(Ecosystem), data = q1.ITS.NMDS.meta, permutations = 10000,      na.rm = TRUE) 
 
 Permutation: free
 Number of permutations: 10000
 
 Terms added sequentially (first to last)
 
-                               Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)
-TimePoint                       2   0.53670 0.26835  2.1840 0.17192    0.0139
-as.factor(Ecosystem)            1   1.27000 1.27000 10.3360 0.40682 9.999e-05
-TimePoint:as.factor(Ecosystem)  1   0.20922 0.20922  1.7027 0.06702    0.1122
-Residuals                       9   1.10584 0.12287         0.35424          
-Total                          13   3.12176                 1.00000          
-                                  
-TimePoint                      *  
-as.factor(Ecosystem)           ***
-TimePoint:as.factor(Ecosystem)    
-Residuals                         
-Total                             
+                                       Df SumsOfSqs MeanSqs F.Model      R2
+TimePoint_grouped                       2   0.53725 0.26862  2.1873 0.17207
+as.factor(Ecosystem)                    1   1.27079 1.27079 10.3477 0.40701
+TimePoint_grouped:as.factor(Ecosystem)  1   0.20896 0.20896  1.7015 0.06693
+Residuals                               9   1.10528 0.12281         0.35400
+Total                                  13   3.12227                 1.00000
+                                          Pr(&gt;F)    
+TimePoint_grouped                         0.0147 *  
+as.factor(Ecosystem)                   9.999e-05 ***
+TimePoint_grouped:as.factor(Ecosystem)    0.1169    
+Residuals                                           
+Total                                               
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="dispersal-communities-by-ecosystem" class="section level1">
 <h1>Dispersal communities by ecosystem</h1>
-<p>A key question of this study is - Do different ecosystems (plant communities) have different dispersal communities? To answer this question, we will use a PERMANOVA to see if different ecosystems show different bacterial and fungal communities on the glass slides.</p>
+<p>A key question of this study is - Do different ecosystems (plant communities) have different dispersal communities? To answer this question, we will use a PERMANOVA to see if different ecosystems show different bacterial and fungal communities on the glass slides. However, because variance seems to change through time along with the community composition, we will use a PERMDISP to see if variance could be driving the significant PERMANOVA too. And then, because the pattern over time is clearer with the fungi, we will look to see if one or a few taxa are driving this relationship.</p>
 <pre class="r"><code># Load data
-glass.slides.16S &lt;- &quot;03_Processed_data/16S_glass_slides.rda&quot;
-load(glass.slides.16S)
+load(&quot;03_Processed_data/16S_glass_slides.rda&quot;)
 
 # Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
 q1.bray.dist.df.dispersal &lt;- q1.bray.dist.df %&gt;% 
@@ -709,33 +715,42 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
           Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
-Ecosystem  1    0.7798 0.77980   2.096 0.02791 9.999e-05 ***
-Residuals 73   27.1594 0.37205         0.97209              
-Total     74   27.9392                 1.00000              
+Ecosystem  1    0.7808 0.78077  2.0986 0.02795 9.999e-05 ***
+Residuals 73   27.1586 0.37204         0.97205              
+Total     74   27.9394                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
-       data = q1.NMDS.meta, na.rm= TRUE)</code></pre>
+<pre class="r"><code>adonis(q1.bray.dist.df.dispersal ~ Ecosystem + Time_Point, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE) # interaction is not significant so ignore</code></pre>
 <pre><code>
 Call:
-adonis(formula = q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point,      data = q1.NMDS.meta, permutations = 10000, na.rm = TRUE) 
+adonis(formula = q1.bray.dist.df.dispersal ~ Ecosystem + Time_Point,      data = q1.NMDS.meta, permutations = 10000, na.rm = TRUE) 
 
 Permutation: free
 Number of permutations: 10000
 
 Terms added sequentially (first to last)
 
-                     Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
-Ecosystem             1    0.7798 0.77980  2.1121 0.02791 9.999e-05 ***
-Time_Point            1    0.5401 0.54013  1.4629 0.01933    0.0013 ** 
-Ecosystem:Time_Point  1    0.4053 0.40533  1.0978 0.01451    0.1281    
-Residuals            71   26.2140 0.36921         0.93825              
-Total                74   27.9392                 1.00000              
+           Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Ecosystem   1    0.7808 0.78077  2.1119 0.02795 9.999e-05 ***
+Time_Point  1    0.5404 0.54041  1.4618 0.01934 0.0007999 ***
+Residuals  72   26.6182 0.36970         0.95271              
+Total      74   27.9394                 1.00000              
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># See if variance may be partially driving the significant time effect on composition
+betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = &quot;centroid&quot;) %&gt;% # no interaction in the PERMANOVA, so we can test each factor independently here
+  anova()</code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: Distances
+          Df   Sum Sq   Mean Sq F value  Pr(&gt;F)  
+Groups     3 0.016006 0.0053353  3.0747 0.03307 *
+Residuals 71 0.123198 0.0017352                  
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code># Load data
-glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
-load(glass.slides.ITS)
+load(&quot;03_Processed_data/ITS_glass_slides.rda&quot;)
 
 # Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
 q1.ITS.bray.dist.df.dispersal &lt;- q1.ITS.bray.dist.df %&gt;% 
@@ -777,9 +792,9 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
           Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
-Ecosystem  1    1.4956 1.49559  9.7486 0.11781 9.999e-05 ***
-Residuals 73   11.1994 0.15342         0.88219              
-Total     74   12.6949                 1.00000              
+Ecosystem  1    1.4952  1.4952  9.7471 0.11779 9.999e-05 ***
+Residuals 73   11.1981  0.1534         0.88221              
+Total     74   12.6932                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code>adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
@@ -794,20 +809,267 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
-Ecosystem             1    1.4956 1.49559 10.3117 0.11781 9.999e-05 ***
-Time_Point            1    0.6317 0.63174  4.3557 0.04976 9.999e-05 ***
-Ecosystem:Time_Point  1    0.2699 0.26990  1.8609 0.02126    0.0157 *  
-Residuals            71   10.2977 0.14504         0.81117              
-Total                74   12.6949                 1.00000              
+Ecosystem             1    1.4952 1.49519 10.3106 0.11779 9.999e-05 ***
+Time_Point            1    0.6323 0.63234  4.3605 0.04982    0.0002 ***
+Ecosystem:Time_Point  1    0.2696 0.26964  1.8594 0.02124    0.0155 *  
+Residuals            71   10.2961 0.14502         0.81115              
+Total                74   12.6932                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># See if variance may be partially driving the significant time effect on composition
+betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), q1.ITS.NMDS.meta$Time_Point, type = &quot;centroid&quot;) %&gt;% # no interaction in the PERMANOVA, so we can test each factor independently here
+  anova()</code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: Distances
+          Df  Sum Sq   Mean Sq F value Pr(&gt;F)  
+Groups     3 0.04615 0.0153834  2.2765 0.0871 .
+Residuals 71 0.47979 0.0067576                 
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># Because the influence of time is more clear with the fungi, let&#39;s look to see if a single taxon is driving this
+
+
+# # Option one: import into PRIMER, and plot species that are correlated (above a certain r) with community variation as vectors on their ordinations
+# # These scripts output the files needed to import into PRIMER
+# q1.ITS.rarefied %&gt;% 
+#   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+#   filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+#   write_tsv(&quot;~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__rarefied_filtered_for_primer.tsv&quot;, col_names = TRUE)
+# 
+# q1.ITS.NMDS.meta %&gt;% 
+#   write_tsv(&quot;~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__NMDS_meta_filtered_for_primer.tsv&quot;, col_names = TRUE)
+# 
+# # From PRIMER - NMDS, correlated at 0.68 (Spearman), seems to drive strongly towards T2-4
+# ITS.species &lt;- fread(input = &quot;01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv&quot;) %&gt;% 
+#   filter(grepl(&quot;6d360&quot;, `#OTUID`)) %&gt;% 
+#   select(taxonomy) %&gt;% print #k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Didymosphaeriaceae;g__Paraconiothyrium;s__unidentified
+
+
+## Option 2 (my favorite)
+## try with an indicator species analysis (between T1 and T2-4, because that&#39;s all that&#39;s significant)
+key &lt;- c(&quot;1&quot; = &quot;1&quot;, &quot;2&quot; = &quot;not_1&quot;, &quot;3&quot; = &quot;not_1&quot;, &quot;4&quot; = &quot;not_1&quot;)
+#want: rows = sites
+indic.time &lt;- multipatt(q1.ITS.rarefied %&gt;% 
+                   rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+                   filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+                   column_to_rownames(&quot;SampleID&quot;), 
+                 key[q1.ITS.NMDS.meta$Time_Point], duleg = TRUE)
+summary(indic.time)</code></pre>
+<pre><code>
+ Multilevel pattern analysis
+ ---------------------------
+
+ Association function: IndVal.g
+ Significance level (alpha): 0.05
+
+ Total number of species: 7690
+ Selected number of species: 136 
+ Number of species associated to 1 group: 136 
+
+ List of species associated to each combination: 
+
+ Group 1  #sps.  103 
+                                  stat p.value   
+6b550ad3889766092ea1d7be05293622 0.885   0.005 **
+3cc206a0424f7c33f75fe152cd42d757 0.874   0.005 **
+adffc920dd86ce72a6385dd2063ee499 0.863   0.010 **
+dba6ff41ca6ac3dd820c1a20c67d1b18 0.812   0.010 **
+fd3bb0f93dc5043995cc6df1698a570c 0.811   0.005 **
+60d8aac672665427398d03a74c9374ef 0.777   0.005 **
+1a93e1f29b1cc493e43c0a6cf22354bc 0.772   0.005 **
+ba697aebf73f74c7a92b3d93fcdae1fa 0.751   0.015 * 
+3f3314f310e1a629e27a37a0ddcc71d1 0.743   0.015 * 
+8d904cbfb1324fc400ddb0bd54ac98e2 0.742   0.005 **
+61322ac57eeeafda8df586777df7b870 0.741   0.005 **
+18b1f3d102874f231e3168f058eca5bb 0.709   0.010 **
+56d6a71c94321f4bacd933db47567133 0.703   0.005 **
+10e246b63ef506bd782f33ebeb66eeab 0.691   0.015 * 
+a2b665f720bfa33cacfc62ce3b163c71 0.675   0.040 * 
+4e72a1340652e9acfd17f3b58ee0946b 0.670   0.010 **
+a6dcfce2ef3a967409c3d1f1eb7b61e0 0.659   0.005 **
+448d5f533e646e1f70bed291c8896dcc 0.657   0.005 **
+eb61d9872f198693a8c781985a0c0be4 0.653   0.005 **
+4d3e2c97541b0aaffe13d5bbbba7f5e2 0.649   0.005 **
+53f8fa058e44195a8cf188f127237821 0.646   0.005 **
+50dc6d9f91a205d6bc53a59785b73133 0.634   0.050 * 
+761176318dc6ff2d907988c89bf64b3d 0.632   0.010 **
+dc47df2860f0b62c4cd123ebeff46d7a 0.631   0.050 * 
+9df8902926c57927e7c1637ce9e04169 0.624   0.005 **
+d3c51e8d1de4793dfe54f3906639893b 0.624   0.050 * 
+bedd3813e765d90db9da91718f97f07d 0.619   0.005 **
+50ce296df0ee950b6f0fa444a4dda582 0.612   0.020 * 
+a1426cb2e683969e4ed70ba40f3ec4a5 0.601   0.015 * 
+a86bfb902cbf20e057605c00d196260f 0.593   0.005 **
+993dd4d4514f748ea53ef9f94eb358dd 0.576   0.040 * 
+24c7587fd1e36bb3a5f14265dd710fe0 0.559   0.005 **
+2bf60cd0c1572a326d1b30bcea6a1a4c 0.555   0.005 **
+40adeec179945ec42983e1e9a6fa57a4 0.554   0.005 **
+46e291268d82d7a8a60da91c97f4fdad 0.553   0.005 **
+798db8702acc42ff57e93d53a12c6bfa 0.553   0.010 **
+7eb448ea3dad7588a8b7fa8f3d41253f 0.551   0.005 **
+51845ffbb5da10bc962c9be15efb0f9e 0.551   0.005 **
+f77e4baddb87dd7138fa28f9b170a78a 0.535   0.015 * 
+c35e51a7672b3e1cdb50a3ca2e06e9e3 0.533   0.005 **
+c527f49af38f99285d6925d1694d3fa2 0.533   0.015 * 
+197cfdd00c0752dba2dbf0113785970f 0.531   0.010 **
+57362f1a472ab270c279e44ee48178b2 0.527   0.030 * 
+a072619d65739c8bfeca7ddf8c6e883d 0.524   0.030 * 
+b3afaa0125ad781ef4e39971b7a1796b 0.522   0.005 **
+edb12a0bd74abf8ae9461363b6a306bc 0.517   0.035 * 
+2c8aee19e7bab9e856522be4992eeeda 0.500   0.010 **
+c4c4e5842b30d9d06821e477badc6290 0.500   0.010 **
+5ee6b2c51dd113f2df59550cf914b0c7 0.500   0.005 **
+a16b17629777d23187508535de6e7d0f 0.494   0.005 **
+46773aa4389749cf0202cf0892cebbe7 0.494   0.005 **
+3df749176e2d01c430916c84d3464a52 0.493   0.010 **
+9469b0606c2ef37a8f5b50977a123c2e 0.491   0.005 **
+2c23bd43e661ce46a6d0f25057566535 0.486   0.010 **
+feec6da4c01cb7c5e989603c786f9836 0.486   0.010 **
+9c8a6856f7cf203c2c9f076cbc6768a7 0.479   0.010 **
+237effeab1f3252274fbc80499c8fdc0 0.477   0.015 * 
+3a7e54deaf17b2539c9760918b962f39 0.476   0.025 * 
+c8b8b9d7d1a85bc367030027576a11af 0.467   0.045 * 
+a4bc9276aed1dc28f913f0e1d47d979a 0.464   0.020 * 
+c146cf5d7d948e1855684f77e63fb53e 0.452   0.030 * 
+02722fcf9d897ed064d9048ead14bdaa 0.433   0.015 * 
+843feeeb3849c9b60f37e0f15a3f42cf 0.433   0.010 **
+cd5fb06a0985c18086a679752c54f993 0.433   0.010 **
+3c84d3252c4792e53b42704e6e58adfd 0.433   0.025 * 
+a1d0c9ab1c75e11472721a36474e6896 0.430   0.040 * 
+16efdcede84be7f9c67aad01c3515fb6 0.429   0.015 * 
+6d201ba5a1c3334beb3220e82d197e21 0.428   0.040 * 
+ce2c54df8062cd9bfcd79e882dfdf615 0.425   0.045 * 
+6ca01c7ce3a228dd3d3b0542321374c9 0.424   0.010 **
+5015556df3955f6dae21e5018bf27dad 0.423   0.005 **
+f0f52ed7b5dea6d6655727fab070e30b 0.422   0.015 * 
+b4c92c8a53035413dee15150db1501cd 0.422   0.040 * 
+152fbd49665c3389052bc73826ff2092 0.422   0.035 * 
+f0513aceae2f80d6d9d211dc1f417099 0.419   0.015 * 
+c1b0973a2d776c0776490c321ba8d8e8 0.411   0.040 * 
+cf2afd5635aa55e04350c72519567e59 0.400   0.045 * 
+c4b09ca6ea427fe3411ab8bc9a36914d 0.398   0.050 * 
+d762d2c020ec061d3f1284a8f9ed4552 0.354   0.040 * 
+0fb18dc0bb9d4a856f9bd2a39f894f6b 0.354   0.050 * 
+facdcf104662bf9f01d7a70a5245e6bb 0.354   0.050 * 
+29ec8a5f0728da4eeb6b8074d9ae5d3a 0.354   0.050 * 
+ecd61ee8041745c43ba5d253e2522fe1 0.354   0.050 * 
+54be43279a482b38710fefae4b525850 0.354   0.035 * 
+573f93ccb1477d3a57c59fbba4c922f4 0.354   0.040 * 
+ac818e84ad89075d71ad9a065486a300 0.354   0.030 * 
+135e28a4d6ba3c553fc2e29bf0f81a6f 0.354   0.040 * 
+274ac4512c31364146165d2452a041a4 0.354   0.030 * 
+df653d0bdd2bbafe46c5717271e94f02 0.354   0.045 * 
+05bba11c21c86921a19b32149eefaeb7 0.354   0.050 * 
+6293ed712a4969da7b48f7de5da14dc6 0.354   0.050 * 
+249b20457895c04d571d3c8b3caaded0 0.354   0.025 * 
+5b67990781976b6973ac31ad4d43281d 0.354   0.045 * 
+e477e714e462cfac622e4dd6ec150715 0.354   0.050 * 
+f93ea038efac22e044f470cd57d86947 0.354   0.040 * 
+8b6e5f6f157c96d531b9bc5e9c2d9635 0.353   0.030 * 
+85000b441c3fc8cb3a8737287fb79b9f 0.347   0.045 * 
+6c9c1a6b98828de1e48586f5379fae6b 0.343   0.045 * 
+6f0942f0eace8aa09e2783cd47aba15d 0.342   0.050 * 
+accce61bfa96abf87aeef8f762e0a2f4 0.342   0.050 * 
+8add21c7c4a8df14793cb34b5e36a25e 0.341   0.045 * 
+b89eb738355a8c8f6a00a5f0d9a3d08c 0.341   0.050 * 
+30ad0a1db7534920663a334edd1451b7 0.339   0.035 * 
+
+ Group not_1  #sps.  33 
+                                  stat p.value   
+6d360c9c285bc318a1e9cbfd2a85a057 0.907   0.005 **
+ec3d78df700e0518a81ed0843c9d1d1c 0.876   0.005 **
+0ec291fa8414302b18ab7bfb89c33209 0.844   0.005 **
+3a61b3e1ee7a53548fa1eb416917ab5b 0.844   0.005 **
+347b17563a35eda7d903ea07a289fce2 0.836   0.005 **
+8bff814a8310c017d578e346e02b64b4 0.832   0.005 **
+00735e82b47219838a8213f40796c504 0.830   0.005 **
+07c9441ebcf931a1f7e6f3bab8a3be23 0.824   0.005 **
+6473642f64396126d82d9983348c0214 0.824   0.005 **
+2f6c2b58eb612ebcf4c07fb555b16de9 0.817   0.005 **
+9f50e64e0e8f4064c2f7a668166c53f3 0.816   0.005 **
+86b95cd30bf8e0805cc8d1a75cb8d141 0.810   0.010 **
+b4de2cd21ee0083acacaa2f70a3aadf2 0.806   0.005 **
+e03f48c30eaa110ac015253ae2d66842 0.793   0.010 **
+750ffb89094b4f33ce5f8ff6a4a9734e 0.788   0.010 **
+6011c7ca88b2973988b09f34f6c8c66e 0.782   0.050 * 
+bc7e7418ff497ed56541c1b985e1dc06 0.764   0.045 * 
+68fd7320605a645ad627ae32f7d8a416 0.758   0.015 * 
+bf91fbe02982d2cf3c280cd04c1e4f87 0.758   0.015 * 
+56651b47952ee08bb1e8258b0ebf19a4 0.739   0.010 **
+7105ef3dee9296597342d991eb0b339a 0.732   0.040 * 
+fd0845da70843a7bbc1162c7dd1e9d63 0.726   0.015 * 
+39c8768585bcca4de850af4bbf885151 0.705   0.020 * 
+069b620d8dbb932e02f72deeb5b4ca6d 0.637   0.040 * 
+7ca22f308da3e7739b61b3bb6d99437f 0.630   0.030 * 
+59823d48691bb03caa4f745bf9fb77e2 0.627   0.025 * 
+9f90cf1c497735ea5d299f6947f81efd 0.612   0.045 * 
+196814810b2aa4bd4b9fad336a7ab131 0.611   0.025 * 
+a886f6a8d2fe4a900dee5b6e6cac8a85 0.597   0.025 * 
+101b7ba0c9fca158c41654ddd8f1eb2a 0.582   0.030 * 
+88495c23c44d09018f679a04dd1f55df 0.582   0.035 * 
+e85e720d83a972829c488827ea08a43f 0.521   0.035 * 
+0b6ff393e40db63bbaa53196525fe1a6 0.521   0.050 * 
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1 </code></pre>
+<pre class="r"><code>ITS.taxonomy &lt;- fread(input = &quot;01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv&quot;)
+
+# Time Point 1, 5 top taxa
+ITS.taxonomy %&gt;% filter(grepl(&quot;6b550ad3889766092ea1d7be05293622&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # Truncatella_angustata</code></pre>
+<pre><code>                                                                                                            taxonomy
+1: k__Fungi;p__Ascomycota;c__Sordariomycetes;o__Xylariales;f__Bartaliniaceae;g__Truncatella;s__Truncatella_angustata</code></pre>
+<pre class="r"><code>ITS.taxonomy %&gt;% filter(grepl(&quot;3cc206a0424f7c33f75fe152cd42d757&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # f__Phaeosphaeriaceae</code></pre>
+<pre><code>                                                                         taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Phaeosphaeriaceae</code></pre>
+<pre class="r"><code>ITS.taxonomy %&gt;% filter(grepl(&quot;adffc920dd86ce72a6385dd2063ee499&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # o__Dothideales</code></pre>
+<pre><code>                                                   taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Dothideales</code></pre>
+<pre class="r"><code>ITS.taxonomy %&gt;% filter(grepl(&quot;dba6ff41ca6ac3dd820c1a20c67d1b18&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # s__Teichospora_mariae</code></pre>
+<pre><code>                                                                                                            taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Teichosporaceae;g__Teichospora;s__Teichospora_mariae</code></pre>
+<pre class="r"><code>ITS.taxonomy %&gt;% filter(grepl(&quot;fd3bb0f93dc5043995cc6df1698a570c&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # f__Lophiostomataceae</code></pre>
+<pre><code>                                                                         taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Lophiostomataceae</code></pre>
+<pre class="r"><code># Time Point 2/3/4, 5 top taxa
+ITS.taxonomy %&gt;% filter(grepl(&quot;6d360c9c285bc318a1e9cbfd2a85a057&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # g__Paraconiothyrium</code></pre>
+<pre><code>                                                                                                              taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Didymosphaeriaceae;g__Paraconiothyrium;s__unidentified</code></pre>
+<pre class="r"><code>ITS.taxonomy %&gt;% filter(grepl(&quot;ec3d78df700e0518a81ed0843c9d1d1c&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # f__Didymellaceae</code></pre>
+<pre><code>                                                                     taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Didymellaceae</code></pre>
+<pre class="r"><code>ITS.taxonomy %&gt;% filter(grepl(&quot;0ec291fa8414302b18ab7bfb89c33209&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # g__Alternaria</code></pre>
+<pre><code>                                                                                   taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Pleosporaceae;g__Alternaria</code></pre>
+<pre class="r"><code>ITS.taxonomy %&gt;% filter(grepl(&quot;3a61b3e1ee7a53548fa1eb416917ab5b&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # g__Alternaria</code></pre>
+<pre><code>                                                                                   taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Pleosporaceae;g__Alternaria</code></pre>
+<pre class="r"><code>ITS.taxonomy %&gt;% filter(grepl(&quot;347b17563a35eda7d903ea07a289fce2&quot;, `#OTUID`)) %&gt;% 
+  select(taxonomy) %&gt;% print # g__Alternaria</code></pre>
+<pre><code>                                                                                   taxonomy
+1: k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Pleosporaceae;g__Alternaria</code></pre>
+<pre class="r"><code># ## Option 3: do a CAP analysis
+# tmp &lt;- 
+# capscale(formula =  q1.ITS.rarefied %&gt;% 
+#                    rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+#                    filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+#                    column_to_rownames(&quot;SampleID&quot;) ~ Time_Point, q1.ITS.NMDS.meta, 
+#          dist = &quot;bray&quot;)
+# plot(tmp)</code></pre>
 </div>
 <div id="beta-diversity-of-dispersal-community-by-ecosystem" class="section level1">
 <h1>Beta-diversity of dispersal community by ecosystem</h1>
 <p>We hypothesize that dispersal communities will show higher beta-diversity in the shrubland because the plant community is more heterogeneous in the shrubland. So let’s test that with our good friend, PERMDISP!</p>
 <pre class="r"><code># Load data
-glass.slides.16S &lt;- &quot;03_Processed_data/16S_glass_slides.rda&quot;
-load(glass.slides.16S)
+load(&quot;03_Processed_data/16S_glass_slides.rda&quot;)
 
 # Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
 q1.bray.dist.df.dispersal &lt;- q1.bray.dist.df %&gt;% 
@@ -828,9 +1090,9 @@ betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)),
 <pre><code>Analysis of Variance Table
 
 Response: Distances
-          Df  Sum Sq   Mean Sq F value Pr(&gt;F)
-Groups     1 0.00120 0.0011997  0.5848 0.4469
-Residuals 73 0.14976 0.0020515               </code></pre>
+          Df   Sum Sq   Mean Sq F value Pr(&gt;F)
+Groups     1 0.001203 0.0012028  0.5861 0.4464
+Residuals 73 0.149808 0.0020522               </code></pre>
 <pre class="r"><code># Load data
 glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
 load(glass.slides.ITS)
@@ -860,18 +1122,18 @@ No. of Negative Eigenvalues: 0
 
 Average distance to centroid:
 Grassland Shrubland 
-   0.3339    0.4275 
+   0.3339    0.4274 
 
 Eigenvalues for PCoA axes:
 (Showing 8 of 74 eigenvalues)
  PCoA1  PCoA2  PCoA3  PCoA4  PCoA5  PCoA6  PCoA7  PCoA8 
-2.2391 1.0949 0.7930 0.5262 0.4724 0.4058 0.3933 0.3287 
+2.2367 1.0948 0.7927 0.5257 0.4728 0.4061 0.3938 0.3291 
 Analysis of Variance Table
 
 Response: Distances
-          Df  Sum Sq  Mean Sq F value    Pr(&gt;F)    
-Groups     1 0.16383 0.163834  43.834 5.219e-09 ***
-Residuals 73 0.27285 0.003738                      
+          Df  Sum Sq  Mean Sq F value   Pr(&gt;F)    
+Groups     1 0.16351 0.163515  43.809 5.26e-09 ***
+Residuals 73 0.27247 0.003732                     
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -922,113 +1184,38 @@ Number of permutations: 10000
 
 Terms added sequentially (first to last)
 
-             Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
-Source_Sink   5     5.900  1.1800  3.3995 0.14781 9.999e-05 ***
-Residuals    98    34.015  0.3471         0.85219              
-Total       103    39.915                 1.00000              
+            Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Source_Sink  4     5.042 1.26044   3.664 0.13488 9.999e-05 ***
+Residuals   94    32.337 0.34401         0.86512              
+Total       98    37.379                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code>pairwise.adonis(q1.bray.dist.df.source, q1.source.NMDS.meta$Source_Sink)</code></pre>
 <pre><code>                                                              pairs Df
-1                             Air vs Environmental Litter_Grassland  1
-2                             Air vs Environmental Litter_Shrubland  1
-3                                             Air vs Open_Shrubland  1
-4                                             Air vs Open_Grassland  1
-5                                                       Air vs Soil  1
-6  Environmental Litter_Grassland vs Environmental Litter_Shrubland  1
-7                  Environmental Litter_Grassland vs Open_Shrubland  1
-8                  Environmental Litter_Grassland vs Open_Grassland  1
-9                            Environmental Litter_Grassland vs Soil  1
-10                 Environmental Litter_Shrubland vs Open_Shrubland  1
-11                 Environmental Litter_Shrubland vs Open_Grassland  1
-12                           Environmental Litter_Shrubland vs Soil  1
-13                                 Open_Shrubland vs Open_Grassland  1
-14                                           Open_Shrubland vs Soil  1
-15                                           Open_Grassland vs Soil  1
-     SumsOfSqs   F.Model        R2 p.value p.adjusted sig
-1  0.005840203 17.212055 0.6566465   0.001      0.015   .
-2  0.004299403 10.990642 0.5497894   0.003      0.045   .
-3  0.008744688 10.113011 0.2059131   0.001      0.015   .
-4  0.009626093 15.177112 0.2654403   0.001      0.015   .
-5  0.012409379 36.796226 0.7104036   0.001      0.015   .
-6  0.001197215  4.186387 0.2950989   0.004      0.060    
-7  0.008228917  9.955660 0.1992899   0.002      0.030   .
-8  0.012317914 20.389484 0.3216541   0.001      0.015   .
-9  0.017422542 63.386638 0.7984547   0.001      0.015   .
-10 0.006334252  7.556705 0.1588988   0.002      0.030   .
-11 0.010379049 16.876802 0.2818588   0.001      0.015   .
-12 0.013304078 43.757193 0.7322498   0.001      0.015   .
-13 0.002660468  3.428498 0.0448589   0.020      0.300    
-14 0.009533810 12.506147 0.2137578   0.001      0.015   .
-15 0.007265208 12.722052 0.2061184   0.001      0.015   .</code></pre>
+1  Environmental Litter_Grassland vs Environmental Litter_Shrubland  1
+2                  Environmental Litter_Grassland vs Open_Shrubland  1
+3                  Environmental Litter_Grassland vs Open_Grassland  1
+4                            Environmental Litter_Grassland vs Soil  1
+5                  Environmental Litter_Shrubland vs Open_Shrubland  1
+6                  Environmental Litter_Shrubland vs Open_Grassland  1
+7                            Environmental Litter_Shrubland vs Soil  1
+8                                  Open_Shrubland vs Open_Grassland  1
+9                                            Open_Shrubland vs Soil  1
+10                                           Open_Grassland vs Soil  1
+     SumsOfSqs   F.Model         R2 p.value p.adjusted sig
+1  0.001220242  3.993585 0.28538683   0.007       0.07    
+2  0.008983230 10.093042 0.20148590   0.001       0.01   *
+3  0.013490582 20.972261 0.32783367   0.001       0.01   *
+4  0.018777008 62.515087 0.79621751   0.001       0.01   *
+5  0.006919442  7.659225 0.16070814   0.002       0.02   .
+6  0.011280448 17.203767 0.28575898   0.001       0.01   *
+7  0.014676836 43.970683 0.73320297   0.001       0.01   *
+8  0.002870481  3.449807 0.04512513   0.016       0.16    
+9  0.010181016 12.361224 0.21180543   0.001       0.01   *
+10 0.007494748 12.263826 0.20018054   0.001       0.01   *</code></pre>
 <pre class="r"><code>pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)</code></pre>
 <pre><code>$parent_call
 [1] &quot;q1.bray.dist.df.source ~ Source_Sink , strata = Null&quot;
-
-$`Air_vs_Environmental Litter_Grassland`
-Permutation: free
-Number of permutations: 999
-
-Terms added sequentially (first to last)
-
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1 0.0058402 0.0058402  17.212 0.65665  0.003 **
-Residuals    9 0.0030538 0.0003393         0.34335          
-Total       10 0.0088940                   1.00000          
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-$`Air_vs_Environmental Litter_Shrubland`
-Permutation: free
-Number of permutations: 999
-
-Terms added sequentially (first to last)
-
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1 0.0042994 0.0042994  10.991 0.54979  0.004 **
-Residuals    9 0.0035207 0.0003912         0.45021          
-Total       10 0.0078201                   1.00000          
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-$Air_vs_Open_Shrubland
-Permutation: free
-Number of permutations: 999
-
-Terms added sequentially (first to last)
-
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.008745 0.0087447  10.113 0.20591  0.001 ***
-Residuals   39  0.033723 0.0008647         0.79409           
-Total       40  0.042468                   1.00000           
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-$Air_vs_Open_Grassland
-Permutation: free
-Number of permutations: 999
-
-Terms added sequentially (first to last)
-
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.009626 0.0096261  15.177 0.26544  0.001 ***
-Residuals   42  0.026639 0.0006343         0.73456           
-Total       43  0.036265                   1.00000           
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-$Air_vs_Soil
-Permutation: free
-Number of permutations: 999
-
-Terms added sequentially (first to last)
-
-            Df SumsOfSqs   MeanSqs F.Model     R2 Pr(&gt;F)    
-Source_Sink  1 0.0124094 0.0124094  36.796 0.7104  0.001 ***
-Residuals   15 0.0050587 0.0003372         0.2896           
-Total       16 0.0174681                   1.0000           
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
 $`Environmental Litter_Grassland_vs_Environmental Litter_Shrubland`
 Permutation: free
@@ -1036,10 +1223,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs    MeanSqs F.Model     R2 Pr(&gt;F)   
-Source_Sink  1 0.0011972 0.00119722  4.1864 0.2951  0.006 **
-Residuals   10 0.0028598 0.00028598         0.7049          
-Total       11 0.0040570                    1.0000          
+            Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1 0.0012202 0.00122024  3.9936 0.28539  0.003 **
+Residuals   10 0.0030555 0.00030555         0.71461          
+Total       11 0.0042757                    1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1050,9 +1237,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.008229 0.0082289  9.9557 0.19929  0.001 ***
-Residuals   40  0.033062 0.0008266         0.80071           
-Total       41  0.041291                   1.00000           
+Source_Sink  1  0.008983 0.0089832  10.093 0.20149  0.001 ***
+Residuals   40  0.035602 0.0008900         0.79851           
+Total       41  0.044585                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1063,9 +1250,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.012318 0.0123179   20.39 0.32165  0.001 ***
-Residuals   43  0.025978 0.0006041         0.67835           
-Total       44  0.038296                   1.00000           
+Source_Sink  1  0.013491 0.0134906  20.972 0.32783  0.001 ***
+Residuals   43  0.027660 0.0006433         0.67217           
+Total       44  0.041151                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1076,9 +1263,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1 0.0174225 0.0174225  63.387 0.79845  0.001 ***
-Residuals   16 0.0043978 0.0002749         0.20155           
-Total       17 0.0218203                   1.00000           
+Source_Sink  1 0.0187770 0.0187770  62.515 0.79622  0.001 ***
+Residuals   16 0.0048058 0.0003004         0.20378           
+Total       17 0.0235828                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1088,10 +1275,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model     R2 Pr(&gt;F)    
-Source_Sink  1  0.006334 0.0063343  7.5567 0.1589  0.001 ***
-Residuals   40  0.033529 0.0008382         0.8411           
-Total       41  0.039863                   1.0000           
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.006919 0.0069194  7.6592 0.16071  0.005 **
+Residuals   40  0.036137 0.0009034         0.83929          
+Total       41  0.043056                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1101,10 +1288,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.010379 0.010379  16.877 0.28186  0.001 ***
-Residuals   43  0.026445 0.000615         0.71814           
-Total       44  0.036824                  1.00000           
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.011280 0.0112804  17.204 0.28576  0.001 ***
+Residuals   43  0.028195 0.0006557         0.71424           
+Total       44  0.039475                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1114,10 +1301,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1 0.0133041 0.013304  43.757 0.73225  0.001 ***
-Residuals   16 0.0048647 0.000304         0.26775           
-Total       17 0.0181688                  1.00000           
+            Df SumsOfSqs   MeanSqs F.Model     R2 Pr(&gt;F)    
+Source_Sink  1 0.0146768 0.0146768  43.971 0.7332  0.001 ***
+Residuals   16 0.0053406 0.0003338         0.2668           
+Total       17 0.0200174                   1.0000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1128,9 +1315,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.002660 0.00266047  3.4285 0.04486   0.02 *
-Residuals   73  0.056647 0.00077599         0.95514         
-Total       74  0.059307                    1.00000         
+Source_Sink  1  0.002870 0.00287048  3.4498 0.04513  0.016 *
+Residuals   73  0.060741 0.00083207         0.95487         
+Total       74  0.063612                    1.00000         
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1141,9 +1328,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.009534 0.0095338  12.506 0.21376  0.001 ***
-Residuals   46  0.035067 0.0007623         0.78624           
-Total       47  0.044601                   1.00000           
+Source_Sink  1  0.010181 0.0101810  12.361 0.21181  0.001 ***
+Residuals   46  0.037887 0.0008236         0.78819           
+Total       47  0.048068                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1154,9 +1341,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.007265 0.0072652  12.722 0.20612  0.001 ***
-Residuals   49  0.027983 0.0005711         0.79388           
-Total       50  0.035248                   1.00000           
+Source_Sink  1  0.007495 0.0074947  12.264 0.20018  0.001 ***
+Residuals   49  0.029945 0.0006111         0.79982           
+Total       50  0.037440                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1219,9 +1406,9 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
              Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
-Source_Sink   5    6.8353 1.36706  7.7646 0.27569 9.999e-05 ***
-Residuals   102   17.9585 0.17606         0.72431              
-Total       107   24.7938                 1.00000              
+Source_Sink   5    6.5121 1.30242  7.4603 0.27774 9.999e-05 ***
+Residuals    97   16.9343 0.17458         0.72226              
+Total       102   23.4464                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code>pairwise.adonis(q1.ITS.bray.dist.df.source, q1.ITS.source.NMDS.meta$Source_Sink)</code></pre>
@@ -1241,22 +1428,22 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 13                                 Open_Shrubland vs Open_Grassland  1
 14                                           Open_Shrubland vs Soil  1
 15                                           Open_Grassland vs Soil  1
-     SumsOfSqs    F.Model         R2 p.value p.adjusted sig
-1  0.006922631   3.995019 0.23506998   0.026      0.390    
-2  0.034128177  18.866664 0.59205017   0.001      0.015   .
-3  0.011137503   3.820787 0.08160449   0.029      0.435    
-4  0.043604177  29.757293 0.39279774   0.001      0.015   .
-5  0.059529743  40.598887 0.68120210   0.001      0.015   .
-6  0.019231642   9.310531 0.48214786   0.011      0.165    
-7  0.018446705   6.024206 0.13089212   0.007      0.105    
-8  0.047339690  31.537806 0.42311154   0.001      0.015   .
-9  0.030274387  19.376058 0.54771671   0.001      0.015   .
-10 0.064276226  20.822734 0.34235116   0.001      0.015   .
-11 0.134889936  88.507416 0.67302224   0.001      0.015   .
-12 0.004923355   3.031074 0.15926973   0.050      0.750    
-13 0.072094576  31.446165 0.30107534   0.001      0.015   .
-14 0.130819285  47.080565 0.50580446   0.001      0.015   .
-15 0.254302734 178.323021 0.78444770   0.001      0.015   .</code></pre>
+     SumsOfSqs    F.Model        R2 p.value p.adjusted sig
+1  0.006707850   4.556765 0.3628932   0.026      0.390    
+2  0.029263115  18.143778 0.6939998   0.009      0.135    
+3  0.004878345   1.562460 0.0394935   0.202      1.000    
+4  0.016439790  11.750110 0.2227504   0.001      0.015   .
+5  0.042834678  34.384142 0.7106490   0.001      0.015   .
+6  0.019816655   9.441309 0.4856313   0.009      0.135    
+7  0.019409573   6.126231 0.1328145   0.005      0.075    
+8  0.049307121  32.394100 0.4296636   0.001      0.015   .
+9  0.030542073  19.143159 0.5447194   0.001      0.015   .
+10 0.066248682  20.725838 0.3413018   0.001      0.015   .
+11 0.139066645  89.819285 0.6762518   0.001      0.015   .
+12 0.005180456   3.109803 0.1627334   0.058      0.870    
+13 0.075288638  31.894882 0.3040652   0.001      0.015   .
+14 0.132975161  46.201512 0.5010928   0.001      0.015   .
+15 0.259250882 178.631229 0.7847396   0.001      0.015   .</code></pre>
 <pre class="r"><code>pairwise.adonis2(q1.ITS.bray.dist.df.source ~ Source_Sink, data = q1.ITS.source.NMDS.meta)</code></pre>
 <pre><code>$parent_call
 [1] &quot;q1.ITS.bray.dist.df.source ~ Source_Sink , strata = Null&quot;
@@ -1268,9 +1455,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0069226 0.0069226   3.995 0.23507  0.024 *
-Residuals   13 0.0225266 0.0017328         0.76493         
-Total       14 0.0294492                   1.00000         
+Source_Sink  1 0.0067079 0.0067079  4.5568 0.36289  0.025 *
+Residuals    8 0.0117765 0.0014721         0.63711         
+Total        9 0.0184844                   1.00000         
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1280,10 +1467,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.034128 0.034128  18.867 0.59205  0.001 ***
-Residuals   13  0.023516 0.001809         0.40795           
-Total       14  0.057644                  1.00000           
+            Df SumsOfSqs   MeanSqs F.Model    R2 Pr(&gt;F)  
+Source_Sink  1  0.029263 0.0292631  18.144 0.694  0.019 *
+Residuals    8  0.012903 0.0016128         0.306         
+Total        9  0.042166                   1.000         
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1293,12 +1480,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)  
-Source_Sink  1  0.011138 0.011137  3.8208 0.0816  0.038 *
-Residuals   43  0.125344 0.002915         0.9184         
-Total       44  0.136481                  1.0000         
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)
+Source_Sink  1  0.004878 0.0048783  1.5625 0.03949  0.214
+Residuals   38  0.118644 0.0031222         0.96051       
+Total       39  0.123523                   1.00000       
 
 $Air_vs_Open_Grassland
 Permutation: free
@@ -1306,10 +1491,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)    
-Source_Sink  1  0.043604 0.043604  29.757 0.3928  0.001 ***
-Residuals   46  0.067405 0.001465         0.6072           
-Total       47  0.111009                  1.0000           
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.016440 0.0164398   11.75 0.22275  0.001 ***
+Residuals   41  0.057364 0.0013991         0.77725           
+Total       42  0.073804                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1319,10 +1504,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)    
-Source_Sink  1  0.059530 0.059530  40.599 0.6812  0.001 ***
-Residuals   19  0.027860 0.001466         0.3188           
-Total       20  0.087389                  1.0000           
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.042835 0.042835  34.384 0.71065  0.002 **
+Residuals   14  0.017441 0.001246         0.28935          
+Total       15  0.060275                  1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1333,9 +1518,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.019232 0.0192316  9.3105 0.48215  0.005 **
-Residuals   10  0.020656 0.0020656         0.51785          
-Total       11  0.039887                   1.00000          
+Source_Sink  1  0.019817 0.0198167  9.4413 0.48563  0.004 **
+Residuals   10  0.020989 0.0020989         0.51437          
+Total       11  0.040806                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1346,9 +1531,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.018447 0.0184467  6.0242 0.13089  0.008 **
-Residuals   40  0.122484 0.0030621         0.86911          
-Total       41  0.140931                   1.00000          
+Source_Sink  1   0.01941 0.0194096  6.1262 0.13281  0.004 **
+Residuals   40   0.12673 0.0031683         0.86719          
+Total       41   0.14614                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1359,9 +1544,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.047340 0.047340  31.538 0.42311  0.001 ***
-Residuals   43  0.064545 0.001501         0.57689           
-Total       44  0.111885                  1.00000           
+Source_Sink  1  0.049307 0.049307  32.394 0.42966  0.001 ***
+Residuals   43  0.065450 0.001522         0.57034           
+Total       44  0.114758                  1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1372,9 +1557,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.030274 0.0302744  19.376 0.54772  0.001 ***
-Residuals   16  0.024999 0.0015625         0.45228           
-Total       17  0.055274                   1.00000           
+Source_Sink  1  0.030542 0.0305421  19.143 0.54472  0.001 ***
+Residuals   16  0.025527 0.0015955         0.45528           
+Total       17  0.056069                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1384,10 +1569,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.064276 0.064276  20.823 0.34235  0.001 ***
-Residuals   40  0.123473 0.003087         0.65765           
-Total       41  0.187749                  1.00000           
+            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)    
+Source_Sink  1  0.066249 0.066249  20.726 0.3413  0.001 ***
+Residuals   40  0.127857 0.003196         0.6587           
+Total       41  0.194106                  1.0000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1398,9 +1583,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.134890 0.134890  88.507 0.67302  0.001 ***
-Residuals   43  0.065534 0.001524         0.32698           
-Total       44  0.200424                  1.00000           
+Source_Sink  1  0.139067 0.139067  89.819 0.67625  0.001 ***
+Residuals   43  0.066577 0.001548         0.32375           
+Total       44  0.205643                  1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1411,9 +1596,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0049234 0.0049234  3.0311 0.15927  0.045 *
-Residuals   16 0.0259887 0.0016243         0.84073         
-Total       17 0.0309121                   1.00000         
+Source_Sink  1  0.005180 0.0051805  3.1098 0.16273  0.061 .
+Residuals   16  0.026654 0.0016658         0.83727         
+Total       17  0.031834                   1.00000         
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1424,9 +1609,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.072095 0.072095  31.446 0.30108  0.001 ***
-Residuals   73  0.167362 0.002293         0.69892           
-Total       74  0.239457                  1.00000           
+Source_Sink  1  0.075289 0.075289  31.895 0.30407  0.001 ***
+Residuals   73  0.172318 0.002361         0.69593           
+Total       74  0.247607                  1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1436,10 +1621,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs  MeanSqs F.Model     R2 Pr(&gt;F)    
-Source_Sink  1   0.13082 0.130819  47.081 0.5058  0.001 ***
-Residuals   46   0.12782 0.002779         0.4942           
-Total       47   0.25864                  1.0000           
+            Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1   0.13298 0.132975  46.202 0.50109  0.001 ***
+Residuals   46   0.13240 0.002878         0.49891           
+Total       47   0.26537                  1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1450,9 +1635,9 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1   0.25430 0.254303  178.32 0.78445  0.001 ***
-Residuals   49   0.06988 0.001426         0.21555           
-Total       50   0.32418                  1.00000           
+Source_Sink  1   0.25925 0.259251  178.63 0.78474  0.001 ***
+Residuals   49   0.07111 0.001451         0.21526           
+Total       50   0.33037                  1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 

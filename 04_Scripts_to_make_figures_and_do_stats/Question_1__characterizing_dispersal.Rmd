@@ -35,6 +35,7 @@ require(gridExtra)
 library(car)
 require(vegan)
 require(magrittr)
+library(indicspecies)
 require(pairwiseAdonis)
 
 knitr::opts_knit$set(root.dir = "../")
@@ -419,23 +420,26 @@ betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), q1.ITS.NMDS.meta$T
   anova()
 
 # Because the influence of time is more clear with the fungi, let's look to see if a single taxon is driving this
-# Using primer to do this....
-q1.ITS.rarefied %>% 
-  rownames_to_column("SampleID") %>% 
-  filter(grepl("LO", SampleID)) %>% 
-  write_tsv("~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__rarefied_filtered_for_primer.tsv", col_names = TRUE)
-
-q1.ITS.NMDS.meta %>% 
-  write_tsv("~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__NMDS_meta_filtered_for_primer.tsv", col_names = TRUE)
-
-# From PRIMER - NMDS, correlated at 0.68 (Spearman), seems to drive strongly towards T2-4
-ITS.species <- fread(input = "01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv") %>% 
-  filter(grepl("6d360", `#OTUID`)) %>% 
-  select(taxonomy) %>% print #k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Didymosphaeriaceae;g__Paraconiothyrium;s__unidentified
 
 
-## or try with an indicator species analysis (between T1 and T2-4, because that's all that's significant)
-library(indicspecies)
+# # Option one: import into PRIMER, and plot species that are correlated (above a certain r) with community variation as vectors on their ordinations
+# # These scripts output the files needed to import into PRIMER
+# q1.ITS.rarefied %>% 
+#   rownames_to_column("SampleID") %>% 
+#   filter(grepl("LO", SampleID)) %>% 
+#   write_tsv("~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__rarefied_filtered_for_primer.tsv", col_names = TRUE)
+# 
+# q1.ITS.NMDS.meta %>% 
+#   write_tsv("~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__NMDS_meta_filtered_for_primer.tsv", col_names = TRUE)
+# 
+# # From PRIMER - NMDS, correlated at 0.68 (Spearman), seems to drive strongly towards T2-4
+# ITS.species <- fread(input = "01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv") %>% 
+#   filter(grepl("6d360", `#OTUID`)) %>% 
+#   select(taxonomy) %>% print #k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Didymosphaeriaceae;g__Paraconiothyrium;s__unidentified
+
+
+## Option 2 (my favorite)
+## try with an indicator species analysis (between T1 and T2-4, because that's all that's significant)
 key <- c("1" = "1", "2" = "not_1", "3" = "not_1", "4" = "not_1")
 #want: rows = sites
 indic.time <- multipatt(q1.ITS.rarefied %>% 
@@ -445,14 +449,42 @@ indic.time <- multipatt(q1.ITS.rarefied %>%
                  key[q1.ITS.NMDS.meta$Time_Point], duleg = TRUE)
 summary(indic.time)
 
-## OR OR do a CAP
-tmp <- 
-capscale(formula =  q1.ITS.rarefied %>% 
-                   rownames_to_column("SampleID") %>% 
-                   filter(grepl("LO", SampleID)) %>% 
-                   column_to_rownames("SampleID") ~ Time_Point, q1.ITS.NMDS.meta, 
-         dist = "bray")
-plot(tmp)
+ITS.taxonomy <- fread(input = "01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv")
+
+# Time Point 1, 5 top taxa
+ITS.taxonomy %>% filter(grepl("6b550ad3889766092ea1d7be05293622", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # Truncatella_angustata
+ITS.taxonomy %>% filter(grepl("3cc206a0424f7c33f75fe152cd42d757", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # f__Phaeosphaeriaceae
+ITS.taxonomy %>% filter(grepl("adffc920dd86ce72a6385dd2063ee499", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # o__Dothideales
+ITS.taxonomy %>% filter(grepl("dba6ff41ca6ac3dd820c1a20c67d1b18", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # s__Teichospora_mariae
+ITS.taxonomy %>% filter(grepl("fd3bb0f93dc5043995cc6df1698a570c", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # f__Lophiostomataceae
+
+
+# Time Point 2/3/4, 5 top taxa
+ITS.taxonomy %>% filter(grepl("6d360c9c285bc318a1e9cbfd2a85a057", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # g__Paraconiothyrium
+ITS.taxonomy %>% filter(grepl("ec3d78df700e0518a81ed0843c9d1d1c", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # f__Didymellaceae
+ITS.taxonomy %>% filter(grepl("0ec291fa8414302b18ab7bfb89c33209", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # g__Alternaria
+ITS.taxonomy %>% filter(grepl("3a61b3e1ee7a53548fa1eb416917ab5b", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # g__Alternaria
+ITS.taxonomy %>% filter(grepl("347b17563a35eda7d903ea07a289fce2", `#OTUID`)) %>% 
+  select(taxonomy) %>% print # g__Alternaria
+
+
+# ## Option 3: do a CAP analysis
+# tmp <- 
+# capscale(formula =  q1.ITS.rarefied %>% 
+#                    rownames_to_column("SampleID") %>% 
+#                    filter(grepl("LO", SampleID)) %>% 
+#                    column_to_rownames("SampleID") ~ Time_Point, q1.ITS.NMDS.meta, 
+#          dist = "bray")
+# plot(tmp)
 
 ```
 
