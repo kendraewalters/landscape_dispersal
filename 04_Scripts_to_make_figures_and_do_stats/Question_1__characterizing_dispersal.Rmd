@@ -50,9 +50,8 @@ First, we'll look at the abundances on the glass slides over time to see if they
 
 ```{r boxplot_glass_slide_abundance_by_ecosystem}
 # Load the data
-message(getwd())
-flow.data <- load("03_Processed_data/flow_cytometry_cleaned.rda")
-metadata <- load("03_Processed_data/metadata_cleaned.rda")
+load("03_Processed_data/flow_cytometry_cleaned.rda")
+load("03_Processed_data/metadata_cleaned.rda")
 
 
 # Left join fights me unless both columns are the same data type
@@ -71,12 +70,13 @@ cell.counts.use <- cleaned.cell.counts %>% left_join(metadata.together) %>% # co
                             ifelse(grepl("^s", `Random_#_Flow`), "Shrubland", Ecosystem))) %>%
   select(number_cells_on_glass_slide_cleaned, Treatment, Ecosystem, Time_Point) %>% # reduce to only columns we need
   filter(Treatment != "Closed") %>% # remove this negative control (should have been removed prior to this script)
-  mutate(Time_as_days = days.key[as.character(Time_Point)]) # make column that lists # of days
+  mutate(Time_as_days = days.key[as.character(Time_Point)]) %>% # make column that lists # of days
+  mutate(cells_per_sq_cm = number_cells_on_glass_slide_cleaned / (7.5 * 2.5))
 
 
 # Plot this as a boxplot to give a general sense of what the abundance on the glass slides are doing
 ggplot(data = cell.counts.use %>% filter(Treatment == "Open")) +
-  geom_boxplot(aes(x = as.factor(Time_Point), y = number_cells_on_glass_slide_cleaned)) + 
+  geom_boxplot(aes(x = as.factor(Time_Point), y = cells_per_sq_cm)) + 
   facet_wrap(vars(Ecosystem))
 ```
 
@@ -93,7 +93,7 @@ n(t) = i/d * (1 - e^(-d*t))
 # plotting our data with our fancy integral equation going through the origin
 ggplot(data = cell.counts.use %>% filter(Treatment == "Open") %>% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
-       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
   geom_point() + 
   geom_smooth(method = "nls", formula = "y ~  (Im / d) * (1 - exp(-d * x))", se=F, 
               method.args = list(start=c(Im=2e5, d=0.034))) +
@@ -106,10 +106,10 @@ shrub.cells <- cell.counts.use %>% filter(Ecosystem == "Shrubland")
 
 
 # Calculating the death rate and immigration rate coefficients
-(nls.shrub <- nls(number_cells_on_glass_slide_cleaned ~  Im/d * (1 - exp(-d * Time_as_days)), 
+(nls.shrub <- nls(cells_per_sq_cm ~  Im/d * (1 - exp(-d * Time_as_days)), 
                data = shrub.cells[shrub.cells$Treatment == "Open", ],
                start = list(Im = 2e5, d = 0.034)) %>% summary) 
-(nls.grass <- nls(number_cells_on_glass_slide_cleaned ~  Im/d * (1 - exp(-d * Time_as_days)), 
+(nls.grass <- nls(cells_per_sq_cm ~  Im/d * (1 - exp(-d * Time_as_days)), 
                data = grass.cells[grass.cells$Treatment == "Open", ],
                start = list(Im = 2e5, d = 0.034)) %>% summary)
 
@@ -123,22 +123,24 @@ But we don't actually need to have the model guess what the death rate is becaus
 intercept.grass <- grass.cells %>% 
   filter(Treatment == "Death", 
          Time_as_days == 0) %>% 
-  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned))) %>% pull(mean)
+  summarize(mean = mean(log(cells_per_sq_cm))) %>% pull(mean)
 
-r.grass <- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.grass) ~ Time_as_days + 0, 
+r.grass <- lm(I(log(cells_per_sq_cm) - intercept.grass) ~ Time_as_days + 0, 
                grass.cells %>% filter(Treatment == "Death")) %>% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
 print(paste0("Continuous death rate for grassland cells is ", round(r.grass, 4), "."))
+print(paste0("Daily death rate for grassland cells is " , round(-100*(1 - exp(r.grass * 1)), 2), "% per day."))
   
 
 # Calculating death rate for the grassland death slides
 intercept.shrub <- shrub.cells %>% 
   filter(Treatment == "Death", 
          Time_as_days == 0) %>% 
-  summarize(mean = mean(log(number_cells_on_glass_slide_cleaned))) %>% pull(mean)
+  summarize(mean = mean(log(cells_per_sq_cm))) %>% pull(mean)
 
-r.shrub <- lm(I(log(number_cells_on_glass_slide_cleaned) - intercept.shrub) ~ Time_as_days + 0, 
+r.shrub <- lm(I(log(cells_per_sq_cm) - intercept.shrub) ~ Time_as_days + 0, 
                shrub.cells %>% filter(Treatment == "Death")) %>% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
 print(paste0("Continuous death rate for shrubland cells is ", round(r.shrub, 4), "."))
+print(paste0("Daily death rate for grassland cells is " , round(-100*(1 - exp(r.shrub * 1)), 2), "% per day."))
 
 
 # creating a mini data frame to give our parameters for the linear models (since we are picky about our intercepts here)
@@ -150,7 +152,7 @@ lm.parameters.death <- data.frame("Intercept" = c(intercept.grass, intercept.shr
 # plotting our death rate data
 ggplot(data = cell.counts.use %>% filter(Treatment == "Death") %>% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
-       aes(x = Time_as_days, y = log(number_cells_on_glass_slide_cleaned))) +
+       aes(x = Time_as_days, y = log(cells_per_sq_cm))) +
   geom_point() + 
   geom_abline(data = lm.parameters.death, aes(intercept = Intercept, slope = -Slope)) + 
   facet_wrap(vars(Ecosystem))
@@ -161,11 +163,11 @@ Sweet! Now we can use these death rates to input into our model so we are only a
 
 ```{r scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem}
 # Calculating the death rate and immigration rate coefficients WITH measured death rates
-(nls.shrub <- nls(number_cells_on_glass_slide_cleaned ~  
+(nls.shrub <- nls(cells_per_sq_cm ~  
                     Im/0.02372169 * (1 - exp(-0.02372169 * Time_as_days)), 
                data = shrub.cells[shrub.cells$Treatment == "Open", ],
                start = list(Im = 2e5)) %>% summary) 
-(nls.grass <- nls(number_cells_on_glass_slide_cleaned ~ 
+(nls.grass <- nls(cells_per_sq_cm ~ 
                     Im/0.03106574 * (1 - exp(-0.03106574 * Time_as_days)), 
                data = grass.cells[grass.cells$Treatment == "Open", ],
                start = list(Im = 2e5)) %>% summary)
@@ -174,7 +176,7 @@ Sweet! Now we can use these death rates to input into our model so we are only a
 # Graph the new curves that we made
 A <- ggplot(data = grass.cells %>% filter(Treatment == "Open") %>% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
-       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
   geom_point() + 
   geom_smooth(method = "nls", formula = "y ~  (Im / 0.03106574) * (1 - exp(-0.03106574 * x))", se=F, 
               method.args = list(start=c(Im=2e5))) +
@@ -182,7 +184,7 @@ A <- ggplot(data = grass.cells %>% filter(Treatment == "Open") %>%
 
 B <- ggplot(data = shrub.cells %>% filter(Treatment == "Open") %>% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
-       aes(x = Time_as_days, y = number_cells_on_glass_slide_cleaned)) +
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
   geom_point() + 
   geom_smooth(method = "nls", formula = "y ~  (Im / 0.02372169) * (1 - exp(-0.02372169 * x))", se=F, 
               method.args = list(start=c(Im=2e5))) +
@@ -199,15 +201,15 @@ Looking at the first graph of abundance on the glass slides above, it seems that
 ```{r immigration_rate_at_equilibrium}
 # Calculate immigration rate for the grassland 
 imm.grass <- grass.cells %>% filter(Treatment == "Open", Time_Point %in% c("3")) %>% 
-  summarize(mean = mean(number_cells_on_glass_slide_cleaned)) * r.grass
+  summarize(mean = mean(cells_per_sq_cm)) * r.grass
 
-print(paste0("The immigration rate for the grassland is ", imm.grass, " cells / day."))
+print(paste0("The immigration rate for the grassland is ", imm.grass, " cells / cm^2 / day."))
 
 # Calculate immigration rate for the shrubland 
 imm.shrub <- shrub.cells %>% filter(Treatment == "Open", Time_Point %in% c("3")) %>% 
-  summarize(mean = mean(number_cells_on_glass_slide_cleaned)) * r.shrub
+  summarize(mean = mean(cells_per_sq_cm)) * r.shrub
 
-print(paste0("The immigration rate for the shrubland is ", imm.shrub, " cells / day."))
+print(paste0("The immigration rate for the shrubland is ", imm.shrub, " cells / cm^2 / day."))
 ```
 
 
@@ -216,42 +218,48 @@ One potentially interesting question is if death rates (for bacteria) differ by 
 ```{r death_rates_by_ecosystem}
 cell.counts.use %>% filter(Treatment == "Death") %>% 
   mutate(log_abundance_minus_intercept = ifelse(Ecosystem == "Shrubland", 
-                                            log(number_cells_on_glass_slide_cleaned) - intercept.shrub, 
+                                            log(cells_per_sq_cm) - intercept.shrub, 
                               ifelse(Ecosystem == "Grassland", 
-                                     log(number_cells_on_glass_slide_cleaned) - intercept.grass, NA))) %>% 
+                                     log(cells_per_sq_cm) - intercept.grass, NA))) %>% 
   lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + Time_as_days + 0, data = .) %>% # independent of order
-  Anova(type = "II")
-  
-cell.counts.use %>% filter(Treatment == "Death") %>% 
-  mutate(log_abundance_minus_intercept = ifelse(Ecosystem == "Shrubland", 
-                                            log(number_cells_on_glass_slide_cleaned) - intercept.shrub, 
-                              ifelse(Ecosystem == "Grassland", 
-                                     log(number_cells_on_glass_slide_cleaned) - intercept.grass, NA))) %>% 
-  lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + 0, data = .) %>% # independent of order
-  Anova(type = "II")
+  Anova(type = "II") # MARGINALLY SIGNIFICANT
 ```
 
 # Taxa dying at different rates? 
-Another potentially interesting question is if taxa on the death rate slides die at different rates. We can answer this question by running PERMANOVA on the death rate samples to see if time influences either 16S or ITS composition. 
+Another potentially interesting question is if taxa on the death rate slides die at different rates. We can answer this question by running PERMANOVA on the death rate samples to see if time influences either 16S or ITS composition. Because there are so few samples that sequenced well after timepoint 1, we are grouping 2-4 to run the PERMANOVA. 
 ```{r NMDS_taxa_specific_death_rates_bacteria}
 # Load data
-glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
-load(glass.slides.16S)
+load("03_Processed_data/16S_glass_slides.rda")
+
+tmp <- q1.bray.dist.df %>%  select(starts_with("LD")) %>% 
+                                       select(!("LDT0R5G_oops")) %>% 
+                                       rownames_to_column("SampleID") %>% 
+                                       filter(grepl("LD", SampleID)) %>% 
+                                       filter(!(SampleID == "LDT0R5G_oops")) %>% 
+                                       column_to_rownames("SampleID")
+
 
 # Create our visualization, just for fun
-q1.NMDS1 <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2, trymax = 50, trace = 0)
-q1.NMDS1.meta <- data.frame(q1.NMDS1$points[,1:2]) %>% 
+q1.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df %>% 
+                                       select(starts_with("LD")) %>% 
+                                       select(!("LDT0R5G_oops")) %>% 
+                                       rownames_to_column("SampleID") %>% 
+                                       filter(grepl("LD", SampleID)) %>% 
+                                       filter(!(SampleID == "LDT0R5G_oops")) %>% 
+                                       column_to_rownames("SampleID"))), 
+                   autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+q1.NMDS.meta <- data.frame(q1.NMDS$points[,1:2]) %>% 
   rownames_to_column("SampleID") %>% 
-  filter(grepl("LD", SampleID)) %>% 
   mutate(TimePoint = str_match(SampleID, "T([0-4])")[,2]) %>% 
   mutate(Ecosystem = str_match(SampleID, "R[0-9][A-C]?([GS])")[,2], 
          Ecosystem = ifelse(Ecosystem == "G", "Grassland", "Shrubland")) %>% 
-  filter(!(SampleID == "LDT0R5G_oops"))
+  mutate(TimePoint_grouped = ifelse(grepl("0|1", TimePoint), TimePoint, "2_through_4"))
 
-ggplot(data = q1.NMDS1.meta) +
+ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = "Set1") 
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Bacteria, death slides over time")
 
 # Do the PERMANOVA that will test our hypothesis
 q1.bray.dist.df.death <- as.data.frame(as.matrix(q1.bray.dist)) %>% 
@@ -265,33 +273,38 @@ q1.bray.dist.df.death <- as.data.frame(as.matrix(q1.bray.dist)) %>%
   rename(LDT1R5BG = LDT1R5BG_dup_new_protocol)
 
       
-adonis(q1.bray.dist.df.death ~ TimePoint, permutations = 10000, 
-       data = q1.NMDS1.meta, na.rm= TRUE)
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)
 
-adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
-       data = q1.NMDS1.meta, na.rm= TRUE)
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)
 ```
 
 
 ```{r NMDS_taxa_specific_death_rates_fungi}
 # Load data
-glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
-load(glass.slides.ITS)
+load("03_Processed_data/ITS_glass_slides.rda")
 
 # Create our visualization, just for fun
-q1.ITS.NMDS1 <- metaMDS(q1.ITS.bray.dist, autotransform = FALSE, k = 2, trymax = 200, trace = 0)
-q1.ITS.NMDS1.meta <- data.frame(q1.ITS.NMDS1$points[,1:2]) %>% 
+q1.ITS.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df %>% 
+                                           select(starts_with("LD")) %>% 
+                                           rownames_to_column("SampleID") %>% 
+                                           filter(grepl("LD", SampleID)) %>% 
+                                           column_to_rownames("SampleID"))), 
+                       autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+q1.ITS.NMDS.meta <- data.frame(q1.ITS.NMDS$points[,1:2]) %>% 
   rownames_to_column("SampleID") %>% 
-  filter(grepl("LD", SampleID)) %>% 
   mutate(TimePoint = str_match(SampleID, "T([0-4])")[,2]) %>% 
   mutate(Ecosystem = str_match(SampleID, "R[0-9][A-C]?([GS])")[,2], 
          Ecosystem = ifelse(Ecosystem == "G", "Grassland", "Shrubland")) %>% 
-  filter(!(SampleID == "LDT0R5G_oops"))
+  mutate(TimePoint_grouped = ifelse(grepl("0|1", TimePoint), TimePoint, "2_through_4"))
 
-ggplot(data = q1.ITS.NMDS1.meta) +
+ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = "Set1") 
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, death slides over time")
 
 # Do the PERMANOVA that will test our hypothesis
 q1.bray.dist.df.death <- q1.ITS.bray.dist.df %>% 
@@ -301,22 +314,21 @@ q1.bray.dist.df.death <- q1.ITS.bray.dist.df %>%
   select(starts_with("LD"))
 
 
-adonis(q1.bray.dist.df.death ~ TimePoint, permutations = 10000, 
-       data = q1.ITS.NMDS1.meta, na.rm= TRUE)
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)
 
-adonis(q1.bray.dist.df.death ~ TimePoint * as.factor(Ecosystem), permutations = 10000, 
-       data = q1.ITS.NMDS1.meta, na.rm= TRUE)
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)
 
 ```
 
 
 # Dispersal communities by ecosystem
-A key question of this study is - Do different ecosystems (plant communities) have different dispersal communities? To answer this question, we will use a PERMANOVA to see if different ecosystems show different bacterial and fungal communities on the glass slides. 
+A key question of this study is - Do different ecosystems (plant communities) have different dispersal communities? To answer this question, we will use a PERMANOVA to see if different ecosystems show different bacterial and fungal communities on the glass slides. However, because variance seems to change through time along with the community composition, we will use a PERMDISP to see if variance could be driving the significant PERMANOVA too. And then, because the pattern over time is clearer with the fungi, we will look to see if one or a few taxa are driving this relationship. 
 
 ```{r NMDS_dispersal_communities_by_ecosystem_bacteria}
 # Load data
-glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
-load(glass.slides.16S)
+load("03_Processed_data/16S_glass_slides.rda")
 
 # Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
 q1.bray.dist.df.dispersal <- q1.bray.dist.df %>% 
@@ -352,14 +364,20 @@ ggplot(data = q1.NMDS.meta) +
 adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.NMDS.meta, na.rm= TRUE)
 
-adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
-       data = q1.NMDS.meta, na.rm= TRUE)
+adonis(q1.bray.dist.df.dispersal ~ Ecosystem + Time_Point, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE) # interaction is not significant so ignore
+
+
+
+
+# See if variance may be partially driving the significant time effect on composition
+betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = "centroid") %>% # no interaction in the PERMANOVA, so we can test each factor independently here
+  anova()
 ```
 
 ```{r NMDS_dispersal_communities_by_ecosystem_fungi}
 # Load data
-glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
-load(glass.slides.ITS)
+load("03_Processed_data/ITS_glass_slides.rda")
 
 # Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
 q1.ITS.bray.dist.df.dispersal <- q1.ITS.bray.dist.df %>% 
@@ -395,6 +413,47 @@ adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000,
 
 adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
        data = q1.ITS.NMDS.meta, na.rm= TRUE)
+
+# See if variance may be partially driving the significant time effect on composition
+betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), q1.ITS.NMDS.meta$Time_Point, type = "centroid") %>% # no interaction in the PERMANOVA, so we can test each factor independently here
+  anova()
+
+# Because the influence of time is more clear with the fungi, let's look to see if a single taxon is driving this
+# Using primer to do this....
+q1.ITS.rarefied %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  write_tsv("~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__rarefied_filtered_for_primer.tsv", col_names = TRUE)
+
+q1.ITS.NMDS.meta %>% 
+  write_tsv("~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__NMDS_meta_filtered_for_primer.tsv", col_names = TRUE)
+
+# From PRIMER - NMDS, correlated at 0.68 (Spearman), seems to drive strongly towards T2-4
+ITS.species <- fread(input = "01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv") %>% 
+  filter(grepl("6d360", `#OTUID`)) %>% 
+  select(taxonomy) %>% print #k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Didymosphaeriaceae;g__Paraconiothyrium;s__unidentified
+
+
+## or try with an indicator species analysis (between T1 and T2-4, because that's all that's significant)
+library(indicspecies)
+key <- c("1" = "1", "2" = "not_1", "3" = "not_1", "4" = "not_1")
+#want: rows = sites
+indic.time <- multipatt(q1.ITS.rarefied %>% 
+                   rownames_to_column("SampleID") %>% 
+                   filter(grepl("LO", SampleID)) %>% 
+                   column_to_rownames("SampleID"), 
+                 key[q1.ITS.NMDS.meta$Time_Point], duleg = TRUE)
+summary(indic.time)
+
+## OR OR do a CAP
+tmp <- 
+capscale(formula =  q1.ITS.rarefied %>% 
+                   rownames_to_column("SampleID") %>% 
+                   filter(grepl("LO", SampleID)) %>% 
+                   column_to_rownames("SampleID") ~ Time_Point, q1.ITS.NMDS.meta, 
+         dist = "bray")
+plot(tmp)
+
 ```
 
 # Beta-diversity of dispersal community by ecosystem
@@ -402,8 +461,7 @@ We hypothesize that dispersal communities will show higher beta-diversity in the
 
 ```{r betadisper_bacteria}
 # Load data
-glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
-load(glass.slides.16S)
+load("03_Processed_data/16S_glass_slides.rda")
 
 # Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
 q1.bray.dist.df.dispersal <- q1.bray.dist.df %>% 
