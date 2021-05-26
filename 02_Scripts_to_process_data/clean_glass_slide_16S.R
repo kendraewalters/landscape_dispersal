@@ -93,6 +93,7 @@ q1.rarefied <- q1.table %>%
   column_to_rownames('#OTU ID') %>% 
   select(which(colSums(.) >= rarefaction.depth)) %>% 
   select(!(contains("PCR"))) %>%
+  select(!(contains("AirT4"))) %>% # these samples fell on the ground during the field experiment and aren't truly air samples
   t %>% as.data.frame() %>% 
   rrarefy.perm(., sample = rarefaction.depth, n = 1000, round.out = TRUE) %>% 
   as.data.frame
@@ -114,17 +115,18 @@ q1.bray.dist <- q1.table %>%
   column_to_rownames('#OTU ID') %>% 
   select(which(colSums(.) >= rarefaction.depth)) %>% # remove samples that fall under rarefaction depth
   select(!(contains("PCR"))) %>% # remove our PCR+ and - 
+  select(!(contains("AirT4"))) %>% #these samples fell on the ground during the field experiment and aren't truly air
   t %>% as.data.frame() %>% 
   avgdist(., sample = 971, meanfun = median, transf = sqrt, iterations = 999) #default is Bray-Curtis calculated by vegdist
-q1.bray.dist.df <- as.data.frame(as.matrix(q1.bray.dist)) %>% 
-  write.table(x = ., output.bc.matrix, sep = "\t", row.names = FALSE)
+q1.bray.dist.df <- as.data.frame(as.matrix(q1.bray.dist))
+  # write.table(x = ., output.bc.matrix, sep = "\t", row.names = FALSE)
 
 
 
 
 ## Check to make sure our PCR replicates (same samples run through PCR multiple times) overlap
 dup.samples <- c("LDT0R5G", "LDT0R5G_oops") # these are low biomass samples so our other PCR replicates did not sequence
-NMDS <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2)
+NMDS <- metaMDS(q1.bray.dist, autotransform = FALSE, k = 2, trymax = 200)
 data.frame(NMDS$points[,1:2]) %>% 
   mutate(Duplicates = ifelse(row.names(.) %in% dup.samples, "Yes", "No")) %>% 
   ggplot(data = .) +

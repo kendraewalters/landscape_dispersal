@@ -1,9 +1,4 @@
 #SampleID	SourceSink	Env
-AirT4R12	source	Air
-AirT4R2	source	Air
-AirT4R4	source	Air
-AirT4R5	source	Air
-AirT4R6	source	Air
 EnvG_T2R1	source	EnvG
 EnvG_T2R2	source	EnvG
 EnvG_T2R3	source	EnvG
