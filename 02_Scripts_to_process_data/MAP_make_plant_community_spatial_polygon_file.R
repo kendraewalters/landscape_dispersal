@@ -6,18 +6,11 @@
 
 # !!!!!!!!!     IMPORTANT: first, delete http://www.w3.org/2000/svg namespace (or whatever your file has) from the svg file  !!!!!
 
+### Set up 
 
+## The radius at which you want the plant composition taken for
+radius <- c(0.1, 0.2, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 10) # set the radius for what you want plant communities defined for (1 = one meter)
 
-radius <- 1 # set the radius for what you want plant communities defined for (1 = one meter)
-df.file.name <- "grass_shrub_1_meter_composition_df.tsv"
-bc.file.name <- "grass_shrub_1_meter_bc_site_df.tsv"
-
-## now you are ready to just run the rest of the script
-## files are saved in the "output from qiime" folder for ease of next analysis step
-
-
-
-##### _______________ This be your script to make those beautiful files __________ ###########
 ## Room of ()ments
 library(sp)
 library(xml2)
@@ -28,8 +21,7 @@ require(vegan)
 require(data.table)
 
 ## Load data
-setwd("~/Google Drive/Dispersal_Ch_3/02_Data/")
-file = "map_polygons_1_2_21.svg"
+file = "01_Raw_data/map_polygons__1_2_21.svg"
 
 ## Set up a few functions
 named_group_split <- function(.tbl, ...) {
@@ -41,6 +33,9 @@ named_group_split <- function(.tbl, ...) {
 add_commas <- function(x) {
   str_split(x, " ")[[1]] %>% matrix(ncol=2, byrow=T) %>% as_tibble %>% unite(1:2, col="coord", sep=",") %>% pull(coord) %>% paste(collapse=" ") 
 }
+
+
+##### _______________ This be your script to make those beautiful files __________ ###########
 
 ## Importing your POLYGONS from the svg file
 # note: you gotta change the script if you aren't importing polygons
@@ -59,9 +54,9 @@ plot(pollywogs) # checking to see if it works
 
 ## Convert to spatial polygon dataframe
 plants <- SpatialPolygonsDataFrame(pollywogs, data.frame(name=row.names(pollywogs), 
-                                                       row.names=row.names(pollywogs)))
+                                                         row.names=row.names(pollywogs)))
 ## What is a meter? 
-site.coords <- as.data.frame(fread("./../../../site_locs_coordinates.tsv"))
+site.coords <- as.data.frame(fread("03_Processed_data/site_locs_coordinates.tsv"))
 tA1 <- site.coords[site.coords$V1 == "A1", c("x", "y")]
 tA4 <- site.coords[site.coords$V1 == "A4", c("x", "y")]
 tA5 <- site.coords[site.coords$V1 == "A5", c("x", "y")]
@@ -96,7 +91,13 @@ sites.spt <- SpatialPointsDataFrame(coords = xy, data = names) # making it a spa
 
 
 
-site.circles <- gBuffer(sites.spt, width = radius * one.meter, byid=TRUE)
+### Start the for loop to cycle through the different radii
+for(j in 1:length(radius)) {
+df.file.name <- paste0("03_Processed_data/map/grass_shrub_", radius[[j]],"_meter_composition_df.tsv")
+bc.file.name <- paste0("03_Processed_data/map/grass_shrub_", radius[[j]], "_meter_bc_site_df.tsv")
+
+## now you are ready to just run the rest of the script
+site.circles <- gBuffer(sites.spt, width = radius[[j]] * one.meter, byid=TRUE)
 
 plot(pollywogs) # adding your plant polygons for reference
 plot(site.circles, add = TRUE) # checking to make sure everything looks a-okay
@@ -116,11 +117,11 @@ for (i in 1:length(pi)) {
   areas[[i]] <- pi@polygons[[i]]@area
 }
 
-total.area <- one.meter * one.meter * 3.14159 # calculate total area
-plant.coverage.raw$area.percentage <- areas / total.area # then calculate area by percent of total
+total.area <- (radius[[j]]*one.meter) * (radius[[j]]*one.meter) * 3.14159 # calculate total area
+plant.coverage.raw$area.percentage <- unlist(areas) / total.area # then calculate area by percent of total
 
 ## Change those plant IDs to meaningful data
-plant.key <- as.data.frame(fread("plant_composition_ID_key.txt")) # read in the key
+plant.key <- as.data.frame(fread("01_Raw_data/plant_composition_ID_key.txt")) # read in the key
 plant.key <- subset(plant.key, select = PlantID:CroSet)
 plant.coverage.raw$name <- str_extract(string = plant.coverage.raw$name, pattern = "^[a-zA-Z&&[^x]]*[0-9SMA]*") # take out the "x4" etc part of the names
 plant.coverage.comm <- merge(plant.coverage.raw, plant.key, by.x = "name", by.y = "PlantID", all.x = TRUE) 
@@ -138,7 +139,7 @@ plant.coverage.all$grass.cover <- 1 - plant.coverage.all$area.percentage # getti
 plant.coverage.all$grass.cover <- ifelse(plant.coverage.all$grass.cover < 0, 0, plant.coverage.all$grass.cover) # making those over 100% to have 0% leftover space
 
 ## Adding in grassland species
-plant.key <- as.data.frame(fread("plant_composition_ID_key.txt")) 
+plant.key <- as.data.frame(fread("01_Raw_data/plant_composition_ID_key.txt")) 
 grass.vector <- subset(plant.key, subset = PlantID == "Grassland", select = ArtCal:CroSet) %>%  # get grassland data
   mutate(across(everything(), replace_na, 0)) %>% as.numeric # but no NAs!!
 
@@ -157,9 +158,9 @@ grass.shrub <- grass.df + plant.cover.less # adding the two matrices together ==
 bc.grass.shrub.df <- vegdist(grass.shrub) %>% as.matrix %>% as.data.frame()
 
 ## Saving the data
-setwd("/Users/walters_kendra/Google\ Drive/Dispersal_Ch_3/02_Data/06_Community_Composition/06_Output_from_qiime/")
 write.table(bc.grass.shrub.df, file = bc.file.name, sep = "\t", row.names = TRUE)
 write.table(grass.shrub, file = df.file.name, sep = "\t", row.names = TRUE)
+}
 #########
 
 

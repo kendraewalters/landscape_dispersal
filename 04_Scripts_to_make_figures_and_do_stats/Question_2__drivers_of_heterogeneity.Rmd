@@ -1,0 +1,59 @@
+---
+title: "Question_2__drivers_of_heterogeneity"
+author: "Kendra Walters"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    self_contained: no
+    lib_dir: libs
+    code_folding: hide
+    toc: yes
+    toc_float: TRUE
+editor_options: 
+  chunk_output_type: console
+---
+<style type="text/css">
+.main-container { max-width: 1000px; margin-left: 0; margin-right: auto; }
+img{ max-width:200%; height: auto; }
+td, th { padding : 6px }
+</style>
+
+---
+
+# Purpose
+To test whether plant composition is the main driver of heterogeneity (or, other option, spatial distance which may stand in for other factor(s)) AND, if it is, then to test at what radius do we see the strongest impact of plant composition. 
+
+```{r setup, message=FALSE}
+library(knitr)
+library(tidyverse)
+library(data.table)
+library(kableExtra)
+require(ggplot2)
+require(gridExtra)
+library(car)
+require(vegan)
+require(magrittr)
+library(indicspecies)
+require(pairwiseAdonis)
+
+knitr::opts_knit$set(root.dir = "../")
+
+knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "05_output_figures/")
+
+```
+
+## Distance v. plants
+It's like aliens versus plants but much less interactive. Basically, we are doing a partial mantel here to see if geographic distance and/or plant composition is driving community composition in the bacterial and fungal dispersal communities found on the glass slides. 
+
+```{r distance_v_plants__bacteria}
+print("For BACTERIA") # just so we know what the output is for in the HTML file
+
+
+
+```
+
+
+
+```{r distance_v_plants__fungi}
+print("For FUNGI")
+```

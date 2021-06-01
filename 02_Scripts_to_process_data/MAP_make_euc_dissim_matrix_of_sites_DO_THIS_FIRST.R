@@ -10,9 +10,9 @@
 
 
 ## Room of ()ments
-library(sp)
-library(xml2)
-library(tidyverse)
+require(sp)
+require(xml2)
+require(tidyverse)
 
 ## Load the directions
 setwd("~/Google Drive/Dispersal_Ch_3/02_Data/08_Map/02_Real_Photos/10_13_20/")
