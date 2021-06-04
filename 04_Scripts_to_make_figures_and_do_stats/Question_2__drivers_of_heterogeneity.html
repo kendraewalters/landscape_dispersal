@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Kendra Walters" />
+
+<meta name="date" content="2021-06-04" />
+
+<title>Question_2__drivers_of_heterogeneity</title>
+
+<script src="libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<link href="libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Question_2__drivers_of_heterogeneity</h1>
+<h4 class="author">Kendra Walters</h4>
+<h4 class="date">2021-06-04</h4>
+
+</div>
+
+
+<style type="text/css">
+.main-container { max-width: 1000px; margin-left: 0; margin-right: auto; }
+img{ max-width:200%; height: auto; }
+td, th { padding : 6px }
+</style>
+<hr />
+<div id="purpose" class="section level1">
+<h1>Purpose</h1>
+<p>To test whether plant composition is the main driver of heterogeneity (or, other option, spatial distance which may stand in for other factor(s)) AND, if it is, then to test at what radius do we see the strongest impact of plant composition.</p>
+<pre class="r"><code>library(knitr)
+library(tidyverse)
+library(data.table)
+library(kableExtra)
+require(ggplot2)
+require(gridExtra)
+library(car)
+require(vegan)
+require(magrittr)
+library(indicspecies)
+require(pairwiseAdonis)
+require(ncf)
+
+knitr::opts_knit$set(root.dir = &quot;../&quot;)
+
+knitr::opts_chunk$set(comment=&quot;&quot;, cache=T, warning = F, message = F, fig.path = &quot;05_output_figures/&quot;)</code></pre>
+<div id="plants-v-distance" class="section level2">
+<h2>Plants v distance</h2>
+<p>It’s like Plants versus Zombies but much less interactive. Basically, we are doing a partial mantel here to see if geographic distance and/or plant composition is driving community composition in the bacterial and fungal dispersal communities found on the glass slides. For this analysis, we are arbitrarily using the plant composition within 1 meter of each site. We could have chosen a different radius here, but this one seemed OK.</p>
+<pre class="r"><code>print(&quot;For BACTERIA&quot;) # just so we know what the output is for in the HTML file</code></pre>
+<pre><code>[1] &quot;For BACTERIA&quot;</code></pre>
+<pre class="r"><code>## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load(&quot;03_Processed_data/16S_glass_slides.rda&quot;)
+M.microbial &lt;- q1.bray.dist.df %&gt;% 
+  select(starts_with(&quot;LO&quot;)) %&gt;% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  mutate(SampleID = ifelse(SampleID == &quot;LOT1A3_dup_new_protocol&quot;, &quot;LOT1A3&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;) %&gt;% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;% 
+  rename(Site = V1)
+
+M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
+  left_join(site.coords) %&gt;% # join with our coordinates
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
+  as.matrix
+
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+
+plants &lt;- fread(&quot;03_Processed_data/map/grass_shrub_1_meter_composition_df.tsv&quot;, data.table = FALSE) %&gt;% 
+  rename(Site = V1)
+
+M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% 
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;% 
+  left_join(plants) %&gt;% 
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(!(Site)) %&gt;% 
+  vegdist() %&gt;% as.matrix
+
+
+
+## Partial mantel time!!
+partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 1000, method = &quot;pearson&quot;, quiet = FALSE)</code></pre>
+<pre><code>100  of  1000 
+200  of  1000 
+300  of  1000 
+400  of  1000 
+500  of  1000 
+600  of  1000 
+700  of  1000 
+800  of  1000 
+900  of  1000 
+1000  of  1000 </code></pre>
+<pre><code>$MantelR
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.12998893 0.24625866 0.01777263 0.12179312 
+
+$p
+[1] 0.170829171 0.035964036 0.001998002 0.350649351 0.046953047
+
+$call
+[1] &quot;partial.mantel.test(M1 = M.microbial, M2 = M.distance, M3 = M.plants, &quot;
+[2] &quot;    resamp = 1000, method = \&quot;pearson\&quot;, quiet = FALSE)&quot;               
+
+attr(,&quot;class&quot;)
+[1] &quot;partial.Mantel&quot;</code></pre>
+<pre class="r"><code>print(&quot;For FUNGI&quot;) # just so we know what the output is for in the HTML file</code></pre>
+<pre><code>[1] &quot;For FUNGI&quot;</code></pre>
+<pre class="r"><code>## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load(&quot;03_Processed_data/ITS_glass_slides.rda&quot;)
+M.microbial &lt;- q1.ITS.bray.dist.df %&gt;% 
+  select(starts_with(&quot;LO&quot;)) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;) %&gt;% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;% 
+  rename(Site = V1)
+
+M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
+  left_join(site.coords) %&gt;% # join with our coordinates
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
+  as.matrix
+
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+
+plants &lt;- fread(&quot;03_Processed_data/map/grass_shrub_1_meter_composition_df.tsv&quot;, data.table = FALSE) %&gt;% 
+  rename(Site = V1)
+
+M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% 
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;% 
+  left_join(plants) %&gt;% 
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(!(Site)) %&gt;% 
+  vegdist() %&gt;% as.matrix
+
+
+
+## Partial mantel time!!
+partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 1000, method = &quot;pearson&quot;, quiet = FALSE)</code></pre>
+<pre><code>100  of  1000 
+200  of  1000 
+300  of  1000 
+400  of  1000 
+500  of  1000 
+600  of  1000 
+700  of  1000 
+800  of  1000 
+900  of  1000 
+1000  of  1000 </code></pre>
+<pre><code>$MantelR
+       r12        r13        r23      r12.3      r13.2 
+0.19734945 0.61090725 0.24327681 0.06345722 0.59197389 
+
+$p
+[1] 0.001998002 0.001998002 0.001998002 0.138861139 0.001998002
+
+$call
+[1] &quot;partial.mantel.test(M1 = M.microbial, M2 = M.distance, M3 = M.plants, &quot;
+[2] &quot;    resamp = 1000, method = \&quot;pearson\&quot;, quiet = FALSE)&quot;               
+
+attr(,&quot;class&quot;)
+[1] &quot;partial.Mantel&quot;</code></pre>
+</div>
+<div id="what-distance" class="section level2">
+<h2>What distance?</h2>
+<p>Here we are testing at what radius from which we create the plant composition do we see the STRONGEST correlation between plant community composition and microbial community. We will do this with both bacteria and fungi.</p>
+<pre class="r"><code>print(&quot;For BACTERIA&quot;) # just so we know what the output is for in the HTML file</code></pre>
+<pre><code>[1] &quot;For BACTERIA&quot;</code></pre>
+<pre class="r"><code>### These matrices only need to be run once because they do not depend on distance
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load(&quot;03_Processed_data/16S_glass_slides.rda&quot;)
+M.microbial &lt;- q1.bray.dist.df %&gt;% 
+  select(starts_with(&quot;LO&quot;)) %&gt;% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  mutate(SampleID = ifelse(SampleID == &quot;LOT1A3_dup_new_protocol&quot;, &quot;LOT1A3&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;) %&gt;% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;% 
+  rename(Site = V1)
+
+M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
+  left_join(site.coords) %&gt;% # join with our coordinates
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
+  as.matrix
+
+
+### Here we start the loop through our difference distances
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+plant.list &lt;- list.files(&quot;03_Processed_data/map/&quot;, pattern = &quot;_meter_composition_df.tsv&quot;)
+mantel.output &lt;- list()
+
+for (i in 1:length(plant.list)) {
+  plants &lt;- fread(paste0(&quot;03_Processed_data/map/&quot;, plant.list[[i]]), data.table = FALSE) %&gt;% 
+  rename(Site = V1)
+
+M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% 
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;% 
+  left_join(plants) %&gt;% 
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(!(Site)) %&gt;% 
+  vegdist() %&gt;% as.matrix
+
+## Partial mantel time!!
+mantel.output[[i]] &lt;- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = &quot;pearson&quot;, quiet = FALSE)
+
+print(paste0(&quot;For &quot;, plant.list[[i]], &quot; the partial Mantel results are:&quot;))
+
+print(mantel.output[[i]]$MantelR)
+print(mantel.output[[i]]$p)
+
+}</code></pre>
+<pre><code>1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_0.1_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.12707650 0.20106152 0.02422702 0.11979422 
+[1] 0.18248175 0.03789621 0.00019998 0.32816718 0.04839516
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_0.2_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.12495740 0.20452147 0.02423171 0.11754072 
+[1] 0.17678232 0.04309569 0.00019998 0.32706729 0.05349465
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_0.3_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.12364974 0.20626956 0.02428962 0.11615897 
+[1] 0.17718228 0.04199580 0.00019998 0.32196780 0.05569443
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_0.5_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.12595648 0.21377242 0.02287066 0.11833730 
+[1] 0.17608239 0.03769623 0.00019998 0.33246675 0.05049495
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_1_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.12998893 0.24625866 0.01777263 0.12179312 
+[1] 0.18238176 0.03279672 0.00019998 0.36496350 0.04449555
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_1.5_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.10934687 0.28087586 0.01926349 0.09968700 
+[1] 0.17528247 0.05049495 0.00019998 0.34796520 0.06989301
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_10_meter_composition_df.tsv the partial Mantel results are:&quot;
+         r12          r13          r23        r12.3        r13.2 
+ 0.049090060  0.092866993  0.540474297 -0.001315662  0.078937801 
+[1] 0.18008199 0.05789421 0.00019998 0.49955004 0.08429157
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_2_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.09547983 0.30341468 0.02121240 0.08467412 
+[1] 0.17348265 0.06109389 0.00019998 0.34006599 0.09289071
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_2.5_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.09270613 0.31778503 0.02079215 0.08141968 
+[1] 0.17338266 0.06719328 0.00019998 0.34466553 0.09939006
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_3_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.08876309 0.33116030 0.02095574 0.07693503 
+[1] 0.18088191 0.06919308 0.00019998 0.35466453 0.10418958
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_4_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.08670542 0.35724938 0.01946778 0.07414438 
+[1] 0.17948205 0.06849315 0.00019998 0.35846415 0.10428957
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_5_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.04909006 0.09176172 0.37866896 0.01556241 0.07915572 
+[1] 0.17938206 0.05739426 0.00019998 0.38116188 0.08819118</code></pre>
+<pre class="r"><code>print(&quot;For FUNGI&quot;) # just so we know what the output is for in the HTML file</code></pre>
+<pre><code>[1] &quot;For FUNGI&quot;</code></pre>
+<pre class="r"><code>### These matrices only need to be run once because they do not depend on distance
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load(&quot;03_Processed_data/ITS_glass_slides.rda&quot;)
+M.microbial &lt;- q1.ITS.bray.dist.df %&gt;% 
+  select(starts_with(&quot;LO&quot;)) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  column_to_rownames(&quot;SampleID&quot;) %&gt;% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;% 
+  rename(Site = V1)
+
+M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
+  left_join(site.coords) %&gt;% # join with our coordinates
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
+  as.matrix
+
+
+### Here we start the loop through our difference distances
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+plant.list &lt;- list.files(&quot;03_Processed_data/map/&quot;, pattern = &quot;_meter_composition_df.tsv&quot;)
+mantel.output &lt;- list()
+
+for (i in 1:length(plant.list)) {
+  plants &lt;- fread(paste0(&quot;03_Processed_data/map/&quot;, plant.list[[i]]), data.table = FALSE) %&gt;% 
+  rename(Site = V1)
+
+M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% 
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;% 
+  left_join(plants) %&gt;% 
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(!(Site)) %&gt;% 
+  vegdist() %&gt;% as.matrix
+
+## Partial mantel time!!
+mantel.output[[i]] &lt;- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = &quot;pearson&quot;, quiet = FALSE)
+
+print(paste0(&quot;For &quot;, plant.list[[i]], &quot; the partial Mantel results are:&quot;))
+
+print(mantel.output[[i]]$MantelR)
+print(mantel.output[[i]]$p)
+
+}</code></pre>
+<pre><code>1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_0.1_meter_composition_df.tsv the partial Mantel results are:&quot;
+      r12       r13       r23     r12.3     r13.2 
+0.1973494 0.5906981 0.1916549 0.1062452 0.5746186 
+[1] 0.00049995 0.00019998 0.00019998 0.02709729 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_0.2_meter_composition_df.tsv the partial Mantel results are:&quot;
+      r12       r13       r23     r12.3     r13.2 
+0.1973494 0.5909589 0.1966394 0.1025899 0.5744447 
+[1] 0.00029997 0.00019998 0.00029997 0.03179682 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_0.3_meter_composition_df.tsv the partial Mantel results are:&quot;
+      r12       r13       r23     r12.3     r13.2 
+0.1973494 0.5894820 0.1987204 0.1013139 0.5727260 
+[1] 0.00029997 0.00019998 0.00019998 0.03419658 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_0.5_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.19734945 0.59256166 0.20626508 0.09531129 0.57529742 
+[1] 0.00019998 0.00019998 0.00019998 0.04339566 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_1_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.19734945 0.61090725 0.24327681 0.06345722 0.59197389 
+[1] 0.00029997 0.00019998 0.00019998 0.13078692 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_1.5_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.19734945 0.60291624 0.28289643 0.03500534 0.58182955 
+[1] 0.00019998 0.00019998 0.00019998 0.25897410 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_10_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+ 0.1973494  0.5357114  0.5440629 -0.1328335  0.5207518 
+[1] 0.00029997 0.00019998 0.00019998 0.00369963 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_2_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.19734945 0.57918790 0.31129844 0.02200775 0.55575436 
+[1] 0.00029997 0.00019998 0.00019998 0.33516648 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_2.5_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.19734945 0.55228643 0.32793921 0.02061205 0.52646309 
+[1] 0.00019998 0.00019998 0.00019998 0.34676532 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_3_meter_composition_df.tsv the partial Mantel results are:&quot;
+       r12        r13        r23      r12.3      r13.2 
+0.19734945 0.52755942 0.34125702 0.02168519 0.49942551 
+[1] 0.00039996 0.00019998 0.00019998 0.34006599 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_4_meter_composition_df.tsv the partial Mantel results are:&quot;
+        r12         r13         r23       r12.3       r13.2 
+0.197349447 0.520301897 0.367504140 0.007726231 0.491126213 
+[1] 0.00049995 0.00019998 0.00019998 0.43115688 0.00019998
+1000  of  10000 
+2000  of  10000 
+3000  of  10000 
+4000  of  10000 
+5000  of  10000 
+6000  of  10000 
+7000  of  10000 
+8000  of  10000 
+9000  of  10000 
+10000  of  10000 
+[1] &quot;For grass_shrub_5_meter_composition_df.tsv the partial Mantel results are:&quot;
+         r12          r13          r23        r12.3        r13.2 
+ 0.197349447  0.526401125  0.388885817 -0.009396634  0.497864309 
+[1] 0.00019998 0.00019998 0.00019998 0.43285671 0.00019998</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

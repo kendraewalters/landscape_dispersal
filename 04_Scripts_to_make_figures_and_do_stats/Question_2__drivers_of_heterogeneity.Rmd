@@ -35,6 +35,7 @@ require(vegan)
 require(magrittr)
 library(indicspecies)
 require(pairwiseAdonis)
+require(ncf)
 
 knitr::opts_knit$set(root.dir = "../")
 
@@ -42,8 +43,8 @@ knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = 
 
 ```
 
-## Distance v. plants
-It's like aliens versus plants but much less interactive. Basically, we are doing a partial mantel here to see if geographic distance and/or plant composition is driving community composition in the bacterial and fungal dispersal communities found on the glass slides. For this analysis, we are arbitrarily using the plant composition within 1 meter of each site. We could have chosen a different radius here, but this one seemed OK.
+## Plants v distance
+It's like Plants versus Zombies but much less interactive. Basically, we are doing a partial mantel here to see if geographic distance and/or plant composition is driving community composition in the bacterial and fungal dispersal communities found on the glass slides. For this analysis, we are arbitrarily using the plant composition within 1 meter of each site. We could have chosen a different radius here, but this one seemed OK.
 
 ```{r distance_v_plants__bacteria}
 print("For BACTERIA") # just so we know what the output is for in the HTML file
@@ -76,11 +77,6 @@ M.distance <- data.frame("Sample" = row.names(M.microbial)) %>% # start with sam
 
 ## PLANT MATRIX
 ## reading in plant composition bc and make df of plant composition of each sample
-plants <- fread("grass_shrub_1_meter_composition_df.tsv", data.table = FALSE)
-
-sample.plants <- data.frame("Sample" = row.names(bc))
-sample.plants$Site <- str_extract(sample.plants$Sample, "[ABC][1-8]")
-sample.plants <- merge(sample.plants, plants, by.x = "Site", by.y = "V1")
 
 plants <- fread("03_Processed_data/map/grass_shrub_1_meter_composition_df.tsv", data.table = FALSE) %>% 
   rename(Site = V1)
@@ -103,4 +99,171 @@ partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 1000, method = "
 
 ```{r distance_v_plants__fungi}
 print("For FUNGI") # just so we know what the output is for in the HTML file
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load("03_Processed_data/ITS_glass_slides.rda")
+M.microbial <- q1.ITS.bray.dist.df %>% 
+  select(starts_with("LO")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords <- as.data.frame(fread("03_Processed_data/site_locs_coordinates.tsv")) %>% 
+  rename(Site = V1)
+
+M.distance <- data.frame("Sample" = row.names(M.microbial)) %>% # start with same names in same order
+  mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>%  # get site ID
+  left_join(site.coords) %>% # join with our coordinates
+  column_to_rownames("Sample") %>% 
+  select(x,y) %>% dist(., method = "euclidean") %>% # create Euclidean distance matrix
+  as.matrix
+
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+
+plants <- fread("03_Processed_data/map/grass_shrub_1_meter_composition_df.tsv", data.table = FALSE) %>% 
+  rename(Site = V1)
+
+M.plants <- data.frame("Sample" = row.names(M.microbial)) %>% 
+  mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>% 
+  left_join(plants) %>% 
+  column_to_rownames("Sample") %>% 
+  select(!(Site)) %>% 
+  vegdist() %>% as.matrix
+
+
+
+## Partial mantel time!!
+partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 1000, method = "pearson", quiet = FALSE)
+
+```
+
+
+
+
+## What distance?
+Here we are testing at what radius from which we create the plant composition do we see the STRONGEST correlation between plant community composition and microbial community. We will do this with both bacteria and fungi. 
+
+
+```{r what_distance__bacteria}
+print("For BACTERIA") # just so we know what the output is for in the HTML file
+
+### These matrices only need to be run once because they do not depend on distance
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load("03_Processed_data/16S_glass_slides.rda")
+M.microbial <- q1.bray.dist.df %>% 
+  select(starts_with("LO")) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords <- as.data.frame(fread("03_Processed_data/site_locs_coordinates.tsv")) %>% 
+  rename(Site = V1)
+
+M.distance <- data.frame("Sample" = row.names(M.microbial)) %>% # start with same names in same order
+  mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>%  # get site ID
+  left_join(site.coords) %>% # join with our coordinates
+  column_to_rownames("Sample") %>% 
+  select(x,y) %>% dist(., method = "euclidean") %>% # create Euclidean distance matrix
+  as.matrix
+
+
+### Here we start the loop through our difference distances
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+plant.list <- list.files("03_Processed_data/map/", pattern = "_meter_composition_df.tsv")
+mantel.output <- list()
+
+for (i in 1:length(plant.list)) {
+  plants <- fread(paste0("03_Processed_data/map/", plant.list[[i]]), data.table = FALSE) %>% 
+  rename(Site = V1)
+
+M.plants <- data.frame("Sample" = row.names(M.microbial)) %>% 
+  mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>% 
+  left_join(plants) %>% 
+  column_to_rownames("Sample") %>% 
+  select(!(Site)) %>% 
+  vegdist() %>% as.matrix
+
+## Partial mantel time!!
+mantel.output[[i]] <- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = "pearson", quiet = FALSE)
+
+print(paste0("For ", plant.list[[i]], " the partial Mantel results are:"))
+
+print(mantel.output[[i]]$MantelR)
+print(mantel.output[[i]]$p)
+
+}
+```
+
+
+
+```{r what_distance__fungi}
+print("For FUNGI") # just so we know what the output is for in the HTML file
+
+### These matrices only need to be run once because they do not depend on distance
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load("03_Processed_data/ITS_glass_slides.rda")
+M.microbial <- q1.ITS.bray.dist.df %>% 
+  select(starts_with("LO")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords <- as.data.frame(fread("03_Processed_data/site_locs_coordinates.tsv")) %>% 
+  rename(Site = V1)
+
+M.distance <- data.frame("Sample" = row.names(M.microbial)) %>% # start with same names in same order
+  mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>%  # get site ID
+  left_join(site.coords) %>% # join with our coordinates
+  column_to_rownames("Sample") %>% 
+  select(x,y) %>% dist(., method = "euclidean") %>% # create Euclidean distance matrix
+  as.matrix
+
+
+### Here we start the loop through our difference distances
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+plant.list <- list.files("03_Processed_data/map/", pattern = "_meter_composition_df.tsv")
+mantel.output <- list()
+
+for (i in 1:length(plant.list)) {
+  plants <- fread(paste0("03_Processed_data/map/", plant.list[[i]]), data.table = FALSE) %>% 
+  rename(Site = V1)
+
+M.plants <- data.frame("Sample" = row.names(M.microbial)) %>% 
+  mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>% 
+  left_join(plants) %>% 
+  column_to_rownames("Sample") %>% 
+  select(!(Site)) %>% 
+  vegdist() %>% as.matrix
+
+## Partial mantel time!!
+mantel.output[[i]] <- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = "pearson", quiet = FALSE)
+
+print(paste0("For ", plant.list[[i]], " the partial Mantel results are:"))
+
+print(mantel.output[[i]]$MantelR)
+print(mantel.output[[i]]$p)
+
+}
 ```
