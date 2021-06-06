@@ -554,31 +554,24 @@ q1.bray.dist.df.source <- q1.bray.dist.df %>%
   filter(!(grepl("LD", SampleID))) %>% 
   mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
   column_to_rownames("SampleID")
+ 
+# Export to make a 3D picture in PRIMER
+write_tsv(q1.bray.dist.df.source %>% 
+            rownames_to_column("SampleID"), "03_Processed_data/16S_glass_slides_q1__bray_dist_dispersal_source.tsv")
+
+write_tsv(data.frame("New_Sample_ID" = row.names(q1.bray.dist.df.source)) %>% 
+  left_join(metadata.together) %>%
+  mutate(SourceOrEcosystem = ifelse(Substrate == "Glass Slide", 
+                                    paste0(Substrate, "_", Ecosystem), 
+                                    Substrate)) %>% 
+  select(New_Sample_ID, SourceOrEcosystem), 
+  "03_Processed_data/16S_glass_slides_q1__bray_dist_dispersal_source_metadata.tsv")
+
+
 
 # Do the NMDS
 q1.source.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.source)), 
                              autotransform = FALSE, k = 3, trymax = 200, trace = 0)
-
-
-### FIX MEEEEEE______________________
-plot(q1.source.NMDS)
-
-# require(vegan3d) #doesn't work with NMDS?
-# ordiplot3d(q1.source.NMDS, display = "sites", choices = 1:3, col = "black",
-#     ax.col = "red", arr.len = 0.1, arr.col = "blue", envfit,
-#     xlab, ylab, zlab, ...)
-require(scatterplot3d)
-
-angles <- c(0, 45, 90, 135, 180, 225, 270, 315)
-
-for (i in 1:length(angles)) {
-scatterplot3d(x=q1.source.NMDS$points[,1], 
-              y=q1.source.NMDS$points[,2], 
-              z=q1.source.NMDS$points[,3], asp = 1, 
-              angle = 135)
-}
-
-### END FIX MEEEEEEEE _______________________
 
 
 # Merge with our metatdata and create a new column to specify what we want to look at
@@ -587,7 +580,7 @@ q1.source.NMDS.meta <- data.frame(q1.source.NMDS$points[,1:2]) %>%
   left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem, Treatment)) %>% 
   mutate(Source_Sink = ifelse(Treatment == "Open" | Treatment == "Environmental Litter",
                                      paste0(Treatment, "_", Ecosystem),
-                                     Treatment))
+                                     Treatment)) 
 
 # Create our visualization of dispersal slides + sources
 ggplot(data = q1.source.NMDS.meta) +
