@@ -585,7 +585,7 @@ q1.proportions <- as.data.frame(fread("03_Processed_data/16S_glass_slide__disper
          Environmental_Shrub = EnvS) %>% 
   left_join(metadata.together %>% select(New_Sample_ID, Ecosystem), 
             by = c("SampleID" = "New_Sample_ID")) %>% 
-  pivot_longer(Air:Unknown, names_to = "Source", values_to = "Proportion")
+  pivot_longer(Environmental_Grass:Unknown, names_to = "Source", values_to = "Proportion")
 
 ggplot(data = q1.proportions) + 
   geom_boxplot(color = "black", aes(x = Ecosystem, y = Proportion, fill = Source)) + 

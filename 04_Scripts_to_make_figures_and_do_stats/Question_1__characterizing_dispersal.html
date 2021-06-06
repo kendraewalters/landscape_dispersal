@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-05-27" />
+<meta name="date" content="2021-06-04" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-05-27</h4>
+<h4 class="date">2021-06-04</h4>
 
 </div>
 
@@ -563,7 +563,7 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
                   Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
-TimePoint_grouped  2    1.5746 0.78729  2.7517 0.28218  3e-04 ***
+TimePoint_grouped  2    1.5746 0.78729  2.7517 0.28218  4e-04 ***
 Residuals         14    4.0055 0.28611         0.71782           
 Total             16    5.5801                 1.00000           
 ---
@@ -587,8 +587,8 @@ Residuals                              12    2.6474 0.22061         0.47443
 Total                                  16    5.5801                 1.00000
                                           Pr(&gt;F)    
 TimePoint_grouped                      9.999e-05 ***
-as.factor(Ecosystem)                    0.000200 ***
-TimePoint_grouped:as.factor(Ecosystem)  0.005399 ** 
+as.factor(Ecosystem)                    0.000300 ***
+TimePoint_grouped:as.factor(Ecosystem)  0.007099 ** 
 Residuals                                           
 Total                                               
 ---
@@ -637,7 +637,7 @@ Number of permutations: 10000
 Terms added sequentially (first to last)
 
                   Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)
-TimePoint_grouped  2   0.53725 0.26862  1.1431 0.17207 0.2583
+TimePoint_grouped  2   0.53725 0.26862  1.1431 0.17207 0.2615
 Residuals         11   2.58503 0.23500         0.82793       
 Total             13   3.12227                 1.00000       </code></pre>
 <pre class="r"><code>adonis(q1.bray.dist.df.death ~ TimePoint_grouped * as.factor(Ecosystem), permutations = 10000, 
@@ -658,9 +658,9 @@ TimePoint_grouped:as.factor(Ecosystem)  1   0.20896 0.20896  1.7015 0.06693
 Residuals                               9   1.10528 0.12281         0.35400
 Total                                  13   3.12227                 1.00000
                                           Pr(&gt;F)    
-TimePoint_grouped                         0.0147 *  
+TimePoint_grouped                         0.0169 *  
 as.factor(Ecosystem)                   9.999e-05 ***
-TimePoint_grouped:as.factor(Ecosystem)    0.1169    
+TimePoint_grouped:as.factor(Ecosystem)    0.1144    
 Residuals                                           
 Total                                               
 ---
@@ -810,8 +810,8 @@ Terms added sequentially (first to last)
 
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
 Ecosystem             1    1.4952 1.49519 10.3106 0.11779 9.999e-05 ***
-Time_Point            1    0.6323 0.63234  4.3605 0.04982    0.0002 ***
-Ecosystem:Time_Point  1    0.2696 0.26964  1.8594 0.02124    0.0155 *  
+Time_Point            1    0.6323 0.63234  4.3605 0.04982 9.999e-05 ***
+Ecosystem:Time_Point  1    0.2696 0.26964  1.8594 0.02124     0.015 *  
 Residuals            71   10.2961 0.14502         0.81115              
 Total                74   12.6932                 1.00000              
 ---
@@ -864,42 +864,44 @@ summary(indic.time)</code></pre>
  Significance level (alpha): 0.05
 
  Total number of species: 7690
- Selected number of species: 136 
- Number of species associated to 1 group: 136 
+ Selected number of species: 134 
+ Number of species associated to 1 group: 134 
 
  List of species associated to each combination: 
 
- Group 1  #sps.  103 
+ Group 1  #sps.  102 
                                   stat p.value   
 6b550ad3889766092ea1d7be05293622 0.885   0.005 **
 3cc206a0424f7c33f75fe152cd42d757 0.874   0.005 **
-adffc920dd86ce72a6385dd2063ee499 0.863   0.010 **
-dba6ff41ca6ac3dd820c1a20c67d1b18 0.812   0.010 **
+adffc920dd86ce72a6385dd2063ee499 0.863   0.005 **
+dba6ff41ca6ac3dd820c1a20c67d1b18 0.812   0.005 **
 fd3bb0f93dc5043995cc6df1698a570c 0.811   0.005 **
 60d8aac672665427398d03a74c9374ef 0.777   0.005 **
 1a93e1f29b1cc493e43c0a6cf22354bc 0.772   0.005 **
-ba697aebf73f74c7a92b3d93fcdae1fa 0.751   0.015 * 
-3f3314f310e1a629e27a37a0ddcc71d1 0.743   0.015 * 
+ba697aebf73f74c7a92b3d93fcdae1fa 0.751   0.020 * 
+3f3314f310e1a629e27a37a0ddcc71d1 0.743   0.005 **
 8d904cbfb1324fc400ddb0bd54ac98e2 0.742   0.005 **
 61322ac57eeeafda8df586777df7b870 0.741   0.005 **
-18b1f3d102874f231e3168f058eca5bb 0.709   0.010 **
+b0d93d1a28c4af591eda114d3a4a44d4 0.735   0.025 * 
+18b1f3d102874f231e3168f058eca5bb 0.709   0.005 **
 56d6a71c94321f4bacd933db47567133 0.703   0.005 **
+920cfccaaf265ecd564e093c0f80fc08 0.697   0.045 * 
 10e246b63ef506bd782f33ebeb66eeab 0.691   0.015 * 
-a2b665f720bfa33cacfc62ce3b163c71 0.675   0.040 * 
+a2b665f720bfa33cacfc62ce3b163c71 0.675   0.035 * 
 4e72a1340652e9acfd17f3b58ee0946b 0.670   0.010 **
 a6dcfce2ef3a967409c3d1f1eb7b61e0 0.659   0.005 **
 448d5f533e646e1f70bed291c8896dcc 0.657   0.005 **
 eb61d9872f198693a8c781985a0c0be4 0.653   0.005 **
 4d3e2c97541b0aaffe13d5bbbba7f5e2 0.649   0.005 **
 53f8fa058e44195a8cf188f127237821 0.646   0.005 **
-50dc6d9f91a205d6bc53a59785b73133 0.634   0.050 * 
-761176318dc6ff2d907988c89bf64b3d 0.632   0.010 **
-dc47df2860f0b62c4cd123ebeff46d7a 0.631   0.050 * 
+50dc6d9f91a205d6bc53a59785b73133 0.634   0.045 * 
+761176318dc6ff2d907988c89bf64b3d 0.632   0.015 * 
+dc47df2860f0b62c4cd123ebeff46d7a 0.631   0.030 * 
 9df8902926c57927e7c1637ce9e04169 0.624   0.005 **
-d3c51e8d1de4793dfe54f3906639893b 0.624   0.050 * 
+d3c51e8d1de4793dfe54f3906639893b 0.624   0.040 * 
 bedd3813e765d90db9da91718f97f07d 0.619   0.005 **
-50ce296df0ee950b6f0fa444a4dda582 0.612   0.020 * 
-a1426cb2e683969e4ed70ba40f3ec4a5 0.601   0.015 * 
+50ce296df0ee950b6f0fa444a4dda582 0.612   0.005 **
+a1426cb2e683969e4ed70ba40f3ec4a5 0.601   0.030 * 
 a86bfb902cbf20e057605c00d196260f 0.593   0.005 **
 993dd4d4514f748ea53ef9f94eb358dd 0.576   0.040 * 
 24c7587fd1e36bb3a5f14265dd710fe0 0.559   0.005 **
@@ -907,75 +909,72 @@ a86bfb902cbf20e057605c00d196260f 0.593   0.005 **
 40adeec179945ec42983e1e9a6fa57a4 0.554   0.005 **
 46e291268d82d7a8a60da91c97f4fdad 0.553   0.005 **
 798db8702acc42ff57e93d53a12c6bfa 0.553   0.010 **
-7eb448ea3dad7588a8b7fa8f3d41253f 0.551   0.005 **
+7eb448ea3dad7588a8b7fa8f3d41253f 0.551   0.010 **
 51845ffbb5da10bc962c9be15efb0f9e 0.551   0.005 **
+235273674549cbf139263e4f595dd90e 0.537   0.035 * 
 f77e4baddb87dd7138fa28f9b170a78a 0.535   0.015 * 
 c35e51a7672b3e1cdb50a3ca2e06e9e3 0.533   0.005 **
 c527f49af38f99285d6925d1694d3fa2 0.533   0.015 * 
 197cfdd00c0752dba2dbf0113785970f 0.531   0.010 **
-57362f1a472ab270c279e44ee48178b2 0.527   0.030 * 
-a072619d65739c8bfeca7ddf8c6e883d 0.524   0.030 * 
-b3afaa0125ad781ef4e39971b7a1796b 0.522   0.005 **
+57362f1a472ab270c279e44ee48178b2 0.527   0.010 **
+a072619d65739c8bfeca7ddf8c6e883d 0.524   0.025 * 
+b3afaa0125ad781ef4e39971b7a1796b 0.522   0.020 * 
 edb12a0bd74abf8ae9461363b6a306bc 0.517   0.035 * 
-2c8aee19e7bab9e856522be4992eeeda 0.500   0.010 **
-c4c4e5842b30d9d06821e477badc6290 0.500   0.010 **
+2c8aee19e7bab9e856522be4992eeeda 0.500   0.005 **
+c4c4e5842b30d9d06821e477badc6290 0.500   0.005 **
 5ee6b2c51dd113f2df59550cf914b0c7 0.500   0.005 **
-a16b17629777d23187508535de6e7d0f 0.494   0.005 **
+a16b17629777d23187508535de6e7d0f 0.494   0.015 * 
 46773aa4389749cf0202cf0892cebbe7 0.494   0.005 **
-3df749176e2d01c430916c84d3464a52 0.493   0.010 **
-9469b0606c2ef37a8f5b50977a123c2e 0.491   0.005 **
+3df749176e2d01c430916c84d3464a52 0.493   0.005 **
+7c94c560cdf14d27349e677559e792e1 0.491   0.035 * 
+9469b0606c2ef37a8f5b50977a123c2e 0.491   0.010 **
 2c23bd43e661ce46a6d0f25057566535 0.486   0.010 **
 feec6da4c01cb7c5e989603c786f9836 0.486   0.010 **
 9c8a6856f7cf203c2c9f076cbc6768a7 0.479   0.010 **
 237effeab1f3252274fbc80499c8fdc0 0.477   0.015 * 
-3a7e54deaf17b2539c9760918b962f39 0.476   0.025 * 
-c8b8b9d7d1a85bc367030027576a11af 0.467   0.045 * 
+3a7e54deaf17b2539c9760918b962f39 0.476   0.010 **
+c8b8b9d7d1a85bc367030027576a11af 0.467   0.015 * 
 a4bc9276aed1dc28f913f0e1d47d979a 0.464   0.020 * 
 c146cf5d7d948e1855684f77e63fb53e 0.452   0.030 * 
-02722fcf9d897ed064d9048ead14bdaa 0.433   0.015 * 
-843feeeb3849c9b60f37e0f15a3f42cf 0.433   0.010 **
+02722fcf9d897ed064d9048ead14bdaa 0.433   0.010 **
+843feeeb3849c9b60f37e0f15a3f42cf 0.433   0.020 * 
 cd5fb06a0985c18086a679752c54f993 0.433   0.010 **
 3c84d3252c4792e53b42704e6e58adfd 0.433   0.025 * 
-a1d0c9ab1c75e11472721a36474e6896 0.430   0.040 * 
-16efdcede84be7f9c67aad01c3515fb6 0.429   0.015 * 
-6d201ba5a1c3334beb3220e82d197e21 0.428   0.040 * 
-ce2c54df8062cd9bfcd79e882dfdf615 0.425   0.045 * 
+a1d0c9ab1c75e11472721a36474e6896 0.430   0.020 * 
+16efdcede84be7f9c67aad01c3515fb6 0.429   0.030 * 
+6d201ba5a1c3334beb3220e82d197e21 0.428   0.025 * 
 6ca01c7ce3a228dd3d3b0542321374c9 0.424   0.010 **
-5015556df3955f6dae21e5018bf27dad 0.423   0.005 **
-f0f52ed7b5dea6d6655727fab070e30b 0.422   0.015 * 
-b4c92c8a53035413dee15150db1501cd 0.422   0.040 * 
-152fbd49665c3389052bc73826ff2092 0.422   0.035 * 
-f0513aceae2f80d6d9d211dc1f417099 0.419   0.015 * 
+5015556df3955f6dae21e5018bf27dad 0.423   0.025 * 
+f0f52ed7b5dea6d6655727fab070e30b 0.422   0.010 **
+b4c92c8a53035413dee15150db1501cd 0.422   0.020 * 
+152fbd49665c3389052bc73826ff2092 0.422   0.025 * 
+f0513aceae2f80d6d9d211dc1f417099 0.419   0.050 * 
 c1b0973a2d776c0776490c321ba8d8e8 0.411   0.040 * 
-cf2afd5635aa55e04350c72519567e59 0.400   0.045 * 
-c4b09ca6ea427fe3411ab8bc9a36914d 0.398   0.050 * 
-d762d2c020ec061d3f1284a8f9ed4552 0.354   0.040 * 
-0fb18dc0bb9d4a856f9bd2a39f894f6b 0.354   0.050 * 
-facdcf104662bf9f01d7a70a5245e6bb 0.354   0.050 * 
-29ec8a5f0728da4eeb6b8074d9ae5d3a 0.354   0.050 * 
-ecd61ee8041745c43ba5d253e2522fe1 0.354   0.050 * 
-54be43279a482b38710fefae4b525850 0.354   0.035 * 
-573f93ccb1477d3a57c59fbba4c922f4 0.354   0.040 * 
-ac818e84ad89075d71ad9a065486a300 0.354   0.030 * 
-135e28a4d6ba3c553fc2e29bf0f81a6f 0.354   0.040 * 
-274ac4512c31364146165d2452a041a4 0.354   0.030 * 
-df653d0bdd2bbafe46c5717271e94f02 0.354   0.045 * 
-05bba11c21c86921a19b32149eefaeb7 0.354   0.050 * 
+a0a64f00148c45b7f6d732b8e4c98b62 0.402   0.030 * 
+c4b09ca6ea427fe3411ab8bc9a36914d 0.398   0.015 * 
+d762d2c020ec061d3f1284a8f9ed4552 0.354   0.050 * 
+facdcf104662bf9f01d7a70a5245e6bb 0.354   0.045 * 
+ecd61ee8041745c43ba5d253e2522fe1 0.354   0.040 * 
+54be43279a482b38710fefae4b525850 0.354   0.040 * 
+140d7576726910b1d055b2352714ea16 0.354   0.040 * 
+573f93ccb1477d3a57c59fbba4c922f4 0.354   0.050 * 
+46d644991a5ff7fb6c75912266ac86b5 0.354   0.040 * 
+135e28a4d6ba3c553fc2e29bf0f81a6f 0.354   0.050 * 
+217205ba689c47e628a62066064ecdb1 0.354   0.045 * 
+2bfc54700ceb8c48498fb31f223fe43e 0.354   0.050 * 
+0f76e9d2980cda8ea0437d194b072538 0.354   0.050 * 
+05bba11c21c86921a19b32149eefaeb7 0.354   0.045 * 
 6293ed712a4969da7b48f7de5da14dc6 0.354   0.050 * 
-249b20457895c04d571d3c8b3caaded0 0.354   0.025 * 
-5b67990781976b6973ac31ad4d43281d 0.354   0.045 * 
-e477e714e462cfac622e4dd6ec150715 0.354   0.050 * 
-f93ea038efac22e044f470cd57d86947 0.354   0.040 * 
-8b6e5f6f157c96d531b9bc5e9c2d9635 0.353   0.030 * 
-85000b441c3fc8cb3a8737287fb79b9f 0.347   0.045 * 
-6c9c1a6b98828de1e48586f5379fae6b 0.343   0.045 * 
+5b67990781976b6973ac31ad4d43281d 0.354   0.040 * 
+e477e714e462cfac622e4dd6ec150715 0.354   0.045 * 
+f93ea038efac22e044f470cd57d86947 0.354   0.050 * 
+724a2253470587ad5eef163e6b2677de 0.354   0.050 * 
+482b6c78d4bb15834df5a56de8839441 0.349   0.020 * 
+85000b441c3fc8cb3a8737287fb79b9f 0.347   0.025 * 
+78dbbee2546854cb6635c377e71816f5 0.345   0.050 * 
 6f0942f0eace8aa09e2783cd47aba15d 0.342   0.050 * 
-accce61bfa96abf87aeef8f762e0a2f4 0.342   0.050 * 
-8add21c7c4a8df14793cb34b5e36a25e 0.341   0.045 * 
-b89eb738355a8c8f6a00a5f0d9a3d08c 0.341   0.050 * 
-30ad0a1db7534920663a334edd1451b7 0.339   0.035 * 
 
- Group not_1  #sps.  33 
+ Group not_1  #sps.  32 
                                   stat p.value   
 6d360c9c285bc318a1e9cbfd2a85a057 0.907   0.005 **
 ec3d78df700e0518a81ed0843c9d1d1c 0.876   0.005 **
@@ -986,30 +985,29 @@ ec3d78df700e0518a81ed0843c9d1d1c 0.876   0.005 **
 00735e82b47219838a8213f40796c504 0.830   0.005 **
 07c9441ebcf931a1f7e6f3bab8a3be23 0.824   0.005 **
 6473642f64396126d82d9983348c0214 0.824   0.005 **
-2f6c2b58eb612ebcf4c07fb555b16de9 0.817   0.005 **
+2f6c2b58eb612ebcf4c07fb555b16de9 0.817   0.010 **
 9f50e64e0e8f4064c2f7a668166c53f3 0.816   0.005 **
-86b95cd30bf8e0805cc8d1a75cb8d141 0.810   0.010 **
+86b95cd30bf8e0805cc8d1a75cb8d141 0.810   0.020 * 
 b4de2cd21ee0083acacaa2f70a3aadf2 0.806   0.005 **
 e03f48c30eaa110ac015253ae2d66842 0.793   0.010 **
 750ffb89094b4f33ce5f8ff6a4a9734e 0.788   0.010 **
-6011c7ca88b2973988b09f34f6c8c66e 0.782   0.050 * 
+91d355809aeb177f6597bd4b1fe7bebb 0.780   0.045 * 
 bc7e7418ff497ed56541c1b985e1dc06 0.764   0.045 * 
-68fd7320605a645ad627ae32f7d8a416 0.758   0.015 * 
-bf91fbe02982d2cf3c280cd04c1e4f87 0.758   0.015 * 
+68fd7320605a645ad627ae32f7d8a416 0.758   0.045 * 
+bf91fbe02982d2cf3c280cd04c1e4f87 0.758   0.025 * 
 56651b47952ee08bb1e8258b0ebf19a4 0.739   0.010 **
-7105ef3dee9296597342d991eb0b339a 0.732   0.040 * 
-fd0845da70843a7bbc1162c7dd1e9d63 0.726   0.015 * 
-39c8768585bcca4de850af4bbf885151 0.705   0.020 * 
-069b620d8dbb932e02f72deeb5b4ca6d 0.637   0.040 * 
-7ca22f308da3e7739b61b3bb6d99437f 0.630   0.030 * 
-59823d48691bb03caa4f745bf9fb77e2 0.627   0.025 * 
-9f90cf1c497735ea5d299f6947f81efd 0.612   0.045 * 
-196814810b2aa4bd4b9fad336a7ab131 0.611   0.025 * 
-a886f6a8d2fe4a900dee5b6e6cac8a85 0.597   0.025 * 
-101b7ba0c9fca158c41654ddd8f1eb2a 0.582   0.030 * 
+fd0845da70843a7bbc1162c7dd1e9d63 0.726   0.040 * 
+39c8768585bcca4de850af4bbf885151 0.705   0.025 * 
+069b620d8dbb932e02f72deeb5b4ca6d 0.637   0.035 * 
+7ca22f308da3e7739b61b3bb6d99437f 0.630   0.025 * 
+59823d48691bb03caa4f745bf9fb77e2 0.627   0.015 * 
+196814810b2aa4bd4b9fad336a7ab131 0.611   0.015 * 
+a886f6a8d2fe4a900dee5b6e6cac8a85 0.597   0.010 **
+101b7ba0c9fca158c41654ddd8f1eb2a 0.582   0.020 * 
 88495c23c44d09018f679a04dd1f55df 0.582   0.035 * 
-e85e720d83a972829c488827ea08a43f 0.521   0.035 * 
-0b6ff393e40db63bbaa53196525fe1a6 0.521   0.050 * 
+03d950813d25264dfc1e5fe6f89c1265 0.567   0.040 * 
+ce5305c44acacb98a7225e7f8a1d7466 0.554   0.035 * 
+0b6ff393e40db63bbaa53196525fe1a6 0.521   0.045 * 
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1 </code></pre>
 <pre class="r"><code>ITS.taxonomy &lt;- fread(input = &quot;01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv&quot;)
@@ -1203,14 +1201,14 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 9                                            Open_Shrubland vs Soil  1
 10                                           Open_Grassland vs Soil  1
      SumsOfSqs   F.Model         R2 p.value p.adjusted sig
-1  0.001220242  3.993585 0.28538683   0.007       0.07    
+1  0.001220242  3.993585 0.28538683   0.005       0.05   .
 2  0.008983230 10.093042 0.20148590   0.001       0.01   *
 3  0.013490582 20.972261 0.32783367   0.001       0.01   *
 4  0.018777008 62.515087 0.79621751   0.001       0.01   *
 5  0.006919442  7.659225 0.16070814   0.002       0.02   .
 6  0.011280448 17.203767 0.28575898   0.001       0.01   *
 7  0.014676836 43.970683 0.73320297   0.001       0.01   *
-8  0.002870481  3.449807 0.04512513   0.016       0.16    
+8  0.002870481  3.449807 0.04512513   0.028       0.28    
 9  0.010181016 12.361224 0.21180543   0.001       0.01   *
 10 0.007494748 12.263826 0.20018054   0.001       0.01   *</code></pre>
 <pre class="r"><code>pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)</code></pre>
@@ -1224,7 +1222,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1 0.0012202 0.00122024  3.9936 0.28539  0.003 **
+Source_Sink  1 0.0012202 0.00122024  3.9936 0.28539  0.005 **
 Residuals   10 0.0030555 0.00030555         0.71461          
 Total       11 0.0042757                    1.00000          
 ---
@@ -1275,10 +1273,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.006919 0.0069194  7.6592 0.16071  0.005 **
-Residuals   40  0.036137 0.0009034         0.83929          
-Total       41  0.043056                   1.00000          
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.006919 0.0069194  7.6592 0.16071  0.001 ***
+Residuals   40  0.036137 0.0009034         0.83929           
+Total       41  0.043056                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1315,7 +1313,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.002870 0.00287048  3.4498 0.04513  0.016 *
+Source_Sink  1  0.002870 0.00287048  3.4498 0.04513  0.026 *
 Residuals   73  0.060741 0.00083207         0.95487         
 Total       74  0.063612                    1.00000         
 ---
@@ -1327,10 +1325,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.010181 0.0101810  12.361 0.21181  0.001 ***
-Residuals   46  0.037887 0.0008236         0.78819           
-Total       47  0.048068                   1.00000           
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.010181 0.0101810  12.361 0.21181  0.002 **
+Residuals   46  0.037887 0.0008236         0.78819          
+Total       47  0.048068                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1355,7 +1353,7 @@ q1.proportions &lt;- as.data.frame(fread(&quot;03_Processed_data/16S_glass_slide
          Environmental_Shrub = EnvS) %&gt;% 
   left_join(metadata.together %&gt;% select(New_Sample_ID, Ecosystem), 
             by = c(&quot;SampleID&quot; = &quot;New_Sample_ID&quot;)) %&gt;% 
-  pivot_longer(Air:Unknown, names_to = &quot;Source&quot;, values_to = &quot;Proportion&quot;)
+  pivot_longer(Environmental_Grass:Unknown, names_to = &quot;Source&quot;, values_to = &quot;Proportion&quot;)
 
 ggplot(data = q1.proportions) + 
   geom_boxplot(color = &quot;black&quot;, aes(x = Ecosystem, y = Proportion, fill = Source)) + 
@@ -1429,16 +1427,16 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 14                                           Open_Shrubland vs Soil  1
 15                                           Open_Grassland vs Soil  1
      SumsOfSqs    F.Model        R2 p.value p.adjusted sig
-1  0.006707850   4.556765 0.3628932   0.026      0.390    
-2  0.029263115  18.143778 0.6939998   0.009      0.135    
-3  0.004878345   1.562460 0.0394935   0.202      1.000    
+1  0.006707850   4.556765 0.3628932   0.018      0.270    
+2  0.029263115  18.143778 0.6939998   0.016      0.240    
+3  0.004878345   1.562460 0.0394935   0.177      1.000    
 4  0.016439790  11.750110 0.2227504   0.001      0.015   .
 5  0.042834678  34.384142 0.7106490   0.001      0.015   .
-6  0.019816655   9.441309 0.4856313   0.009      0.135    
-7  0.019409573   6.126231 0.1328145   0.005      0.075    
+6  0.019816655   9.441309 0.4856313   0.010      0.150    
+7  0.019409573   6.126231 0.1328145   0.004      0.060    
 8  0.049307121  32.394100 0.4296636   0.001      0.015   .
-9  0.030542073  19.143159 0.5447194   0.001      0.015   .
-10 0.066248682  20.725838 0.3413018   0.001      0.015   .
+9  0.030542073  19.143159 0.5447194   0.003      0.045   .
+10 0.066248682  20.725838 0.3413018   0.002      0.030   .
 11 0.139066645  89.819285 0.6762518   0.001      0.015   .
 12 0.005180456   3.109803 0.1627334   0.058      0.870    
 13 0.075288638  31.894882 0.3040652   0.001      0.015   .
@@ -1455,7 +1453,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0067079 0.0067079  4.5568 0.36289  0.025 *
+Source_Sink  1 0.0067079 0.0067079  4.5568 0.36289   0.02 *
 Residuals    8 0.0117765 0.0014721         0.63711         
 Total        9 0.0184844                   1.00000         
 ---
@@ -1467,10 +1465,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model    R2 Pr(&gt;F)  
-Source_Sink  1  0.029263 0.0292631  18.144 0.694  0.019 *
-Residuals    8  0.012903 0.0016128         0.306         
-Total        9  0.042166                   1.000         
+            Df SumsOfSqs   MeanSqs F.Model    R2 Pr(&gt;F)   
+Source_Sink  1  0.029263 0.0292631  18.144 0.694  0.008 **
+Residuals    8  0.012903 0.0016128         0.306          
+Total        9  0.042166                   1.000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1481,7 +1479,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)
-Source_Sink  1  0.004878 0.0048783  1.5625 0.03949  0.214
+Source_Sink  1  0.004878 0.0048783  1.5625 0.03949  0.203
 Residuals   38  0.118644 0.0031222         0.96051       
 Total       39  0.123523                   1.00000       
 
@@ -1518,7 +1516,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.019817 0.0198167  9.4413 0.48563  0.004 **
+Source_Sink  1  0.019817 0.0198167  9.4413 0.48563  0.009 **
 Residuals   10  0.020989 0.0020989         0.51437          
 Total       11  0.040806                   1.00000          
 ---
@@ -1531,7 +1529,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1   0.01941 0.0194096  6.1262 0.13281  0.004 **
+Source_Sink  1   0.01941 0.0194096  6.1262 0.13281  0.005 **
 Residuals   40   0.12673 0.0031683         0.86719          
 Total       41   0.14614                   1.00000          
 ---
@@ -1556,10 +1554,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.030542 0.0305421  19.143 0.54472  0.001 ***
-Residuals   16  0.025527 0.0015955         0.45528           
-Total       17  0.056069                   1.00000           
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.030542 0.0305421  19.143 0.54472  0.002 **
+Residuals   16  0.025527 0.0015955         0.45528          
+Total       17  0.056069                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1596,7 +1594,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.005180 0.0051805  3.1098 0.16273  0.061 .
+Source_Sink  1  0.005180 0.0051805  3.1098 0.16273   0.05 *
 Residuals   16  0.026654 0.0016658         0.83727         
 Total       17  0.031834                   1.00000         
 ---
