@@ -55,3 +55,7 @@ vignettes/*.pdf
 
 #All output files
 05_output_figures
+04_Scripts_to_make_figures_and_do_stats/05_output_figures
+
+# Attic scripts that I might need someday but aren't currently using/maintaining
+04_Scripts_to_make_figures_and_do_stats/attic
