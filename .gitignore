@@ -59,3 +59,6 @@ vignettes/*.pdf
 
 # Attic scripts that I might need someday but aren't currently using/maintaining
 04_Scripts_to_make_figures_and_do_stats/attic
+
+# My notes to figure out methods
+figuring_out_methods/
