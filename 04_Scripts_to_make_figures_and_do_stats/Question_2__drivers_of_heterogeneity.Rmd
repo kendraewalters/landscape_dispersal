@@ -91,7 +91,7 @@ M.plants <- data.frame("Sample" = row.names(M.microbial)) %>%
 
 
 ## Partial mantel time!!
-partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 1000, method = "pearson", quiet = FALSE)
+partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 1000, method = "pearson", quiet = TRUE)
 
 ```
 
@@ -139,7 +139,7 @@ M.plants <- data.frame("Sample" = row.names(M.microbial)) %>%
 
 
 ## Partial mantel time!!
-partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 1000, method = "pearson", quiet = FALSE)
+partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 1000, method = "pearson", quiet = TRUE)
 
 ```
 
@@ -199,7 +199,7 @@ M.plants <- data.frame("Sample" = row.names(M.microbial)) %>%
   vegdist() %>% as.matrix
 
 ## Partial mantel time!!
-mantel.output[[i]] <- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = "pearson", quiet = FALSE)
+mantel.output[[i]] <- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = "pearson", quiet = TRUE)
 
 print(paste0("For ", plant.list[[i]], " the partial Mantel results are:"))
 
@@ -258,7 +258,7 @@ M.plants <- data.frame("Sample" = row.names(M.microbial)) %>%
   vegdist() %>% as.matrix
 
 ## Partial mantel time!!
-mantel.output[[i]] <- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = "pearson", quiet = FALSE)
+mantel.output[[i]] <- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = "pearson", quiet = TRUE)
 
 print(paste0("For ", plant.list[[i]], " the partial Mantel results are:"))
 
