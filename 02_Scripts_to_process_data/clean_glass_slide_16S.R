@@ -14,7 +14,7 @@ require(EcolUtils)
 
 
 ## Setting up inputs and outputs
-setwd("01_Raw_data/03_Microbial_Community_Composition/glass_slides__16S/")
+setwd("01_Raw_data/03_Microbial_Community_Composition/glass_slides__16S")
 
 source.tracker.file <- "16S_glass_slides__for_source_tracker.tsv"
 source.tracker.meta <- "map_16S_glass_slides__sourcetracker.txt"
