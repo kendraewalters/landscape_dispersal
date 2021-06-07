@@ -357,19 +357,23 @@ q1.NMDS.meta <- data.frame(q1.dispersal.NMDS$points[,1:2]) %>%
 ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = "Set1") 
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Bacteria, glass slides by ecosystem")
 
 ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = "Set1") 
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Bacteria, glass slides by ecosystem AND time")
 
 # Do the staaaats!!
+print("These stats are for the BACTERIA")
+
 adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.NMDS.meta, na.rm= TRUE)
 
-adonis(q1.bray.dist.df.dispersal ~ Ecosystem + Time_Point, permutations = 10000, 
-       data = q1.NMDS.meta, na.rm= TRUE) # interaction is not significant so ignore
+adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE) # interaction is not significant 
 
 
 
@@ -403,15 +407,19 @@ q1.ITS.NMDS.meta <- data.frame(q1.ITS.dispersal.NMDS$points[,1:2]) %>%
 ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = "Set1") 
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, glass slides by ecosystem")
 
 
 ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = "Set1") 
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, glass slides by ecosystem AND time")
 
 # Do the staaaats!!
+print("These stats are for the FUNGI")
+
 adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.ITS.NMDS.meta, na.rm= TRUE)
 

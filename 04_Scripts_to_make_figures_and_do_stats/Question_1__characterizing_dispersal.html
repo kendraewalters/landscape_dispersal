@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-06-04" />
+<meta name="date" content="2021-06-06" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-06-04</h4>
+<h4 class="date">2021-06-06</h4>
 
 </div>
 
@@ -280,6 +280,9 @@ require(vegan)
 require(magrittr)
 library(indicspecies)
 require(pairwiseAdonis)
+require(conflicted)
+conflict_prefer(&quot;select&quot;, &quot;dplyr&quot;)
+conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
 
 knitr::opts_knit$set(root.dir = &quot;../&quot;)
 
@@ -695,15 +698,19 @@ q1.NMDS.meta &lt;- data.frame(q1.dispersal.NMDS$points[,1:2]) %&gt;%
 ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+  scale_color_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;Bacteria, glass slides by ecosystem&quot;)</code></pre>
 <p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = q1.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+  scale_color_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;Bacteria, glass slides by ecosystem AND time&quot;)</code></pre>
 <p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_bacteria-2.png" width="672" /></p>
 <pre class="r"><code># Do the staaaats!!
-adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
+print(&quot;These stats are for the BACTERIA&quot;)</code></pre>
+<pre><code>[1] &quot;These stats are for the BACTERIA&quot;</code></pre>
+<pre class="r"><code>adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.NMDS.meta, na.rm= TRUE)</code></pre>
 <pre><code>
 Call:
@@ -720,22 +727,23 @@ Residuals 73   27.1586 0.37204         0.97205
 Total     74   27.9394                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code>adonis(q1.bray.dist.df.dispersal ~ Ecosystem + Time_Point, permutations = 10000, 
-       data = q1.NMDS.meta, na.rm= TRUE) # interaction is not significant so ignore</code></pre>
+<pre class="r"><code>adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE) # interaction is not significant </code></pre>
 <pre><code>
 Call:
-adonis(formula = q1.bray.dist.df.dispersal ~ Ecosystem + Time_Point,      data = q1.NMDS.meta, permutations = 10000, na.rm = TRUE) 
+adonis(formula = q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point,      data = q1.NMDS.meta, permutations = 10000, na.rm = TRUE) 
 
 Permutation: free
 Number of permutations: 10000
 
 Terms added sequentially (first to last)
 
-           Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
-Ecosystem   1    0.7808 0.78077  2.1119 0.02795 9.999e-05 ***
-Time_Point  1    0.5404 0.54041  1.4618 0.01934 0.0007999 ***
-Residuals  72   26.6182 0.36970         0.95271              
-Total      74   27.9394                 1.00000              
+                     Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
+Ecosystem             1    0.7808 0.78077  2.1148 0.02795 9.999e-05 ***
+Time_Point            1    0.5404 0.54041  1.4638 0.01934 0.0007999 ***
+Ecosystem:Time_Point  1    0.4055 0.40548  1.0983 0.01451 0.1294871    
+Residuals            71   26.2127 0.36919         0.93820              
+Total                74   27.9394                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code># See if variance may be partially driving the significant time effect on composition
@@ -772,15 +780,19 @@ q1.ITS.NMDS.meta &lt;- data.frame(q1.ITS.dispersal.NMDS$points[,1:2]) %&gt;%
 ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+  scale_color_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;Fungi, glass slides by ecosystem&quot;)</code></pre>
 <p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = q1.ITS.NMDS.meta) +
   geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
   theme_classic() +
-  scale_color_brewer(palette = &quot;Set1&quot;) </code></pre>
+  scale_color_brewer(palette = &quot;Set1&quot;) +
+  ggtitle(&quot;Fungi, glass slides by ecosystem AND time&quot;)</code></pre>
 <p><img src="05_output_figures/NMDS_dispersal_communities_by_ecosystem_fungi-2.png" width="672" /></p>
 <pre class="r"><code># Do the staaaats!!
-adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
+print(&quot;These stats are for the FUNGI&quot;)</code></pre>
+<pre><code>[1] &quot;These stats are for the FUNGI&quot;</code></pre>
+<pre class="r"><code>adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
        data = q1.ITS.NMDS.meta, na.rm= TRUE)</code></pre>
 <pre><code>
 Call:
@@ -1150,10 +1162,25 @@ q1.bray.dist.df.source &lt;- q1.bray.dist.df %&gt;%
   filter(!(grepl(&quot;LD&quot;, SampleID))) %&gt;% 
   mutate(SampleID = ifelse(SampleID == &quot;LOT1A3_dup_new_protocol&quot;, &quot;LOT1A3&quot;, SampleID)) %&gt;% 
   column_to_rownames(&quot;SampleID&quot;)
+ 
+# Export to make a 3D picture in PRIMER
+write_tsv(q1.bray.dist.df.source %&gt;% 
+            rownames_to_column(&quot;SampleID&quot;), &quot;03_Processed_data/16S_glass_slides_q1__bray_dist_dispersal_source.tsv&quot;)
+
+write_tsv(data.frame(&quot;New_Sample_ID&quot; = row.names(q1.bray.dist.df.source)) %&gt;% 
+  left_join(metadata.together) %&gt;%
+  mutate(SourceOrEcosystem = ifelse(Substrate == &quot;Glass Slide&quot;, 
+                                    paste0(Substrate, &quot;_&quot;, Ecosystem), 
+                                    Substrate)) %&gt;% 
+  select(New_Sample_ID, SourceOrEcosystem), 
+  &quot;03_Processed_data/16S_glass_slides_q1__bray_dist_dispersal_source_metadata.tsv&quot;)
+
+
 
 # Do the NMDS
 q1.source.NMDS &lt;- metaMDS(as.dist(as.matrix(q1.bray.dist.df.source)), 
-                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+                             autotransform = FALSE, k = 3, trymax = 200, trace = 0)
+
 
 # Merge with our metatdata and create a new column to specify what we want to look at
 q1.source.NMDS.meta &lt;- data.frame(q1.source.NMDS$points[,1:2]) %&gt;% 
@@ -1161,7 +1188,7 @@ q1.source.NMDS.meta &lt;- data.frame(q1.source.NMDS$points[,1:2]) %&gt;%
   left_join(metadata.together %&gt;% select(New_Sample_ID, Time_Point, Ecosystem, Treatment)) %&gt;% 
   mutate(Source_Sink = ifelse(Treatment == &quot;Open&quot; | Treatment == &quot;Environmental Litter&quot;,
                                      paste0(Treatment, &quot;_&quot;, Ecosystem),
-                                     Treatment))
+                                     Treatment)) 
 
 # Create our visualization of dispersal slides + sources
 ggplot(data = q1.source.NMDS.meta) +
@@ -1201,14 +1228,14 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 9                                            Open_Shrubland vs Soil  1
 10                                           Open_Grassland vs Soil  1
      SumsOfSqs   F.Model         R2 p.value p.adjusted sig
-1  0.001220242  3.993585 0.28538683   0.005       0.05   .
+1  0.001220242  3.993585 0.28538683   0.004       0.04   .
 2  0.008983230 10.093042 0.20148590   0.001       0.01   *
 3  0.013490582 20.972261 0.32783367   0.001       0.01   *
 4  0.018777008 62.515087 0.79621751   0.001       0.01   *
-5  0.006919442  7.659225 0.16070814   0.002       0.02   .
+5  0.006919442  7.659225 0.16070814   0.001       0.01   *
 6  0.011280448 17.203767 0.28575898   0.001       0.01   *
 7  0.014676836 43.970683 0.73320297   0.001       0.01   *
-8  0.002870481  3.449807 0.04512513   0.028       0.28    
+8  0.002870481  3.449807 0.04512513   0.021       0.21    
 9  0.010181016 12.361224 0.21180543   0.001       0.01   *
 10 0.007494748 12.263826 0.20018054   0.001       0.01   *</code></pre>
 <pre class="r"><code>pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)</code></pre>
@@ -1222,7 +1249,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1 0.0012202 0.00122024  3.9936 0.28539  0.005 **
+Source_Sink  1 0.0012202 0.00122024  3.9936 0.28539  0.004 **
 Residuals   10 0.0030555 0.00030555         0.71461          
 Total       11 0.0042757                    1.00000          
 ---
@@ -1273,10 +1300,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
-Source_Sink  1  0.006919 0.0069194  7.6592 0.16071  0.001 ***
-Residuals   40  0.036137 0.0009034         0.83929           
-Total       41  0.043056                   1.00000           
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
+Source_Sink  1  0.006919 0.0069194  7.6592 0.16071  0.002 **
+Residuals   40  0.036137 0.0009034         0.83929          
+Total       41  0.043056                   1.00000          
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1313,7 +1340,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs    MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.002870 0.00287048  3.4498 0.04513  0.026 *
+Source_Sink  1  0.002870 0.00287048  3.4498 0.04513  0.021 *
 Residuals   73  0.060741 0.00083207         0.95487         
 Total       74  0.063612                    1.00000         
 ---
@@ -1325,10 +1352,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.010181 0.0101810  12.361 0.21181  0.002 **
-Residuals   46  0.037887 0.0008236         0.78819          
-Total       47  0.048068                   1.00000          
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.010181 0.0101810  12.361 0.21181  0.001 ***
+Residuals   46  0.037887 0.0008236         0.78819           
+Total       47  0.048068                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
