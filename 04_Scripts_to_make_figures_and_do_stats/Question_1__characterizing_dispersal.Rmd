@@ -379,6 +379,7 @@ adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000,
 
 
 # See if variance may be partially driving the significant time effect on composition
+print("To see if TIME POINT has different variances and may be driving significant time e effect on composition")
 betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = "centroid") %>% # no interaction in the PERMANOVA, so we can test each factor independently here
   anova()
 ```
@@ -427,6 +428,7 @@ adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10
        data = q1.ITS.NMDS.meta, na.rm= TRUE)
 
 # See if variance may be partially driving the significant time effect on composition
+print("To see if TIME POINT has different variances and may be driving significant time e effect on composition")
 betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), q1.ITS.NMDS.meta$Time_Point, type = "centroid") %>% # no interaction in the PERMANOVA, so we can test each factor independently here
   anova()
 

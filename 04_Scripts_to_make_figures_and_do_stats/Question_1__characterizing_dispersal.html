@@ -747,7 +747,9 @@ Total                74   27.9394                 1.00000
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code># See if variance may be partially driving the significant time effect on composition
-betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = &quot;centroid&quot;) %&gt;% # no interaction in the PERMANOVA, so we can test each factor independently here
+print(&quot;To see if TIME POINT has different variances and may be driving significant time e effect on composition&quot;)</code></pre>
+<pre><code>[1] &quot;To see if TIME POINT has different variances and may be driving significant time e effect on composition&quot;</code></pre>
+<pre class="r"><code>betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = &quot;centroid&quot;) %&gt;% # no interaction in the PERMANOVA, so we can test each factor independently here
   anova()</code></pre>
 <pre><code>Analysis of Variance Table
 
@@ -829,7 +831,9 @@ Total                74   12.6932                 1.00000
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre class="r"><code># See if variance may be partially driving the significant time effect on composition
-betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), q1.ITS.NMDS.meta$Time_Point, type = &quot;centroid&quot;) %&gt;% # no interaction in the PERMANOVA, so we can test each factor independently here
+print(&quot;To see if TIME POINT has different variances and may be driving significant time e effect on composition&quot;)</code></pre>
+<pre><code>[1] &quot;To see if TIME POINT has different variances and may be driving significant time e effect on composition&quot;</code></pre>
+<pre class="r"><code>betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), q1.ITS.NMDS.meta$Time_Point, type = &quot;centroid&quot;) %&gt;% # no interaction in the PERMANOVA, so we can test each factor independently here
   anova()</code></pre>
 <pre><code>Analysis of Variance Table
 
