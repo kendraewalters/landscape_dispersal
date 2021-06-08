@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra Walters" />
 
-<meta name="date" content="2021-06-06" />
+<meta name="date" content="2021-06-08" />
 
 <title>Question_2__drivers_of_heterogeneity</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_2__drivers_of_heterogeneity</h1>
 <h4 class="author">Kendra Walters</h4>
-<h4 class="date">2021-06-06</h4>
+<h4 class="date">2021-06-08</h4>
 
 </div>
 
@@ -281,6 +281,11 @@ require(magrittr)
 library(indicspecies)
 require(pairwiseAdonis)
 require(ncf)
+require(conflicted)
+
+conflict_prefer(&quot;select&quot;, &quot;dplyr&quot;)
+conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
+
 
 knitr::opts_knit$set(root.dir = &quot;../&quot;)
 
@@ -422,15 +427,15 @@ M.microbial &lt;- q1.bray.dist.df %&gt;%
 
 ## DISTANCE MATRIX
 # Load site coordinates and use to make dataframe of coordinates for each sample
-site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;% 
-  rename(Site = V1)
-
-M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
-  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
-  left_join(site.coords) %&gt;% # join with our coordinates
-  column_to_rownames(&quot;Sample&quot;) %&gt;% 
-  select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
-  as.matrix
+# site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;% 
+#   rename(Site = V1)
+# 
+# M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
+#   mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
+#   left_join(site.coords) %&gt;% # join with our coordinates
+#   column_to_rownames(&quot;Sample&quot;) %&gt;% 
+#   select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
+#   as.matrix
 
 
 ### Here we start the loop through our difference distances
@@ -438,7 +443,12 @@ M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% 
 ## PLANT MATRIX
 ## reading in plant composition bc and make df of plant composition of each sample
 plant.list &lt;- list.files(&quot;03_Processed_data/map/&quot;, pattern = &quot;_meter_composition_df.tsv&quot;)
-mantel.output &lt;- list()
+r.list &lt;- list()
+p.list &lt;- list()
+radius.list &lt;- list()
+
+## The radius at which you measured plant composition
+radius &lt;- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4) # COPY THIS FROM THE -- MAP_make_plant_composition_spatial_polygon_file.R
 
 for (i in 1:length(plant.list)) {
   plants &lt;- fread(paste0(&quot;03_Processed_data/map/&quot;, plant.list[[i]]), data.table = FALSE) %&gt;% 
@@ -452,106 +462,91 @@ M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;%
   vegdist() %&gt;% as.matrix
 
 ## Partial mantel time!!
-mantel.output[[i]] &lt;- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = &quot;pearson&quot;, quiet = TRUE)
+mantel.output &lt;- vegan::mantel(M.microbial, M.plants, permutations = 10000, method = &quot;pearson&quot;)
 
-print(paste0(&quot;For &quot;, plant.list[[i]], &quot; the partial Mantel results are:&quot;))
 
-print(mantel.output[[i]]$MantelR)
-print(mantel.output[[i]]$p)
+r.list[[i]] &lt;- mantel.output$statistic
+p.list[[i]] &lt;- mantel.output$signif
+}
 
-}</code></pre>
-<pre><code>[1] &quot;For grass_shrub_0.01_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12742970 0.19833893 0.02449824 0.12022372 
-[1] 0.17738226 0.04409559 0.00019998 0.32596740 0.05719428
-[1] &quot;For grass_shrub_0.05_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12776430 0.19921005 0.02432092 0.12054357 
-[1] 0.18268173 0.04169583 0.00029997 0.32026797 0.05219478
-[1] &quot;For grass_shrub_0.1_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12707650 0.20106152 0.02422702 0.11979422 
-[1] 0.17838216 0.04189581 0.00019998 0.32676732 0.05529447
-[1] &quot;For grass_shrub_0.2_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12495740 0.20452147 0.02423171 0.11754072 
-[1] 0.17808219 0.04509549 0.00019998 0.33206679 0.05879412
-[1] &quot;For grass_shrub_0.3_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12364974 0.20626956 0.02428962 0.11615897 
-[1] 0.18068193 0.04479552 0.00019998 0.32936706 0.05899410
-[1] &quot;For grass_shrub_0.4_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12436680 0.20932467 0.02376389 0.11681669 
-[1] 0.17788221 0.04299570 0.00019998 0.32666733 0.05649435
-[1] &quot;For grass_shrub_0.5_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12595648 0.21377242 0.02287066 0.11833730 
-[1] 0.18628137 0.03799620 0.00019998 0.33886611 0.05039496
-[1] &quot;For grass_shrub_0.6_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12841471 0.21954396 0.02159880 0.12072465 
-[1] 0.17818218 0.03739626 0.00019998 0.34456554 0.04989501
-[1] &quot;For grass_shrub_0.7_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12871755 0.22552637 0.02076408 0.12090328 
-[1] 0.17718228 0.03559644 0.00019998 0.34496550 0.04839516
-[1] &quot;For grass_shrub_0.8_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12890535 0.23129565 0.01997873 0.12097330 
-[1] 0.18118188 0.03599640 0.00029997 0.36056394 0.04619538
-[1] &quot;For grass_shrub_0.9_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12951414 0.23858817 0.01888953 0.12145145 
-[1] 0.17068293 0.03279672 0.00019998 0.35016498 0.04459554
-[1] &quot;For grass_shrub_1_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12998893 0.24625866 0.01777263 0.12179312 
-[1] 0.17718228 0.03109689 0.00019998 0.36396360 0.04509549
-[1] &quot;For grass_shrub_1.1_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12682330 0.25387134 0.01760764 0.11837706 
-[1] 0.18008199 0.03109689 0.00019998 0.37386261 0.04569543
-[1] &quot;For grass_shrub_1.2_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.12280992 0.26098836 0.01778443 0.11408472 
-[1] 0.17578242 0.03579642 0.00019998 0.36956304 0.05309469
-[1] &quot;For grass_shrub_1.3_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.11866504 0.26723966 0.01816228 0.10966203 
-[1] 0.17378262 0.04159584 0.00019998 0.36036396 0.06019398
-[1] &quot;For grass_shrub_1.4_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.11413891 0.27390526 0.01865761 0.10482322 
-[1] 0.18698130 0.04429557 0.00019998 0.36266373 0.06239376
-[1] &quot;For grass_shrub_1.5_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.10934687 0.28087586 0.01926349 0.09968700 
-[1] 0.18278172 0.05169483 0.00019998 0.36746325 0.07429257
-[1] &quot;For grass_shrub_10_meter_composition_df.tsv the partial Mantel results are:&quot;
-         r12          r13          r23        r12.3        r13.2 
- 0.049090060  0.092866993  0.540474297 -0.001315662  0.078937801 
-[1] 0.17368263 0.05899410 0.00019998 0.49925007 0.08409159
-[1] &quot;For grass_shrub_2_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.09547983 0.30341468 0.02121240 0.08467412 
-[1] 0.17628237 0.06709329 0.00019998 0.34526547 0.09379062
-[1] &quot;For grass_shrub_2.5_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.09270613 0.31778503 0.02079215 0.08141968 
-[1] 0.17958204 0.06699330 0.00019998 0.34926507 0.09379062
-[1] &quot;For grass_shrub_3_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.08876309 0.33116030 0.02095574 0.07693503 
-[1] 0.17538246 0.07249275 0.00019998 0.34756524 0.10618938
-[1] &quot;For grass_shrub_4_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.08670542 0.35724938 0.01946778 0.07414438 
-[1] 0.18018198 0.07309269 0.00019998 0.35556444 0.10788921
-[1] &quot;For grass_shrub_5_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.04909006 0.09176172 0.37866896 0.01556241 0.07915572 
-[1] 0.18258174 0.05839416 0.00019998 0.37806219 0.08989101</code></pre>
+
+mantel.corr &lt;- data.frame(&quot;r&quot; = unlist(r.list), 
+                          &quot;p&quot; = unlist(p.list), 
+                          &quot;radius&quot; = radius) %&gt;% 
+  mutate(signif = ifelse(p &lt; 0.05, &quot;yes&quot;, &quot;no&quot;))
+
+ggplot(data = mantel.corr, aes(x = radius, y = r)) + 
+  geom_line() + 
+  geom_point(color = &quot;white&quot;, size = 5) +
+  geom_point(aes(shape = signif), 
+                 colour = &quot;black&quot;, size = 5) +
+  scale_shape_manual(values=c(1,19) , guide = &quot;none&quot;) + 
+  theme_test() + 
+  ggtitle(&quot;All Samples, Bacteria&quot;)</code></pre>
+<p><img src="05_output_figures/mantel_correlogram_all_samples__bacteria-1.png" width="672" /></p>
+<pre class="r"><code>print(&quot;For BACTERIA&quot;) # just so we know what the output is for in the HTML file</code></pre>
+<pre><code>[1] &quot;For BACTERIA&quot;</code></pre>
+<pre class="r"><code>### These matrices only need to be run once because they do not depend on distance
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load(&quot;03_Processed_data/16S_glass_slides.rda&quot;)
+M.microbial &lt;- q1.bray.dist.df %&gt;% 
+  select(starts_with(&quot;LO&quot;) &amp; contains(c(&quot;A2&quot;, &quot;A7&quot;, &quot;A8&quot;, 
+                                        &quot;B1&quot;, &quot;B2&quot;, &quot;B7&quot;, &quot;B8&quot;, 
+                                        &quot;C1&quot;, &quot;C2&quot;, &quot;C7&quot;, &quot;C8&quot;))) %&gt;% # A1 and B1 overlap so one has to be removed
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID), 
+         grepl(&quot;A2|A7|A8|B1|B2|B7|B8|C1|C2|C7|C8&quot;, SampleID)) %&gt;% # A1 and B1 overlap so one has to be removed
+  column_to_rownames(&quot;SampleID&quot;) %&gt;% as.matrix
+
+
+### Here we start the loop through our difference distances
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+plant.list &lt;- list.files(&quot;03_Processed_data/map/&quot;, pattern = &quot;_meter_composition_df.tsv&quot;)
+r.list &lt;- list()
+p.list &lt;- list()
+radius.list &lt;- list()
+
+## The radius at which you measured plant composition
+radius &lt;- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4) # COPY THIS FROM THE -- MAP_make_plant_composition_spatial_polygon_file.R
+
+for (i in 1:length(plant.list)) {
+  plants &lt;- fread(paste0(&quot;03_Processed_data/map/&quot;, plant.list[[i]]), data.table = FALSE) %&gt;% 
+  rename(Site = V1)
+
+M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% 
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;% 
+  left_join(plants) %&gt;% 
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(!(Site)) %&gt;% 
+  vegdist() %&gt;% as.matrix
+
+## Partial mantel time!!
+mantel.output &lt;- vegan::mantel(M.microbial, M.plants, permutations = 10000, method = &quot;pearson&quot;)
+
+
+r.list[[i]] &lt;- mantel.output$statistic
+p.list[[i]] &lt;- mantel.output$signif
+}
+
+
+mantel.corr &lt;- data.frame(&quot;r&quot; = unlist(r.list), 
+                          &quot;p&quot; = unlist(p.list), 
+                          &quot;radius&quot; = radius) %&gt;% 
+  mutate(signif = ifelse(p &lt; 0.05, &quot;yes&quot;, &quot;no&quot;))
+
+ggplot(data = mantel.corr, aes(x = radius, y = r)) + 
+  geom_line() + 
+  geom_point(color = &quot;white&quot;, size = 5) +
+  geom_point(aes(shape = signif), 
+                 colour = &quot;black&quot;, size = 5) +
+  scale_shape_manual(values=c(1,19) , guide = &quot;none&quot;) + 
+  theme_test() + 
+  ggtitle(&quot;No Overlapping Samples, Bacteria&quot;)</code></pre>
+<p><img src="05_output_figures/mantel_correlogram_subset_samples__bacteria-1.png" width="672" /></p>
 <pre class="r"><code>print(&quot;For FUNGI&quot;) # just so we know what the output is for in the HTML file</code></pre>
 <pre><code>[1] &quot;For FUNGI&quot;</code></pre>
 <pre class="r"><code>### These matrices only need to be run once because they do not depend on distance
@@ -584,7 +579,12 @@ M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% 
 ## PLANT MATRIX
 ## reading in plant composition bc and make df of plant composition of each sample
 plant.list &lt;- list.files(&quot;03_Processed_data/map/&quot;, pattern = &quot;_meter_composition_df.tsv&quot;)
-mantel.output &lt;- list()
+r.list &lt;- list()
+p.list &lt;- list()
+radius.list &lt;- list()
+
+## The radius at which you measured plant composition
+radius &lt;- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4) # COPY THIS FROM THE -- MAP_make_plant_composition_spatial_polygon_file.R
 
 for (i in 1:length(plant.list)) {
   plants &lt;- fread(paste0(&quot;03_Processed_data/map/&quot;, plant.list[[i]]), data.table = FALSE) %&gt;% 
@@ -598,106 +598,100 @@ M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;%
   vegdist() %&gt;% as.matrix
 
 ## Partial mantel time!!
-mantel.output[[i]] &lt;- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = &quot;pearson&quot;, quiet = TRUE)
+mantel.output &lt;- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = &quot;pearson&quot;, quiet = TRUE)
 
-print(paste0(&quot;For &quot;, plant.list[[i]], &quot; the partial Mantel results are:&quot;))
+r.list[[i]] &lt;- mantel.output$MantelR[[&quot;r13.2&quot;]]
+p.list[[i]] &lt;- mantel.output$p[[5]]
+}
 
-print(mantel.output[[i]]$MantelR)
-print(mantel.output[[i]]$p)
+mantel.corr &lt;- data.frame(&quot;r&quot; = unlist(r.list), 
+                          &quot;p&quot; = unlist(p.list), 
+                          &quot;radius&quot; = radius) %&gt;% 
+  mutate(signif = ifelse(p &lt; 0.05, &quot;yes&quot;, &quot;no&quot;))
 
-}</code></pre>
-<pre><code>[1] &quot;For grass_shrub_0.01_meter_composition_df.tsv the partial Mantel results are:&quot;
-      r12       r13       r23     r12.3     r13.2 
-0.1973494 0.5887885 0.1887265 0.1086339 0.5729033 
-[1] 0.00039996 0.00019998 0.00029997 0.02729727 0.00019998
-[1] &quot;For grass_shrub_0.05_meter_composition_df.tsv the partial Mantel results are:&quot;
-      r12       r13       r23     r12.3     r13.2 
-0.1973494 0.5879306 0.1896515 0.1080889 0.5719264 
-[1] 0.00019998 0.00019998 0.00019998 0.02509749 0.00019998
-[1] &quot;For grass_shrub_0.1_meter_composition_df.tsv the partial Mantel results are:&quot;
-      r12       r13       r23     r12.3     r13.2 
-0.1973494 0.5906981 0.1916549 0.1062452 0.5746186 
-[1] 0.00019998 0.00019998 0.00029997 0.02909709 0.00019998
-[1] &quot;For grass_shrub_0.2_meter_composition_df.tsv the partial Mantel results are:&quot;
-      r12       r13       r23     r12.3     r13.2 
-0.1973494 0.5909589 0.1966394 0.1025899 0.5744447 
-[1] 0.00029997 0.00019998 0.00019998 0.03189681 0.00019998
-[1] &quot;For grass_shrub_0.3_meter_composition_df.tsv the partial Mantel results are:&quot;
-      r12       r13       r23     r12.3     r13.2 
-0.1973494 0.5894820 0.1987204 0.1013139 0.5727260 
-[1] 0.00019998 0.00019998 0.00019998 0.03429657 0.00019998
-[1] &quot;For grass_shrub_0.4_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.59116223 0.20122970 0.09922114 0.57425949 
-[1] 0.00019998 0.00019998 0.00019998 0.03559644 0.00019998
-[1] &quot;For grass_shrub_0.5_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.59256166 0.20626508 0.09531129 0.57529742 
-[1] 0.00019998 0.00019998 0.00019998 0.04169583 0.00019998
-[1] &quot;For grass_shrub_0.6_meter_composition_df.tsv the partial Mantel results are:&quot;
-      r12       r13       r23     r12.3     r13.2 
-0.1973494 0.5969466 0.2130131 0.0895457 0.5793369 
-[1] 0.00039996 0.00019998 0.00019998 0.05649435 0.00019998
-[1] &quot;For grass_shrub_0.7_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.60065738 0.22022339 0.08343693 0.58267961 
-[1] 0.00029997 0.00019998 0.00019998 0.06909309 0.00019998
-[1] &quot;For grass_shrub_0.8_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.60374886 0.22694757 0.07770754 0.58545055 
-[1] 0.00029997 0.00019998 0.00019998 0.08219178 0.00019998
-[1] &quot;For grass_shrub_0.9_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.60703425 0.23503504 0.07078472 0.58837996 
-[1] 0.00029997 0.00019998 0.00019998 0.10348965 0.00019998
-[1] &quot;For grass_shrub_1_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.61090725 0.24327681 0.06345722 0.59197389 
-[1] 0.00029997 0.00019998 0.00019998 0.12598740 0.00019998
-[1] &quot;For grass_shrub_1.1_meter_composition_df.tsv the partial Mantel results are:&quot;
-      r12       r13       r23     r12.3     r13.2 
-0.1973494 0.6115537 0.2514594 0.0568943 0.5922310 
-[1] 0.00029997 0.00019998 0.00019998 0.15258474 0.00019998
-[1] &quot;For grass_shrub_1.2_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.61087581 0.25947224 0.05080253 0.59114313 
-[1] 0.00029997 0.00019998 0.00019998 0.17378262 0.00019998
-[1] &quot;For grass_shrub_1.3_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.60942451 0.26671713 0.04554958 0.58930563 
-[1] 0.00059994 0.00019998 0.00019998 0.20217978 0.00019998
-[1] &quot;For grass_shrub_1.4_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.60695946 0.27453167 0.04019884 0.58640097 
-[1] 0.00029997 0.00019998 0.00019998 0.23067693 0.00019998
-[1] &quot;For grass_shrub_1.5_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.60291624 0.28289643 0.03500534 0.58182955 
-[1] 0.00019998 0.00019998 0.00019998 0.26097390 0.00019998
-[1] &quot;For grass_shrub_10_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
- 0.1973494  0.5357114  0.5440629 -0.1328335  0.5207518 
-[1] 0.00039996 0.00019998 0.00019998 0.00259974 0.00019998
-[1] &quot;For grass_shrub_2_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.57918790 0.31129844 0.02200775 0.55575436 
-[1] 0.00039996 0.00019998 0.00019998 0.33676632 0.00019998
-[1] &quot;For grass_shrub_2.5_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.55228643 0.32793921 0.02061205 0.52646309 
-[1] 0.00039996 0.00019998 0.00019998 0.34676532 0.00019998
-[1] &quot;For grass_shrub_3_meter_composition_df.tsv the partial Mantel results are:&quot;
-       r12        r13        r23      r12.3      r13.2 
-0.19734945 0.52755942 0.34125702 0.02168519 0.49942551 
-[1] 0.00019998 0.00019998 0.00019998 0.35396460 0.00019998
-[1] &quot;For grass_shrub_4_meter_composition_df.tsv the partial Mantel results are:&quot;
-        r12         r13         r23       r12.3       r13.2 
-0.197349447 0.520301897 0.367504140 0.007726231 0.491126213 
-[1] 0.00039996 0.00019998 0.00019998 0.43515648 0.00019998
-[1] &quot;For grass_shrub_5_meter_composition_df.tsv the partial Mantel results are:&quot;
-         r12          r13          r23        r12.3        r13.2 
- 0.197349447  0.526401125  0.388885817 -0.009396634  0.497864309 
-[1] 0.00039996 0.00019998 0.00019998 0.43575642 0.00019998</code></pre>
+ggplot(data = mantel.corr, aes(x = radius, y = r)) + 
+  geom_line() + 
+  geom_point(color = &quot;white&quot;, size = 5) +
+  geom_point(aes(shape = signif), 
+                 colour = &quot;black&quot;, size = 5) +
+  scale_shape_manual(values=c(19,1) , guide = &quot;none&quot;) + 
+  theme_test() + 
+  ggtitle(&quot;All Samples, Fungi&quot;)</code></pre>
+<p><img src="05_output_figures/mantel_correlogram_all_samples__fungi-1.png" width="672" /></p>
+<pre class="r"><code>print(&quot;For FUNGI&quot;) # just so we know what the output is for in the HTML file</code></pre>
+<pre><code>[1] &quot;For FUNGI&quot;</code></pre>
+<pre class="r"><code>### These matrices only need to be run once because they do not depend on distance
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load(&quot;03_Processed_data/ITS_glass_slides.rda&quot;)
+M.microbial &lt;- q1.ITS.bray.dist.df %&gt;% 
+  select(starts_with(&quot;LO&quot;) &amp; contains(c(&quot;A2&quot;, &quot;A7&quot;, &quot;A8&quot;, 
+                                        &quot;B1&quot;, &quot;B2&quot;, &quot;B7&quot;, &quot;B8&quot;, 
+                                        &quot;C1&quot;, &quot;C2&quot;, &quot;C7&quot;, &quot;C8&quot;))) %&gt;% # A1 and B1 overlap so one has to be removed 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID), 
+         grepl(&quot;A2|A7|A8|B1|B2|B7|B8|C1|C2|C7|C8&quot;, SampleID)) %&gt;% # A1 and B1 overlap so one has to be removed 
+  column_to_rownames(&quot;SampleID&quot;) %&gt;% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;% 
+  rename(Site = V1)
+
+M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
+  left_join(site.coords) %&gt;% # join with our coordinates
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
+  as.matrix
+
+
+### Here we start the loop through our difference distances
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+plant.list &lt;- list.files(&quot;03_Processed_data/map/&quot;, pattern = &quot;_meter_composition_df.tsv&quot;)
+r.list &lt;- list()
+p.list &lt;- list()
+radius.list &lt;- list()
+
+## The radius at which you measured plant composition
+radius &lt;- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4) # COPY THIS FROM THE -- MAP_make_plant_composition_spatial_polygon_file.R
+
+for (i in 1:length(plant.list)) {
+  plants &lt;- fread(paste0(&quot;03_Processed_data/map/&quot;, plant.list[[i]]), data.table = FALSE) %&gt;% 
+  rename(Site = V1)
+
+M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% 
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;% 
+  left_join(plants) %&gt;% 
+  column_to_rownames(&quot;Sample&quot;) %&gt;% 
+  select(!(Site)) %&gt;% 
+  vegdist() %&gt;% as.matrix
+
+## Partial mantel time!!
+mantel.output &lt;- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = &quot;pearson&quot;, quiet = TRUE)
+
+r.list[[i]] &lt;- mantel.output$MantelR[[&quot;r13.2&quot;]]
+p.list[[i]] &lt;- mantel.output$p[[5]]
+}
+
+mantel.corr &lt;- data.frame(&quot;r&quot; = unlist(r.list), 
+                          &quot;p&quot; = unlist(p.list), 
+                          &quot;radius&quot; = radius) %&gt;% 
+  mutate(signif = ifelse(p &lt; 0.05, &quot;yes&quot;, &quot;no&quot;))
+
+ggplot(data = mantel.corr, aes(x = radius, y = r)) + 
+  geom_line() + 
+  geom_point(color = &quot;white&quot;, size = 5) +
+  geom_point(aes(shape = signif), 
+                 colour = &quot;black&quot;, size = 5) +
+  scale_shape_manual(values=c(19,1) , guide = &quot;none&quot;) + 
+  theme_test() + 
+  ggtitle(&quot;All Samples, Fungi&quot;)</code></pre>
+<p><img src="05_output_figures/mantel_correlogram_subset_samples__fungi-1.png" width="672" /></p>
 </div>
 </div>
 
