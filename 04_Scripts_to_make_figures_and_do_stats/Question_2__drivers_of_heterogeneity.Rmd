@@ -449,5 +449,5 @@ ggplot(data = mantel.corr, aes(x = radius, y = r)) +
                  colour = "black", size = 5) +
   scale_shape_manual(values=c(19,1) , guide = "none") + 
   theme_test() + 
-  ggtitle("All Samples, Fungi")
+  ggtitle("No Overlapping Samples, Fungi")
 ```
