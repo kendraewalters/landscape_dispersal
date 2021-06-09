@@ -9,7 +9,7 @@
 ### Set up 
 
 ## The radius at which you want the plant composition taken for
-radius <- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4) # set the radius for what you want plant communities defined for (1 = one meter)
+radius <- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8) # set the radius for what you want plant communities defined for (1 = one meter)
 
 ## Room of ()ments
 library(sp)

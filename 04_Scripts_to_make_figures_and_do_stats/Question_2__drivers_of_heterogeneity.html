@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra Walters" />
 
-<meta name="date" content="2021-06-08" />
+<meta name="date" content="2021-06-09" />
 
 <title>Question_2__drivers_of_heterogeneity</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_2__drivers_of_heterogeneity</h1>
 <h4 class="author">Kendra Walters</h4>
-<h4 class="date">2021-06-08</h4>
+<h4 class="date">2021-06-09</h4>
 
 </div>
 
@@ -427,13 +427,13 @@ M.microbial &lt;- q1.bray.dist.df %&gt;%
 
 ## DISTANCE MATRIX
 # Load site coordinates and use to make dataframe of coordinates for each sample
-# site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;% 
+# site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;%
 #   rename(Site = V1)
 # 
 # M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
 #   mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
 #   left_join(site.coords) %&gt;% # join with our coordinates
-#   column_to_rownames(&quot;Sample&quot;) %&gt;% 
+#   column_to_rownames(&quot;Sample&quot;) %&gt;%
 #   select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
 #   as.matrix
 
@@ -461,7 +461,7 @@ M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;%
   select(!(Site)) %&gt;% 
   vegdist() %&gt;% as.matrix
 
-## Partial mantel time!!
+## mantel time!!
 mantel.output &lt;- vegan::mantel(M.microbial, M.plants, permutations = 10000, method = &quot;pearson&quot;)
 
 
@@ -491,14 +491,48 @@ ggplot(data = mantel.corr, aes(x = radius, y = r)) +
 ## MICROBIAL MATRIX
 # Clean up the Bray-Curtis matrix for bacterial communities
 load(&quot;03_Processed_data/16S_glass_slides.rda&quot;)
-M.microbial &lt;- q1.bray.dist.df %&gt;% 
-  select(starts_with(&quot;LO&quot;) &amp; contains(c(&quot;A2&quot;, &quot;A7&quot;, &quot;A8&quot;, 
-                                        &quot;B1&quot;, &quot;B2&quot;, &quot;B7&quot;, &quot;B8&quot;, 
+M.microbial &lt;- q1.bray.dist.df %&gt;%
+  select(starts_with(&quot;LO&quot;) &amp; contains(c(&quot;A2&quot;, &quot;A7&quot;, &quot;A8&quot;,
+                                        &quot;B1&quot;, &quot;B2&quot;, &quot;B7&quot;, &quot;B8&quot;,
                                         &quot;C1&quot;, &quot;C2&quot;, &quot;C7&quot;, &quot;C8&quot;))) %&gt;% # A1 and B1 overlap so one has to be removed
-  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
-  filter(grepl(&quot;LO&quot;, SampleID), 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;%
+  filter(grepl(&quot;LO&quot;, SampleID),
          grepl(&quot;A2|A7|A8|B1|B2|B7|B8|C1|C2|C7|C8&quot;, SampleID)) %&gt;% # A1 and B1 overlap so one has to be removed
   column_to_rownames(&quot;SampleID&quot;) %&gt;% as.matrix
+
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords &lt;- as.data.frame(fread(&quot;03_Processed_data/site_locs_coordinates.tsv&quot;)) %&gt;%
+  rename(Site = V1)
+
+M.distance &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;% # start with same names in same order
+  mutate(Site = str_extract(Sample, &quot;[ABC][1-8]&quot;)) %&gt;%  # get site ID
+  left_join(site.coords) %&gt;% # join with our coordinates
+  column_to_rownames(&quot;Sample&quot;) %&gt;%
+  select(x,y) %&gt;% dist(., method = &quot;euclidean&quot;) %&gt;% # create Euclidean distance matrix
+  as.matrix
+
+
+## Simple Mantel test to check if distance and bacterial composition in these subsetted samples are correlated
+vegan::mantel(M.microbial, M.distance, permutations = 10000, method = &quot;pearson&quot;)</code></pre>
+<pre><code>
+Mantel statistic based on Pearson&#39;s product-moment correlation 
+
+Call:
+vegan::mantel(xdis = M.microbial, ydis = M.distance, method = &quot;pearson&quot;,      permutations = 10000) 
+
+Mantel statistic r: 0.1113 
+      Significance: 0.022198 
+
+Upper quantiles of permutations (null model):
+   90%    95%  97.5%    99% 
+0.0717 0.0918 0.1090 0.1287 
+Permutation: free
+Number of permutations: 10000</code></pre>
+<pre class="r"><code># yes, they are so we must do a partial mantel below
+
 
 
 ### Here we start the loop through our difference distances
@@ -513,6 +547,7 @@ radius.list &lt;- list()
 ## The radius at which you measured plant composition
 radius &lt;- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4) # COPY THIS FROM THE -- MAP_make_plant_composition_spatial_polygon_file.R
 
+
 for (i in 1:length(plant.list)) {
   plants &lt;- fread(paste0(&quot;03_Processed_data/map/&quot;, plant.list[[i]]), data.table = FALSE) %&gt;% 
   rename(Site = V1)
@@ -524,12 +559,14 @@ M.plants &lt;- data.frame(&quot;Sample&quot; = row.names(M.microbial)) %&gt;%
   select(!(Site)) %&gt;% 
   vegdist() %&gt;% as.matrix
 
-## Partial mantel time!!
-mantel.output &lt;- vegan::mantel(M.microbial, M.plants, permutations = 10000, method = &quot;pearson&quot;)
+
+mantel.output &lt;- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = &quot;pearson&quot;, quiet = TRUE)
 
 
-r.list[[i]] &lt;- mantel.output$statistic
-p.list[[i]] &lt;- mantel.output$signif
+r.list[[i]] &lt;- mantel.output$MantelR[[&quot;r13.2&quot;]]
+p.list[[i]] &lt;- mantel.output$p[[5]]
+
+
 }
 
 
