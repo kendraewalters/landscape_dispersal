@@ -176,6 +176,23 @@ Sweet! Now we can use these death rates to input into our model so we are only a
                data = grass.cells[grass.cells$Treatment == "Open", ],
                start = list(Im = 2e5)) %>% summary)
 
+nls.grass$parameters[[1]]
+
+# Calculate % of typical litterbag community
+fread("01_Raw_data/BacterialAbundanceLomaRidgeLitterbagsFromClaudia.txt", 
+                    data.table = FALSE) %>% 
+  filter(timepoint != 0, 
+         moTreatment == "ambient") %>% 
+  mutate(`BACavgcount/g dry weight` = as.numeric(`BACavgcount/g dry weight`), 
+         AbundancePerBag = `DryMass (g)` * `BACavgcount/g dry weight`, 
+         AbundancePer_cm2 = AbundancePerBag / (13 * 14)) %>% # assuming a 15x15cm bag with 1 cm on each of the 3 sealed sides (1 side was created by folding over the 30cm x 15cm nylon sheet)
+  group_by(LitterOrigin) %>% 
+  summarize(mean = mean(AbundancePer_cm2)) %>% 
+  left_join(data.frame("LitterOrigin" = c("grass", "shrub"), 
+                       "immigration_rate" = c(nls.grass$parameters[[1]], nls.shrub$parameters[[1]]))) %>% 
+  mutate(immigration_percent = (immigration_rate / mean)*100) %>% 
+  print(.)
+
 
 # Graph the new curves that we made
 A <- ggplot(data = grass.cells %>% filter(Treatment == "Open") %>% 

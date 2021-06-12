@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-06-06" />
+<meta name="date" content="2021-06-09" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-06-06</h4>
+<h4 class="date">2021-06-09</h4>
 
 </div>
 
@@ -450,6 +450,27 @@ Residual standard error: 24250 on 47 degrees of freedom
 
 Number of iterations to convergence: 1 
 Achieved convergence tolerance: 4.923e-07</code></pre>
+<pre class="r"><code>nls.grass$parameters[[1]]</code></pre>
+<pre><code>[1] 1168.974</code></pre>
+<pre class="r"><code># Calculate % of typical litterbag community
+fread(&quot;01_Raw_data/BacterialAbundanceLomaRidgeLitterbagsFromClaudia.txt&quot;, 
+                    data.table = FALSE) %&gt;% 
+  filter(timepoint != 0, 
+         moTreatment == &quot;ambient&quot;) %&gt;% 
+  mutate(`BACavgcount/g dry weight` = as.numeric(`BACavgcount/g dry weight`), 
+         AbundancePerBag = `DryMass (g)` * `BACavgcount/g dry weight`, 
+         AbundancePer_cm2 = AbundancePerBag / (13 * 14)) %&gt;% # assuming a 15x15cm bag with 1 cm on each of the 3 sealed sides (1 side was created by folding over the 30cm x 15cm nylon sheet)
+  group_by(LitterOrigin) %&gt;% 
+  summarize(mean = mean(AbundancePer_cm2)) %&gt;% 
+  left_join(data.frame(&quot;LitterOrigin&quot; = c(&quot;grass&quot;, &quot;shrub&quot;), 
+                       &quot;immigration_rate&quot; = c(nls.grass$parameters[[1]], nls.shrub$parameters[[1]]))) %&gt;% 
+  mutate(immigration_percent = (immigration_rate / mean)*100) %&gt;% 
+  print(.)</code></pre>
+<pre><code># A tibble: 2 x 4
+  LitterOrigin     mean immigration_rate immigration_percent
+  &lt;chr&gt;           &lt;dbl&gt;            &lt;dbl&gt;               &lt;dbl&gt;
+1 grass        2484511.            1169.              0.0471
+2 shrub        2716987.             940.              0.0346</code></pre>
 <pre class="r"><code># Graph the new curves that we made
 A &lt;- ggplot(data = grass.cells %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% 
   mutate(Time_as_days= as.integer(Time_as_days)), 
