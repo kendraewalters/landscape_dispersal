@@ -5,7 +5,7 @@ Plant3			1													1		SamCer	Sambucus cerulea	blue elder	62985073	aka tree1
 Plant4	1															1		DeiFas	Deinandra fasciculata	clustered tarweed	62985077	
 Plant5	1															1		ShoGra	unknown	unknown	62985079	short grass (not IDed)
 Plant6	0.5	0.5														1		ArtCal	Artemisia californica	California sagebrush	62985080	
-Plant7		1														1		MalLau	Malosma laurina	taco plant; laural sumac	62985086	
+Plant7		1														1		MalLau	Malosma laurina	taco plant; laural sumac	62985086	litter shrub
 Plant8	1															1		SalMel	Salvia mellifera	black sage	62985082	
 Plant9			1													1		CroSet	Croton setigerus	turkey mullein	62985074	
 Plant10		1														1		Steph	Stephanomeria	wire lettuce	62985078	not IDed to species (4 species & all similar)
