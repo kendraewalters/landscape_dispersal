@@ -1100,6 +1100,68 @@ ITS.taxonomy %&gt;% filter(grepl(&quot;6d360c9c285bc318a1e9cbfd2a85a057&quot;, `
 #          dist = &quot;bray&quot;)
 # plot(tmp)</code></pre>
 </div>
+<div id="alpha-diveristy-of-dispersal-community" class="section level1">
+<h1>Alpha-diveristy of dispersal community</h1>
+<pre class="r"><code>load(&quot;03_Processed_data/16S_glass_slides.rda&quot;)
+
+# Calculate alpha diversity! and filter to just glass slides
+alpha.16S &lt;- data.frame(&quot;Shannon&quot; = diversity(q1.rarefied, index = &quot;shannon&quot;)) %&gt;% 
+  mutate(Richness = specnumber(q1.rarefied), 
+         Simpson = diversity(q1.rarefied, index = &quot;simpson&quot;)) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  mutate(SampleID = ifelse(SampleID == &quot;LOT1A3_dup_new_protocol&quot;, &quot;LOT1A3&quot;, SampleID)) %&gt;% 
+  left_join(metadata.together %&gt;% 
+              select(New_Sample_ID, Time_Point, Transect, Ecosystem), 
+            by = c(&quot;SampleID&quot; = &quot;New_Sample_ID&quot;))
+
+## Calculate average alpha-diversity overall and by ecosystem, testing significance
+print(paste0(&quot;The average RICHNESS for BACTERIA is: &quot;, round(mean(alpha.16S$Richness), 0), &quot; OTUs per glass slide (rarefied to 971 sequences).&quot;))</code></pre>
+<pre><code>[1] &quot;The average RICHNESS for BACTERIA is: 260 OTUs per glass slide (rarefied to 971 sequences).&quot;</code></pre>
+<pre class="r"><code>print(&quot;And averaged by ecosystem is:&quot;)</code></pre>
+<pre><code>[1] &quot;And averaged by ecosystem is:&quot;</code></pre>
+<pre class="r"><code>aggregate(alpha.16S$Richness, by = list(alpha.16S$Ecosystem), FUN = mean)</code></pre>
+<pre><code>    Group.1        x
+1 Grassland 244.2308
+2 Shrubland 276.7778</code></pre>
+<pre class="r"><code>anova(lm(Richness ~ Ecosystem, data = alpha.16S))</code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: Richness
+          Df  Sum Sq Mean Sq F value Pr(&gt;F)
+Ecosystem  1   19830   19830  1.1941 0.2781
+Residuals 73 1212341   16607               </code></pre>
+<pre class="r"><code>load(&quot;03_Processed_data/ITS_glass_slides.rda&quot;)
+
+# Calculate alpha diversity! and filter to just glass slides
+alpha.ITS &lt;- data.frame(&quot;Shannon&quot; = diversity(q1.ITS.rarefied, index = &quot;shannon&quot;)) %&gt;% 
+  mutate(Richness = specnumber(q1.ITS.rarefied), 
+         Simpson = diversity(q1.ITS.rarefied, index = &quot;simpson&quot;)) %&gt;% 
+  rownames_to_column(&quot;SampleID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, SampleID)) %&gt;% 
+  left_join(metadata.together %&gt;% 
+            select(New_Sample_ID, Time_Point, Transect, Ecosystem), 
+          by = c(&quot;SampleID&quot; = &quot;New_Sample_ID&quot;))
+
+## Calculate average alpha-diversity overall and by ecosystem, testing significance
+print(paste0(&quot;The average RICHNESS for FUNGI is: &quot;, round(mean(alpha.ITS$Richness), 0), &quot; OTUs per glass slide (rarefied to 2400 sequences).&quot;))</code></pre>
+<pre><code>[1] &quot;The average RICHNESS for FUNGI is: 158 OTUs per glass slide (rarefied to 2400 sequences).&quot;</code></pre>
+<pre class="r"><code>print(&quot;And averaged by ecosystem is:&quot;)</code></pre>
+<pre><code>[1] &quot;And averaged by ecosystem is:&quot;</code></pre>
+<pre class="r"><code>aggregate(alpha.ITS$Richness, by = list(alpha.ITS$Ecosystem), FUN = mean)</code></pre>
+<pre><code>    Group.1        x
+1 Grassland 118.8205
+2 Shrubland 201.1389</code></pre>
+<pre class="r"><code>anova(lm(Richness ~ Ecosystem, data = alpha.ITS))</code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: Richness
+          Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+Ecosystem  1 126853  126853  27.653 1.391e-06 ***
+Residuals 73 334874    4587                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
 <div id="beta-diversity-of-dispersal-community-by-ecosystem" class="section level1">
 <h1>Beta-diversity of dispersal community by ecosystem</h1>
 <p>We hypothesize that dispersal communities will show higher beta-diversity in the shrubland because the plant community is more heterogeneous in the shrubland. So let’s test that with our good friend, PERMDISP!</p>
