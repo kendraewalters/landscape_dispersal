@@ -562,9 +562,46 @@ print("And averaged by ecosystem is:")
 aggregate(alpha.ITS$Richness, by = list(alpha.ITS$Ecosystem), FUN = mean)
 
 anova(lm(Richness ~ Ecosystem, data = alpha.ITS))
-
 ```
 
+```{r alpha_diversity_by_ecosystem__comparing_fungi_AND_bacteria}
+print("Now we are COMPARING bacteria and fungi (both rarefied to 971 here):")
+
+load("03_Processed_data/16S_glass_slides.rda")
+alpha.compare.16S <- data.frame("Shannon" = diversity(q1.rarefied, index = "shannon")) %>% 
+  mutate(Richness = specnumber(q1.rarefied), 
+         Simpson = diversity(q1.rarefied, index = "simpson")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  left_join(metadata.together %>% 
+              select(New_Sample_ID, Time_Point, Transect, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID")) %>% 
+  mutate(Taxa = "Bacteria")
+
+
+q1.ITS.rarefied.971 <- fread("03_Processed_data/ITS_glass_slides__rarefied_971_rounded.tsv", data.table = FALSE) %>% 
+  column_to_rownames("V1")
+
+alpha.compare <- data.frame("Shannon" = diversity(q1.ITS.rarefied.971, index = "shannon")) %>% 
+  mutate(Richness = specnumber(q1.ITS.rarefied.971), 
+         Simpson = diversity(q1.ITS.rarefied.971, index = "simpson")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  left_join(metadata.together %>% 
+            select(New_Sample_ID, Time_Point, Transect, Ecosystem), 
+          by = c("SampleID" = "New_Sample_ID")) %>% 
+  mutate(Taxa = "Fungi") %>% 
+  bind_rows(alpha.compare.16S)
+
+print(paste0("The average taxa richness for bacteria and fungi are:"))
+aggregate(alpha.compare$Richness, by = list(alpha.compare$Taxa), FUN = mean)
+anova(lm(Richness ~ Taxa, data = alpha.compare))
+
+mod <- anova(lm(Richness ~ Taxa, data = alpha.compare))
+print(paste0("And the r2 for that ANOVA is: ", 
+             mod$`Sum Sq`[1] / (mod$`Sum Sq`[1] + mod$`Sum Sq`[2])))
+```
 
 # Beta-diversity of dispersal community by ecosystem
 We hypothesize that dispersal communities will show higher beta-diversity in the shrubland because the plant community is more heterogeneous in the shrubland. So let's test that with our good friend, PERMDISP!
