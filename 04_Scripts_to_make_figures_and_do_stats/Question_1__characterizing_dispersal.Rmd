@@ -237,13 +237,22 @@ print(paste0("The immigration rate for the shrubland is ", imm.shrub, " cells / 
 # Death rates by ecosystem
 One potentially interesting question is if death rates (for bacteria) differ by ecosystem. We can answer this question by running an ANCOVA on the abundance in the death slides, to see if there is an interaction between time and ecosystem. 
 ```{r death_rates_by_ecosystem}
-cell.counts.use %>% filter(Treatment == "Death") %>% 
+mod <- cell.counts.use %>% filter(Treatment == "Death") %>% 
   mutate(log_abundance_minus_intercept = ifelse(Ecosystem == "Shrubland", 
                                             log(cells_per_sq_cm) - intercept.shrub, 
                               ifelse(Ecosystem == "Grassland", 
                                      log(cells_per_sq_cm) - intercept.grass, NA))) %>% 
   lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + Time_as_days + 0, data = .) %>% # independent of order
   Anova(type = "II") # MARGINALLY SIGNIFICANT
+
+mod
+
+print(paste0("The r2 for time is: ", 
+             mod$`Sum Sq`[1] / (mod$`Sum Sq`[1] + mod$`Sum Sq`[2] + mod$`Sum Sq`[3])))
+print(paste0("The r2 for time-by-ecosystem interaction is: ", 
+             mod$`Sum Sq`[2] / (mod$`Sum Sq`[1] + mod$`Sum Sq`[2] + mod$`Sum Sq`[3])))
+print(paste0("The r2 for the residuals is: ", 
+             mod$`Sum Sq`[3] / (mod$`Sum Sq`[1] + mod$`Sum Sq`[2] + mod$`Sum Sq`[3])))
 ```
 
 # Taxa dying at different rates? 
