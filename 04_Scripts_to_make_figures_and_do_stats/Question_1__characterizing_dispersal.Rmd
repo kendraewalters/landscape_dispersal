@@ -26,18 +26,20 @@ Because vegetation appears to be a primary route through which bacteria disperse
 
 
 ```{r setup, message=FALSE}
-library(knitr)
-library(tidyverse)
-library(data.table)
-library(kableExtra)
+require(knitr)
+require(tidyverse)
+require(data.table)
+require(kableExtra)
 require(ggplot2)
 require(gridExtra)
-library(car)
+require(car)
 require(vegan)
 require(magrittr)
-library(indicspecies)
+require(indicspecies)
 require(pairwiseAdonis)
 require(conflicted)
+require(FSA)
+
 conflict_prefer("select", "dplyr")
 conflict_prefer("filter", "dplyr")
 
@@ -731,6 +733,16 @@ ggplot(data = q1.proportions) +
   theme_classic() + 
   scale_fill_brewer(palette = "Set1") +
   ggtitle("BActeria, Source Tracker dispersal sources")
+
+## Kruskal test (overall) and Dunn test (multiple comparisons at each ecosystem)
+shrubland <- q1.proportions %>% filter(Ecosystem == "Shrubland")
+grassland <- q1.proportions %>% filter(Ecosystem == "Grassland")
+
+kruskal.test(Proportion ~ Source, data = shrubland)
+kruskal.test(Proportion ~ Source, data = grassland)
+
+dunnTest(Proportion ~ Source, data = shrubland, method = "bonferroni")
+dunnTest(Proportion ~ Source, data = grassland, method = "bonferroni")
 ```
 
 ```{r NMDS_dispersal_sources_fungi}
@@ -786,4 +798,14 @@ ggplot(data = q1.ITS.proportions) +
   theme_classic() + 
   scale_fill_brewer(palette = "Set1") +
   ggtitle("Fungi, Source Tracker dispersal sources")
+
+## Kruskal test (overall) and Dunn test (multiple comparisons at each ecosystem)
+shrubland <- q1.ITS.proportions %>% filter(Ecosystem == "Shrubland")
+grassland <- q1.ITS.proportions %>% filter(Ecosystem == "Grassland")
+
+kruskal.test(Proportion ~ Source, data = shrubland)
+kruskal.test(Proportion ~ Source, data = grassland)
+
+dunnTest(Proportion ~ Source, data = shrubland, method = "bonferroni")
+dunnTest(Proportion ~ Source, data = grassland, method = "bonferroni")
 ```

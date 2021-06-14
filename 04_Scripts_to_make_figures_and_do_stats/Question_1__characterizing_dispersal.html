@@ -269,18 +269,20 @@ td, th { padding : 6px }
 <h1>Purpose</h1>
 <p>To answer our first overarching question for the landscape dispersal project: Is the rate and composition of microbial dispersal into the soil surface spatially heterogeneous?</p>
 <p>Because vegetation appears to be a primary route through which bacteria disperse, we hypothesized that the taxa dispersing and their dispersal rate onto the soil surface will differ between two ecosystems. In fact, we know that bacterial abundance and composition in one grassland and CSS plant litter differs.</p>
-<pre class="r"><code>library(knitr)
-library(tidyverse)
-library(data.table)
-library(kableExtra)
+<pre class="r"><code>require(knitr)
+require(tidyverse)
+require(data.table)
+require(kableExtra)
 require(ggplot2)
 require(gridExtra)
-library(car)
+require(car)
 require(vegan)
 require(magrittr)
-library(indicspecies)
+require(indicspecies)
 require(pairwiseAdonis)
 require(conflicted)
+require(FSA)
+
 conflict_prefer(&quot;select&quot;, &quot;dplyr&quot;)
 conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
 
@@ -1534,6 +1536,52 @@ ggplot(data = q1.proportions) +
   scale_fill_brewer(palette = &quot;Set1&quot;) +
   ggtitle(&quot;BActeria, Source Tracker dispersal sources&quot;)</code></pre>
 <p><img src="05_output_figures/NMDS_dispersal_sources_bacteria-2.png" width="672" /></p>
+<pre class="r"><code>## Kruskal test (overall) and Dunn test (multiple comparisons at each ecosystem)
+shrubland &lt;- q1.proportions %&gt;% filter(Ecosystem == &quot;Shrubland&quot;)
+grassland &lt;- q1.proportions %&gt;% filter(Ecosystem == &quot;Grassland&quot;)
+
+kruskal.test(Proportion ~ Source, data = shrubland)</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  Proportion by Source
+Kruskal-Wallis chi-squared = 54.207, df = 3, p-value = 1.014e-11</code></pre>
+<pre class="r"><code>kruskal.test(Proportion ~ Source, data = grassland)</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  Proportion by Source
+Kruskal-Wallis chi-squared = 114.16, df = 3, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>dunnTest(Proportion ~ Source, data = shrubland, method = &quot;bonferroni&quot;)</code></pre>
+<pre><code>                                 Comparison          Z      P.unadj
+1 Environmental_Grass - Environmental_Shrub  0.8320413 4.053857e-01
+2                Environmental_Grass - Soil -3.4298747 6.038601e-04
+3                Environmental_Shrub - Soil -4.2619159 2.026817e-05
+4             Environmental_Grass - Unknown -5.6123938 1.995467e-08
+5             Environmental_Shrub - Unknown -6.4444350 1.160318e-10
+6                            Soil - Unknown -2.1825191 2.907124e-02
+         P.adj
+1 1.000000e+00
+2 3.623161e-03
+3 1.216090e-04
+4 1.197280e-07
+5 6.961910e-10
+6 1.744275e-01</code></pre>
+<pre class="r"><code>dunnTest(Proportion ~ Source, data = grassland, method = &quot;bonferroni&quot;)</code></pre>
+<pre><code>                                 Comparison          Z      P.unadj
+1 Environmental_Grass - Environmental_Shrub  2.8070440 4.999841e-03
+2                Environmental_Grass - Soil -5.4962924 3.878592e-08
+3                Environmental_Shrub - Soil -8.3033364 1.012277e-16
+4             Environmental_Grass - Unknown -6.2381540 4.427646e-10
+5             Environmental_Shrub - Unknown -9.0451980 1.493942e-19
+6                            Soil - Unknown -0.7418616 4.581712e-01
+         P.adj
+1 2.999905e-02
+2 2.327155e-07
+3 6.073665e-16
+4 2.656588e-09
+5 8.963650e-19
+6 1.000000e+00</code></pre>
 <pre class="r"><code># Load data
 glass.slides.ITS &lt;- &quot;03_Processed_data/ITS_glass_slides.rda&quot;
 load(glass.slides.ITS)
@@ -1600,18 +1648,18 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 14                                           Open_Shrubland vs Soil  1
 15                                           Open_Grassland vs Soil  1
      SumsOfSqs    F.Model        R2 p.value p.adjusted sig
-1  0.006707850   4.556765 0.3628932   0.018      0.270    
-2  0.029263115  18.143778 0.6939998   0.016      0.240    
-3  0.004878345   1.562460 0.0394935   0.177      1.000    
+1  0.006707850   4.556765 0.3628932   0.019      0.285    
+2  0.029263115  18.143778 0.6939998   0.014      0.210    
+3  0.004878345   1.562460 0.0394935   0.181      1.000    
 4  0.016439790  11.750110 0.2227504   0.001      0.015   .
 5  0.042834678  34.384142 0.7106490   0.001      0.015   .
-6  0.019816655   9.441309 0.4856313   0.010      0.150    
-7  0.019409573   6.126231 0.1328145   0.004      0.060    
+6  0.019816655   9.441309 0.4856313   0.007      0.105    
+7  0.019409573   6.126231 0.1328145   0.006      0.090    
 8  0.049307121  32.394100 0.4296636   0.001      0.015   .
-9  0.030542073  19.143159 0.5447194   0.003      0.045   .
+9  0.030542073  19.143159 0.5447194   0.001      0.015   .
 10 0.066248682  20.725838 0.3413018   0.002      0.030   .
 11 0.139066645  89.819285 0.6762518   0.001      0.015   .
-12 0.005180456   3.109803 0.1627334   0.058      0.870    
+12 0.005180456   3.109803 0.1627334   0.050      0.750    
 13 0.075288638  31.894882 0.3040652   0.001      0.015   .
 14 0.132975161  46.201512 0.5010928   0.001      0.015   .
 15 0.259250882 178.631229 0.7847396   0.001      0.015   .</code></pre>
@@ -1626,7 +1674,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1 0.0067079 0.0067079  4.5568 0.36289   0.02 *
+Source_Sink  1 0.0067079 0.0067079  4.5568 0.36289  0.019 *
 Residuals    8 0.0117765 0.0014721         0.63711         
 Total        9 0.0184844                   1.00000         
 ---
@@ -1639,7 +1687,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model    R2 Pr(&gt;F)   
-Source_Sink  1  0.029263 0.0292631  18.144 0.694  0.008 **
+Source_Sink  1  0.029263 0.0292631  18.144 0.694   0.01 **
 Residuals    8  0.012903 0.0016128         0.306          
 Total        9  0.042166                   1.000          
 ---
@@ -1652,7 +1700,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)
-Source_Sink  1  0.004878 0.0048783  1.5625 0.03949  0.203
+Source_Sink  1  0.004878 0.0048783  1.5625 0.03949   0.19
 Residuals   38  0.118644 0.0031222         0.96051       
 Total       39  0.123523                   1.00000       
 
@@ -1689,7 +1737,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.019817 0.0198167  9.4413 0.48563  0.009 **
+Source_Sink  1  0.019817 0.0198167  9.4413 0.48563  0.004 **
 Residuals   10  0.020989 0.0020989         0.51437          
 Total       11  0.040806                   1.00000          
 ---
@@ -1702,7 +1750,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1   0.01941 0.0194096  6.1262 0.13281  0.005 **
+Source_Sink  1   0.01941 0.0194096  6.1262 0.13281  0.008 **
 Residuals   40   0.12673 0.0031683         0.86719          
 Total       41   0.14614                   1.00000          
 ---
@@ -1727,10 +1775,10 @@ Number of permutations: 999
 
 Terms added sequentially (first to last)
 
-            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)   
-Source_Sink  1  0.030542 0.0305421  19.143 0.54472  0.002 **
-Residuals   16  0.025527 0.0015955         0.45528          
-Total       17  0.056069                   1.00000          
+            Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)    
+Source_Sink  1  0.030542 0.0305421  19.143 0.54472  0.001 ***
+Residuals   16  0.025527 0.0015955         0.45528           
+Total       17  0.056069                   1.00000           
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -1767,7 +1815,7 @@ Number of permutations: 999
 Terms added sequentially (first to last)
 
             Df SumsOfSqs   MeanSqs F.Model      R2 Pr(&gt;F)  
-Source_Sink  1  0.005180 0.0051805  3.1098 0.16273   0.05 *
+Source_Sink  1  0.005180 0.0051805  3.1098 0.16273  0.048 *
 Residuals   16  0.026654 0.0016658         0.83727         
 Total       17  0.031834                   1.00000         
 ---
@@ -1828,6 +1876,68 @@ ggplot(data = q1.ITS.proportions) +
   scale_fill_brewer(palette = &quot;Set1&quot;) +
   ggtitle(&quot;Fungi, Source Tracker dispersal sources&quot;)</code></pre>
 <p><img src="05_output_figures/NMDS_dispersal_sources_fungi-2.png" width="672" /></p>
+<pre class="r"><code>## Kruskal test (overall) and Dunn test (multiple comparisons at each ecosystem)
+shrubland &lt;- q1.ITS.proportions %&gt;% filter(Ecosystem == &quot;Shrubland&quot;)
+grassland &lt;- q1.ITS.proportions %&gt;% filter(Ecosystem == &quot;Grassland&quot;)
+
+kruskal.test(Proportion ~ Source, data = shrubland)</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  Proportion by Source
+Kruskal-Wallis chi-squared = 42.091, df = 4, p-value = 1.597e-08</code></pre>
+<pre class="r"><code>kruskal.test(Proportion ~ Source, data = grassland)</code></pre>
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  Proportion by Source
+Kruskal-Wallis chi-squared = 148.58, df = 4, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>dunnTest(Proportion ~ Source, data = shrubland, method = &quot;bonferroni&quot;)</code></pre>
+<pre><code>                                  Comparison          Z      P.unadj
+1                  Air - Environmental_Grass  4.1548753 3.254650e-05
+2                  Air - Environmental_Shrub  3.2999254 9.671052e-04
+3  Environmental_Grass - Environmental_Shrub -0.8549498 3.925789e-01
+4                                 Air - Soil  6.3216529 2.587801e-10
+5                 Environmental_Grass - Soil  2.1667776 3.025181e-02
+6                 Environmental_Shrub - Soil  3.0217275 2.513367e-03
+7                              Air - Unknown  2.7571001 5.831649e-03
+8              Environmental_Grass - Unknown -1.3977751 1.621806e-01
+9              Environmental_Shrub - Unknown -0.5428253 5.872501e-01
+10                            Soil - Unknown -3.5645528 3.644771e-04
+          P.adj
+1  3.254650e-04
+2  9.671052e-03
+3  1.000000e+00
+4  2.587801e-09
+5  3.025181e-01
+6  2.513367e-02
+7  5.831649e-02
+8  1.000000e+00
+9  1.000000e+00
+10 3.644771e-03</code></pre>
+<pre class="r"><code>dunnTest(Proportion ~ Source, data = grassland, method = &quot;bonferroni&quot;)</code></pre>
+<pre><code>                                  Comparison          Z      P.unadj
+1                  Air - Environmental_Grass -2.5098935 1.207676e-02
+2                  Air - Environmental_Shrub  8.5569110 1.159319e-17
+3  Environmental_Grass - Environmental_Shrub 11.0668045 1.817670e-28
+4                                 Air - Soil  4.5262348 6.004388e-06
+5                 Environmental_Grass - Soil  7.0361282 1.976550e-12
+6                 Environmental_Shrub - Soil -4.0306763 5.561660e-05
+7                              Air - Unknown  4.3135659 1.606422e-05
+8              Environmental_Grass - Unknown  6.8234594 8.887386e-12
+9              Environmental_Shrub - Unknown -4.2433451 2.202124e-05
+10                            Soil - Unknown -0.2126688 8.315853e-01
+          P.adj
+1  1.207676e-01
+2  1.159319e-16
+3  1.817670e-27
+4  6.004388e-05
+5  1.976550e-11
+6  5.561660e-04
+7  1.606422e-04
+8  8.887386e-11
+9  2.202124e-04
+10 1.000000e+00</code></pre>
 </div>
 
 
