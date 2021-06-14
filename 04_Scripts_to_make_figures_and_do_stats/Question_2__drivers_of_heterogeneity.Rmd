@@ -474,3 +474,58 @@ ggplot(data = mantel.corr, aes(x = radius, y = r)) +
   theme_test() + 
   ggtitle("No Overlapping Samples, Fungi")
 ```
+
+
+## Specific plants!
+ALRIGHTY, I was thinking that we could try correlating the bacterial or fungal compositions with plant species to see which species are driving the microbial composition. 
+
+```{r cca_plant_species_driving__BACTERIA}
+
+# probably need to find a way to replicate plant composition data rows to cover all timepoints
+
+## microbial matrix
+load("03_Processed_data/ITS_glass_slides.rda")
+microbes.t3 <- q1.ITS.rarefied %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LOT3", SampleID)) %>% 
+  mutate(SampleID = str_extract(SampleID, "[ABC][1-8]"))
+  #column_to_rownames("SampleID")
+
+## plant matrix
+plants.1m <- fread("03_Processed_data/map/grass_shrub_1_meter_composition_df.tsv", data.table = FALSE) %>% 
+  filter(V1 %in% microbes.t3$SampleID) %>% # just be the sites in the microbe dataset
+  column_to_rownames("V1")
+
+## Getting rid of column
+microbes.t3 <- microbes.t3 %>% 
+  column_to_rownames("SampleID") %>% 
+  filter(rowSums(.) > 0 )
+
+library(CCA)
+correl <- matcor(plants.1m, microbes.t3)
+img.matcor(correl, type = 2) # takes a couple of minutes but works
+
+#cc2 <- cc(plants.1m, microbes.t3)      ### function for the R package 'CCA'
+cc1 <- cancor(plants.1m, microbes.t3)  ### function from standard R instalation
+
+cc1$cor
+cc1$xcoef
+
+
+######
+lambda1 = 0.05
+lambda2 = 0.2
+
+result <- rcc(plants.1m, microbes.t3, lambda1, lambda2)
+
+
+cv <- tune.rcc(plants.1m, microbes.t3, 
+     grid1 = grid1, grid2 = grid2, validation = "loo") 
+result <- rcc(df_TCIA, df_TCGA, ncomp = 5, 
+     lambda1= cv$opt.lambda1, lambda2 = cv$opt.lambda2)
+
+result$xcoef
+```
+
+
+
