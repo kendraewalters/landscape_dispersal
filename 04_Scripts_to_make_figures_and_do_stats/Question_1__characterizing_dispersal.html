@@ -456,6 +456,25 @@ Number of iterations to convergence: 1
 Achieved convergence tolerance: 4.923e-07</code></pre>
 <pre class="r"><code>print(paste0(&quot;And the 95% confidence intervals for the grassland are: +/- &quot;, nls.grass$parameters[[2]] * 1.96))</code></pre>
 <pre><code>[1] &quot;And the 95% confidence intervals for the grassland are: +/- 331.34506936839&quot;</code></pre>
+<pre class="r"><code>t = 2.01174
+# z = 1.96 # can use this because n &gt; 30? If so, replace &quot;t&quot; with &quot;z&quot; in the equation.
+n.grass &lt;- grass.cells %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% nrow
+n.shrub &lt;- shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% nrow
+sd.grass &lt;- nls.grass$parameters[[2]] * sqrt(n.grass)
+sd.shrub &lt;- nls.shrub$parameters[[2]] * sqrt(n.shrub)
+
+print(&quot;The upper limite of the difference between grassland and shrubland immigration rates is: &quot;)</code></pre>
+<pre><code>[1] &quot;The upper limite of the difference between grassland and shrubland immigration rates is: &quot;</code></pre>
+<pre class="r"><code>(1168.974 - 939.9975) + t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))</code></pre>
+<pre><code>[1] 604.1692</code></pre>
+<pre class="r"><code>print(&quot;The lower limit is: &quot;)</code></pre>
+<pre><code>[1] &quot;The lower limit is: &quot;</code></pre>
+<pre class="r"><code>(1168.974 - 939.9975) - t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))</code></pre>
+<pre><code>[1] -146.2162</code></pre>
+<pre class="r"><code>print(&quot;The +/- value is: &quot;)</code></pre>
+<pre><code>[1] &quot;The +/- value is: &quot;</code></pre>
+<pre class="r"><code>t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))</code></pre>
+<pre><code>[1] 375.1927</code></pre>
 <pre class="r"><code># Calculate % of typical litterbag community
 fread(&quot;01_Raw_data/BacterialAbundanceLomaRidgeLitterbagsFromClaudia.txt&quot;, 
                     data.table = FALSE) %&gt;% 

@@ -181,6 +181,23 @@ print(paste0("And the 95% confidence intervals for the shrubland are: +/- ", nls
                start = list(Im = 2e5)) %>% summary)
 print(paste0("And the 95% confidence intervals for the grassland are: +/- ", nls.grass$parameters[[2]] * 1.96))
 
+t = 2.01174
+# z = 1.96 # can use this because n > 30? If so, replace "t" with "z" in the equation.
+n.grass <- grass.cells %>% filter(Treatment == "Open") %>% nrow
+n.shrub <- shrub.cells %>% filter(Treatment == "Open") %>% nrow
+sd.grass <- nls.grass$parameters[[2]] * sqrt(n.grass)
+sd.shrub <- nls.shrub$parameters[[2]] * sqrt(n.shrub)
+
+print("The upper limite of the difference between grassland and shrubland immigration rates is: ")
+(1168.974 - 939.9975) + t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))
+
+print("The lower limit is: ")
+(1168.974 - 939.9975) - t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))
+
+print("The +/- value is: ")
+t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))
+
+
 
 # Calculate % of typical litterbag community
 fread("01_Raw_data/BacterialAbundanceLomaRidgeLitterbagsFromClaudia.txt", 
