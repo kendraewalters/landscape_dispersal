@@ -173,12 +173,14 @@ Sweet! Now we can use these death rates to input into our model so we are only a
                     Im/0.02372169 * (1 - exp(-0.02372169 * Time_as_days)), 
                data = shrub.cells[shrub.cells$Treatment == "Open", ],
                start = list(Im = 2e5)) %>% summary) 
+print(paste0("And the 95% confidence intervals for the shrubland are: +/- ", nls.shrub$parameters[[2]] * 1.96))
+
 (nls.grass <- nls(cells_per_sq_cm ~ 
                     Im/0.03106574 * (1 - exp(-0.03106574 * Time_as_days)), 
                data = grass.cells[grass.cells$Treatment == "Open", ],
                start = list(Im = 2e5)) %>% summary)
+print(paste0("And the 95% confidence intervals for the grassland are: +/- ", nls.grass$parameters[[2]] * 1.96))
 
-nls.grass$parameters[[1]]
 
 # Calculate % of typical litterbag community
 fread("01_Raw_data/BacterialAbundanceLomaRidgeLitterbagsFromClaudia.txt", 

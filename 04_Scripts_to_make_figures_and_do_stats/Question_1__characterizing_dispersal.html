@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-06-14" />
+<meta name="date" content="2021-06-15" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-06-14</h4>
+<h4 class="date">2021-06-15</h4>
 
 </div>
 
@@ -435,6 +435,8 @@ Residual standard error: 12870 on 47 degrees of freedom
 
 Number of iterations to convergence: 1 
 Achieved convergence tolerance: 1.578e-06</code></pre>
+<pre class="r"><code>print(paste0(&quot;And the 95% confidence intervals for the shrubland are: +/- &quot;, nls.shrub$parameters[[2]] * 1.96))</code></pre>
+<pre><code>[1] &quot;And the 95% confidence intervals for the shrubland are: +/- 154.376765593506&quot;</code></pre>
 <pre class="r"><code>(nls.grass &lt;- nls(cells_per_sq_cm ~ 
                     Im/0.03106574 * (1 - exp(-0.03106574 * Time_as_days)), 
                data = grass.cells[grass.cells$Treatment == &quot;Open&quot;, ],
@@ -452,8 +454,8 @@ Residual standard error: 24250 on 47 degrees of freedom
 
 Number of iterations to convergence: 1 
 Achieved convergence tolerance: 4.923e-07</code></pre>
-<pre class="r"><code>nls.grass$parameters[[1]]</code></pre>
-<pre><code>[1] 1168.974</code></pre>
+<pre class="r"><code>print(paste0(&quot;And the 95% confidence intervals for the grassland are: +/- &quot;, nls.grass$parameters[[2]] * 1.96))</code></pre>
+<pre><code>[1] &quot;And the 95% confidence intervals for the grassland are: +/- 331.34506936839&quot;</code></pre>
 <pre class="r"><code># Calculate % of typical litterbag community
 fread(&quot;01_Raw_data/BacterialAbundanceLomaRidgeLitterbagsFromClaudia.txt&quot;, 
                     data.table = FALSE) %&gt;% 
