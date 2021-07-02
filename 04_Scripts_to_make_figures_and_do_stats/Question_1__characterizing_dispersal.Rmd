@@ -188,7 +188,7 @@ n.shrub <- shrub.cells %>% filter(Treatment == "Open") %>% nrow
 sd.grass <- nls.grass$parameters[[2]] * sqrt(n.grass)
 sd.shrub <- nls.shrub$parameters[[2]] * sqrt(n.shrub)
 
-print("The upper limite of the difference between grassland and shrubland immigration rates is: ")
+print("The upper limit of the difference between grassland and shrubland immigration rates is: ")
 (1168.974 - 939.9975) + t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))
 
 print("The lower limit is: ")
