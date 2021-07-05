@@ -506,41 +506,79 @@ betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), q1.ITS.NMDS.meta$T
 
 ## Option 2 (my favorite)
 ## try with an indicator species analysis (between T1 and T2-4, because that's all that's significant)
+
+## Setting up key to analyze specific groups of timepoints
 key <- c("1" = "1", "2" = "not_1", "3" = "not_1", "4" = "not_1")
+
+## Splitting our rarefied OTU table into samples from grassland and samples from shrubland
+grassland <- q1.ITS.rarefied %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  filter(grepl("LO", New_Sample_ID)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem)) %>% 
+  filter(Ecosystem == "Grassland") %>% 
+  column_to_rownames("New_Sample_ID") %>% 
+  select(-Ecosystem)
+grassland.timept <- data.frame("New_Sample_ID" = row.names(grassland)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point)) %>% 
+  mutate(Time_Point = key[Time_Point])
+
+
+  
+shrubland <- q1.ITS.rarefied %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  filter(grepl("LO", New_Sample_ID)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem)) %>% 
+  filter(Ecosystem == "Shrubland") %>% 
+  column_to_rownames("New_Sample_ID") %>% 
+  select(-Ecosystem)
+shrubland.timept <- data.frame("New_Sample_ID" = row.names(shrubland)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point)) %>% 
+  mutate(Time_Point = key[Time_Point])
+
 #want: rows = sites
-indic.time <- multipatt(q1.ITS.rarefied %>% 
-                   rownames_to_column("SampleID") %>% 
-                   filter(grepl("LO", SampleID)) %>% 
-                   column_to_rownames("SampleID"), 
-                 key[q1.ITS.NMDS.meta$Time_Point], duleg = TRUE)
-summary(indic.time)
+print("Species indicator analysis for grassland: ")
+multipatt(grassland, grassland.timept$Time_Point, duleg = TRUE) %>% summary
 
+print("Species indicator analysis for shrubland: ")
+multipatt(shrubland, shrubland.timept$Time_Point, duleg = TRUE) %>% 
+  summary
+# I copied the rows with a stat value > 0.8 into a separate file so I can get this in table format
+# then read that table into R again below (I couldn't get tidy to work with the summary output...)
+
+
+## What species are these OTUs: 
 ITS.taxonomy <- fread(input = "01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv")
+indic.otu <- fread("03_Processed_data/ITS_indicator_species_otus.txt") %>% 
+  left_join(ITS.taxonomy, by = c("OTU" = "#OTUID")) %>% 
+  mutate(Family = str_extract(taxonomy, "f__[:alpha:]*"), 
+         Genus = str_extract(taxonomy, "g__[:alpha:]*"), 
+         Class = str_extract(taxonomy, "c__[:alpha:]*"), 
+         Eco_Time = paste0(Ecosystem, "_", TimePoint),
+         Random_Number = 1:nrow(.)) %>% 
+    drop_na(Family) %>%  # Dropping anything that isn't identified to family
+  mutate(Taxa_use = paste0(ifelse(is.na(Genus), Family, Genus), "_", Random_Number))
 
-# Time Point 1, 5 top taxa
-ITS.taxonomy %>% filter(grepl("6b550ad3889766092ea1d7be05293622", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # Truncatella_angustata
-ITS.taxonomy %>% filter(grepl("3cc206a0424f7c33f75fe152cd42d757", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # f__Phaeosphaeriaceae
-ITS.taxonomy %>% filter(grepl("adffc920dd86ce72a6385dd2063ee499", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # o__Dothideales
-ITS.taxonomy %>% filter(grepl("dba6ff41ca6ac3dd820c1a20c67d1b18", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # s__Teichospora_mariae
-ITS.taxonomy %>% filter(grepl("fd3bb0f93dc5043995cc6df1698a570c", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # f__Lophiostomataceae
+## MAke a graph of the indicator species analysis
+require(ggforce)
+group_names <- c("Grassland, T1" = "Grassland_1", 
+                 "Grassland, T2,3,4" = "Grassland_not_1", 
+                 "Shrubland, T1" = "Shrubland_1", 
+                 "Shrubland, T2,3,4" = "Shrubland_not_1")
 
+group_names <- c("Grassland_1" = "Grassland, T1", 
+                "Grassland_not_1" = "Grassland, T2,3,4", 
+                "Shrubland_1" = "Shrubland, T1", 
+                 "Shrubland_not_1" = "Shrubland, T2,3,4")
 
-# Time Point 2/3/4, 5 top taxa
-ITS.taxonomy %>% filter(grepl("6d360c9c285bc318a1e9cbfd2a85a057", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # g__Paraconiothyrium
-ITS.taxonomy %>% filter(grepl("ec3d78df700e0518a81ed0843c9d1d1c", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # f__Didymellaceae
-ITS.taxonomy %>% filter(grepl("0ec291fa8414302b18ab7bfb89c33209", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # g__Alternaria
-ITS.taxonomy %>% filter(grepl("3a61b3e1ee7a53548fa1eb416917ab5b", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # g__Alternaria
-ITS.taxonomy %>% filter(grepl("347b17563a35eda7d903ea07a289fce2", `#OTUID`)) %>% 
-  select(taxonomy) %>% print # g__Alternaria
+ggplot(data = indic.otu) + 
+  geom_point(aes(x = stat, y = reorder(Taxa_use, -Ranking))) + 
+  facet_col(~ Eco_Time, scales = "free_y", space = "free", strip.position = "right", 
+            labeller = as_labeller(group_names)) + 
+ # facet_wrap(~ Eco_Time, ncol = 1, scales = "free_y") + 
+  xlab("Indicator Value") + 
+  ylab("Fungi Taxon") + 
+  scale_x_reverse()
+
 
 
 # ## Option 3: do a CAP analysis
