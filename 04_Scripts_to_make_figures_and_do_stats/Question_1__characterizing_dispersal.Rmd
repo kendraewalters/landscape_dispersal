@@ -422,11 +422,13 @@ adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000,
 adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
        data = q1.NMDS.meta, na.rm= TRUE) # interaction is not significant 
 
-
-
+library(pairwiseAdonis)
+set.seed(2)
+pairwise.adonis(q1.bray.dist.df.dispersal, q1.NMDS.meta$Time_Point, perm = 1000) # bonferroni correction, the unadjusted p-value = same (relatively, not exact) as output from pairwise.adonis2
+# pairwise.adonis2(q1.bray.dist.df.dispersal ~ Time_Point, data = q1.NMDS.meta) # no correction, I believe
 
 # See if variance may be partially driving the significant time effect on composition
-print("To see if TIME POINT has different variances and may be driving significant time e effect on composition")
+print("To see if TIME POINT has different variances and may be driving significant time effect on composition")
 betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = "centroid") %>% # no interaction in the PERMANOVA, so we can test each factor independently here
   anova()
 ```
@@ -473,6 +475,10 @@ adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000,
 
 adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
        data = q1.ITS.NMDS.meta, na.rm= TRUE)
+
+library(pairwiseAdonis)
+set.seed(2)
+pairwise.adonis(q1.ITS.bray.dist.df.dispersal, q1.ITS.NMDS.meta$Time_Point, perm = 1000) # bonferroni correction, the unadjusted p-value = same (relatively, not exact) as output from pairwise.adonis2
 
 # See if variance may be partially driving the significant time effect on composition
 print("To see if TIME POINT has different variances and may be driving significant time e effect on composition")
@@ -547,6 +553,80 @@ ITS.taxonomy %>% filter(grepl("347b17563a35eda7d903ea07a289fce2", `#OTUID`)) %>%
 # plot(tmp)
 
 ```
+
+
+```{r taxa_barplot_timepoints_1_vs_234__fungi}
+require(anchors)
+
+# Load data
+load("03_Processed_data/ITS_glass_slides.rda")
+ITS.taxonomy <- as.data.frame(fread("01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv")) # import taxonomy file (3 columns --> OTU ID, taxonomy, and confidence)
+rowSums(q1.ITS.rarefied) # check to see if it's the right dataset, should be around 2400 but not perfectly for every dataset
+
+all.taxa <- q1.ITS.rarefied %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  filter(grepl("LO", New_Sample_ID)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem)) %>% 
+  mutate(Time_USE = ifelse(Time_Point == 1, "1", "not_1"), 
+         Eco_Time = paste0(Ecosystem,"_", Time_USE)) %>% 
+  select(!c(Time_Point, Ecosystem, Time_USE)) %>% 
+  column_to_rownames("New_Sample_ID") %>% 
+  aggregate(. ~ Eco_Time, data = ., FUN = mean) %>% # Take the average of the communities for each timepoint
+  column_to_rownames("Eco_Time") %>% 
+  t %>% as.data.frame %>% # transpose table so factor names are on top
+  rownames_to_column("#OTUID") %>% 
+  left_join(ITS.taxonomy %>% select(c(`#OTUID`, taxonomy))) %>% 
+  column_to_rownames("#OTUID") %>% 
+  mutate(taxonomy = str_extract(taxonomy, "g__[:alpha:]*") %>% # extract genus name and make pretty
+           gsub("g__", "", .) %>% factor(.)) %>% # also make factor
+  aggregate(. ~ taxonomy, data = ., FUN = sum) %>% 
+  column_to_rownames("taxonomy") %>% 
+  decostand(., method="total", MARGIN=2) %>% # columns now add to one (proportions)
+  rownames_to_column("Genus") %>% 
+  pivot_longer(!Genus, names_to = "Eco_Time", values_to = "Abundance") # you have to change the column range for a different dataset
+
+
+#call everything below 0.05 (5%) "Other 'classification level'"
+keep <- list()
+PERCENTAGE <- 0.02 # fill this out to to the cutoff you want
+
+samp <- unique(all.taxa$Eco_Time)
+
+for (i in 1:length(samp)) {
+  subset <- all.taxa %>% 
+    filter(Eco_Time == samp[i], # take only one eco_time sample at a time to capture any genera that are above the threshold within at least one sample
+           Abundance > PERCENTAGE) # filtering by subset
+  keep[[i]] <- c(subset$Genus %>% as.character) 
+}
+
+keep.unique <- unique(unlist(keep)) %>% 
+  .[!(. %in% c("unidentified"))] # removing "unidentified" from the list of taxa to keep
+
+
+
+above.threshold <- all.taxa %>% 
+  mutate(Genus = ifelse(Genus %in% keep.unique, Genus, "Other Genera")) %>% 
+  group_by(Genus, Eco_Time) %>% 
+  summarize(sum = sum(Abundance)) %>% 
+  rename(Relative_Abundance = sum) %>% 
+  mutate(Genus = factor(Genus, levels = c("Other Genera", sort(keep.unique))), 
+         Ecosystem = str_extract(string = Eco_Time, pattern = "^[a-zA-Z\ ]*"), # extracting ecosystem names
+         TimePoint = str_extract(string = Eco_Time, pattern = "[not_]*1$"), 
+         TimePoint = ifelse(TimePoint == "_1", "1", "Grouped 2, 3, and 4")) %>% 
+  select(!Eco_Time)
+
+
+# Graph time -- taxa barplot split by timepoint (1 v 2,3,+ 4) and Ecosystem!!
+color = c("#a9a9a9", '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', 
+'#f032e6', '#bcf60c', '#fabebe', '#008080', '#e6beff') # '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'
+ggplot(above.threshold) +
+  geom_bar(aes(x = TimePoint, y = Relative_Abundance, fill = Genus), stat = "identity") +
+  labs(x = "Time Point", y = "Proportion of Total Community (identified to Genus)") +
+  facet_wrap( ~ Ecosystem, ncol = 2) +
+  theme_test() + 
+  scale_fill_manual(values = color, name = "Genera") 
+```
+
 
 # Alpha-diveristy of dispersal community
 ```{r alpha_diversity_by_ecosystem__bacteria}

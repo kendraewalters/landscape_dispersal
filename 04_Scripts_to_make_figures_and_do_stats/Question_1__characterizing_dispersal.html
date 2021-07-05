@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kendra E. Walters" />
 
-<meta name="date" content="2021-06-15" />
+<meta name="date" content="2021-07-05" />
 
 <title>Question_1__characterizing_dispersal</title>
 
@@ -255,7 +255,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Question_1__characterizing_dispersal</h1>
 <h4 class="author">Kendra E. Walters</h4>
-<h4 class="date">2021-06-15</h4>
+<h4 class="date">2021-07-05</h4>
 
 </div>
 
@@ -463,8 +463,8 @@ n.shrub &lt;- shrub.cells %&gt;% filter(Treatment == &quot;Open&quot;) %&gt;% nr
 sd.grass &lt;- nls.grass$parameters[[2]] * sqrt(n.grass)
 sd.shrub &lt;- nls.shrub$parameters[[2]] * sqrt(n.shrub)
 
-print(&quot;The upper limite of the difference between grassland and shrubland immigration rates is: &quot;)</code></pre>
-<pre><code>[1] &quot;The upper limite of the difference between grassland and shrubland immigration rates is: &quot;</code></pre>
+print(&quot;The upper limit of the difference between grassland and shrubland immigration rates is: &quot;)</code></pre>
+<pre><code>[1] &quot;The upper limit of the difference between grassland and shrubland immigration rates is: &quot;</code></pre>
 <pre class="r"><code>(1168.974 - 939.9975) + t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))</code></pre>
 <pre><code>[1] 604.1692</code></pre>
 <pre class="r"><code>print(&quot;The lower limit is: &quot;)</code></pre>
@@ -801,9 +801,21 @@ Residuals            71   26.2127 0.36919         0.93820
 Total                74   27.9394                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<pre class="r"><code># See if variance may be partially driving the significant time effect on composition
-print(&quot;To see if TIME POINT has different variances and may be driving significant time e effect on composition&quot;)</code></pre>
-<pre><code>[1] &quot;To see if TIME POINT has different variances and may be driving significant time e effect on composition&quot;</code></pre>
+<pre class="r"><code>library(pairwiseAdonis)
+set.seed(2)
+pairwise.adonis(q1.bray.dist.df.dispersal, q1.NMDS.meta$Time_Point, perm = 1000) # bonferroni correction, the unadjusted p-value = same (relatively, not exact) as output from pairwise.adonis2</code></pre>
+<pre><code>   pairs Df    SumsOfSqs   F.Model         R2     p.value p.adjusted sig
+1 1 vs 2  1 0.0032898806 3.5041253 0.09869629 0.031968032 0.19180819    
+2 1 vs 3  1 0.0048539019 4.7866520 0.12030799 0.006993007 0.04195804   .
+3 1 vs 4  1 0.0059353967 7.4741805 0.19944880 0.001998002 0.01198801   .
+4 2 vs 3  1 0.0006584750 0.7413424 0.01776039 0.526473526 1.00000000    
+5 2 vs 4  1 0.0009103533 1.3242100 0.03547858 0.206793207 1.00000000    
+6 3 vs 4  1 0.0005335674 0.6891097 0.01736269 0.611388611 1.00000000    </code></pre>
+<pre class="r"><code># pairwise.adonis2(q1.bray.dist.df.dispersal ~ Time_Point, data = q1.NMDS.meta) # no correction, I believe
+
+# See if variance may be partially driving the significant time effect on composition
+print(&quot;To see if TIME POINT has different variances and may be driving significant time effect on composition&quot;)</code></pre>
+<pre><code>[1] &quot;To see if TIME POINT has different variances and may be driving significant time effect on composition&quot;</code></pre>
 <pre class="r"><code>betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = &quot;centroid&quot;) %&gt;% # no interaction in the PERMANOVA, so we can test each factor independently here
   anova()</code></pre>
 <pre><code>Analysis of Variance Table
@@ -880,11 +892,21 @@ Terms added sequentially (first to last)
                      Df SumsOfSqs MeanSqs F.Model      R2    Pr(&gt;F)    
 Ecosystem             1    1.4952 1.49519 10.3106 0.11779 9.999e-05 ***
 Time_Point            1    0.6323 0.63234  4.3605 0.04982 9.999e-05 ***
-Ecosystem:Time_Point  1    0.2696 0.26964  1.8594 0.02124     0.015 *  
+Ecosystem:Time_Point  1    0.2696 0.26964  1.8594 0.02124    0.0148 *  
 Residuals            71   10.2961 0.14502         0.81115              
 Total                74   12.6932                 1.00000              
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>library(pairwiseAdonis)
+set.seed(2)
+pairwise.adonis(q1.ITS.bray.dist.df.dispersal, q1.ITS.NMDS.meta$Time_Point, perm = 1000) # bonferroni correction, the unadjusted p-value = same (relatively, not exact) as output from pairwise.adonis2</code></pre>
+<pre><code>   pairs Df    SumsOfSqs    F.Model          R2     p.value  p.adjusted sig
+1 1 vs 2  1 0.0327357514  6.9843323 0.174676727 0.003996004 0.023976024   .
+2 1 vs 3  1 0.0453941484  9.7664059 0.223148457 0.000999001 0.005994006   *
+3 1 vs 4  1 0.0512604652 11.4101093 0.251268043 0.000999001 0.005994006   *
+4 2 vs 3  1 0.0026371671  0.5389566 0.014357261 0.529470529 1.000000000    
+5 2 vs 4  1 0.0047135486  0.9922717 0.026117726 0.340659341 1.000000000    
+6 3 vs 4  1 0.0008792106  0.1865237 0.004884542 0.919080919 1.000000000    </code></pre>
 <pre class="r"><code># See if variance may be partially driving the significant time effect on composition
 print(&quot;To see if TIME POINT has different variances and may be driving significant time e effect on composition&quot;)</code></pre>
 <pre><code>[1] &quot;To see if TIME POINT has different variances and may be driving significant time e effect on composition&quot;</code></pre>
@@ -935,117 +957,124 @@ summary(indic.time)</code></pre>
  Significance level (alpha): 0.05
 
  Total number of species: 7690
- Selected number of species: 134 
- Number of species associated to 1 group: 134 
+ Selected number of species: 144 
+ Number of species associated to 1 group: 144 
 
  List of species associated to each combination: 
 
- Group 1  #sps.  102 
+ Group 1  #sps.  109 
                                   stat p.value   
 6b550ad3889766092ea1d7be05293622 0.885   0.005 **
 3cc206a0424f7c33f75fe152cd42d757 0.874   0.005 **
-adffc920dd86ce72a6385dd2063ee499 0.863   0.005 **
+adffc920dd86ce72a6385dd2063ee499 0.863   0.010 **
 dba6ff41ca6ac3dd820c1a20c67d1b18 0.812   0.005 **
 fd3bb0f93dc5043995cc6df1698a570c 0.811   0.005 **
 60d8aac672665427398d03a74c9374ef 0.777   0.005 **
 1a93e1f29b1cc493e43c0a6cf22354bc 0.772   0.005 **
-ba697aebf73f74c7a92b3d93fcdae1fa 0.751   0.020 * 
-3f3314f310e1a629e27a37a0ddcc71d1 0.743   0.005 **
+ba697aebf73f74c7a92b3d93fcdae1fa 0.751   0.010 **
+3f3314f310e1a629e27a37a0ddcc71d1 0.743   0.015 * 
 8d904cbfb1324fc400ddb0bd54ac98e2 0.742   0.005 **
 61322ac57eeeafda8df586777df7b870 0.741   0.005 **
-b0d93d1a28c4af591eda114d3a4a44d4 0.735   0.025 * 
+b0d93d1a28c4af591eda114d3a4a44d4 0.735   0.040 * 
 18b1f3d102874f231e3168f058eca5bb 0.709   0.005 **
 56d6a71c94321f4bacd933db47567133 0.703   0.005 **
-920cfccaaf265ecd564e093c0f80fc08 0.697   0.045 * 
 10e246b63ef506bd782f33ebeb66eeab 0.691   0.015 * 
-a2b665f720bfa33cacfc62ce3b163c71 0.675   0.035 * 
 4e72a1340652e9acfd17f3b58ee0946b 0.670   0.010 **
 a6dcfce2ef3a967409c3d1f1eb7b61e0 0.659   0.005 **
 448d5f533e646e1f70bed291c8896dcc 0.657   0.005 **
 eb61d9872f198693a8c781985a0c0be4 0.653   0.005 **
 4d3e2c97541b0aaffe13d5bbbba7f5e2 0.649   0.005 **
 53f8fa058e44195a8cf188f127237821 0.646   0.005 **
-50dc6d9f91a205d6bc53a59785b73133 0.634   0.045 * 
-761176318dc6ff2d907988c89bf64b3d 0.632   0.015 * 
+50dc6d9f91a205d6bc53a59785b73133 0.634   0.050 * 
+761176318dc6ff2d907988c89bf64b3d 0.632   0.020 * 
 dc47df2860f0b62c4cd123ebeff46d7a 0.631   0.030 * 
 9df8902926c57927e7c1637ce9e04169 0.624   0.005 **
-d3c51e8d1de4793dfe54f3906639893b 0.624   0.040 * 
+d3c51e8d1de4793dfe54f3906639893b 0.624   0.050 * 
 bedd3813e765d90db9da91718f97f07d 0.619   0.005 **
-50ce296df0ee950b6f0fa444a4dda582 0.612   0.005 **
-a1426cb2e683969e4ed70ba40f3ec4a5 0.601   0.030 * 
+50ce296df0ee950b6f0fa444a4dda582 0.612   0.010 **
+a1426cb2e683969e4ed70ba40f3ec4a5 0.601   0.025 * 
 a86bfb902cbf20e057605c00d196260f 0.593   0.005 **
+4b0793617891d92213ff993246bd7f52 0.590   0.035 * 
+556ad04145a90d2ffeafd03c0feaae78 0.582   0.045 * 
 993dd4d4514f748ea53ef9f94eb358dd 0.576   0.040 * 
 24c7587fd1e36bb3a5f14265dd710fe0 0.559   0.005 **
 2bf60cd0c1572a326d1b30bcea6a1a4c 0.555   0.005 **
-40adeec179945ec42983e1e9a6fa57a4 0.554   0.005 **
+40adeec179945ec42983e1e9a6fa57a4 0.554   0.010 **
 46e291268d82d7a8a60da91c97f4fdad 0.553   0.005 **
-798db8702acc42ff57e93d53a12c6bfa 0.553   0.010 **
+798db8702acc42ff57e93d53a12c6bfa 0.553   0.005 **
 7eb448ea3dad7588a8b7fa8f3d41253f 0.551   0.010 **
 51845ffbb5da10bc962c9be15efb0f9e 0.551   0.005 **
-235273674549cbf139263e4f595dd90e 0.537   0.035 * 
 f77e4baddb87dd7138fa28f9b170a78a 0.535   0.015 * 
 c35e51a7672b3e1cdb50a3ca2e06e9e3 0.533   0.005 **
-c527f49af38f99285d6925d1694d3fa2 0.533   0.015 * 
+c527f49af38f99285d6925d1694d3fa2 0.533   0.020 * 
 197cfdd00c0752dba2dbf0113785970f 0.531   0.010 **
-57362f1a472ab270c279e44ee48178b2 0.527   0.010 **
-a072619d65739c8bfeca7ddf8c6e883d 0.524   0.025 * 
-b3afaa0125ad781ef4e39971b7a1796b 0.522   0.020 * 
+57362f1a472ab270c279e44ee48178b2 0.527   0.025 * 
+a072619d65739c8bfeca7ddf8c6e883d 0.524   0.035 * 
+b3afaa0125ad781ef4e39971b7a1796b 0.522   0.010 **
 edb12a0bd74abf8ae9461363b6a306bc 0.517   0.035 * 
+a65467cd36f9a9132378c6e2b90b9358 0.514   0.045 * 
 2c8aee19e7bab9e856522be4992eeeda 0.500   0.005 **
-c4c4e5842b30d9d06821e477badc6290 0.500   0.005 **
+c4c4e5842b30d9d06821e477badc6290 0.500   0.010 **
 5ee6b2c51dd113f2df59550cf914b0c7 0.500   0.005 **
-a16b17629777d23187508535de6e7d0f 0.494   0.015 * 
-46773aa4389749cf0202cf0892cebbe7 0.494   0.005 **
-3df749176e2d01c430916c84d3464a52 0.493   0.005 **
+a16b17629777d23187508535de6e7d0f 0.494   0.010 **
+46773aa4389749cf0202cf0892cebbe7 0.494   0.010 **
+3df749176e2d01c430916c84d3464a52 0.493   0.010 **
 7c94c560cdf14d27349e677559e792e1 0.491   0.035 * 
 9469b0606c2ef37a8f5b50977a123c2e 0.491   0.010 **
 2c23bd43e661ce46a6d0f25057566535 0.486   0.010 **
 feec6da4c01cb7c5e989603c786f9836 0.486   0.010 **
 9c8a6856f7cf203c2c9f076cbc6768a7 0.479   0.010 **
-237effeab1f3252274fbc80499c8fdc0 0.477   0.015 * 
-3a7e54deaf17b2539c9760918b962f39 0.476   0.010 **
-c8b8b9d7d1a85bc367030027576a11af 0.467   0.015 * 
-a4bc9276aed1dc28f913f0e1d47d979a 0.464   0.020 * 
-c146cf5d7d948e1855684f77e63fb53e 0.452   0.030 * 
-02722fcf9d897ed064d9048ead14bdaa 0.433   0.010 **
-843feeeb3849c9b60f37e0f15a3f42cf 0.433   0.020 * 
+237effeab1f3252274fbc80499c8fdc0 0.477   0.020 * 
+3a7e54deaf17b2539c9760918b962f39 0.476   0.015 * 
+a4bc9276aed1dc28f913f0e1d47d979a 0.464   0.030 * 
+c146cf5d7d948e1855684f77e63fb53e 0.452   0.020 * 
+02722fcf9d897ed064d9048ead14bdaa 0.433   0.020 * 
+843feeeb3849c9b60f37e0f15a3f42cf 0.433   0.015 * 
 cd5fb06a0985c18086a679752c54f993 0.433   0.010 **
-3c84d3252c4792e53b42704e6e58adfd 0.433   0.025 * 
-a1d0c9ab1c75e11472721a36474e6896 0.430   0.020 * 
-16efdcede84be7f9c67aad01c3515fb6 0.429   0.030 * 
-6d201ba5a1c3334beb3220e82d197e21 0.428   0.025 * 
+3c84d3252c4792e53b42704e6e58adfd 0.433   0.015 * 
+a1d0c9ab1c75e11472721a36474e6896 0.430   0.035 * 
+16efdcede84be7f9c67aad01c3515fb6 0.429   0.010 **
+ce2c54df8062cd9bfcd79e882dfdf615 0.425   0.045 * 
 6ca01c7ce3a228dd3d3b0542321374c9 0.424   0.010 **
-5015556df3955f6dae21e5018bf27dad 0.423   0.025 * 
-f0f52ed7b5dea6d6655727fab070e30b 0.422   0.010 **
+5015556df3955f6dae21e5018bf27dad 0.423   0.005 **
+f0f52ed7b5dea6d6655727fab070e30b 0.422   0.025 * 
 b4c92c8a53035413dee15150db1501cd 0.422   0.020 * 
-152fbd49665c3389052bc73826ff2092 0.422   0.025 * 
-f0513aceae2f80d6d9d211dc1f417099 0.419   0.050 * 
-c1b0973a2d776c0776490c321ba8d8e8 0.411   0.040 * 
-a0a64f00148c45b7f6d732b8e4c98b62 0.402   0.030 * 
+152fbd49665c3389052bc73826ff2092 0.422   0.030 * 
+f0513aceae2f80d6d9d211dc1f417099 0.419   0.015 * 
+c1b0973a2d776c0776490c321ba8d8e8 0.411   0.050 * 
+c5df98b5acaae864d5ca48ef0ef3d65b 0.409   0.045 * 
+a0a64f00148c45b7f6d732b8e4c98b62 0.402   0.050 * 
+6a595e369ee630995a238d68d86aff46 0.402   0.045 * 
 c4b09ca6ea427fe3411ab8bc9a36914d 0.398   0.015 * 
-d762d2c020ec061d3f1284a8f9ed4552 0.354   0.050 * 
+d762d2c020ec061d3f1284a8f9ed4552 0.354   0.030 * 
+a87e4d6c7551f286f6cc2aee62778fe6 0.354   0.050 * 
 facdcf104662bf9f01d7a70a5245e6bb 0.354   0.045 * 
-ecd61ee8041745c43ba5d253e2522fe1 0.354   0.040 * 
-54be43279a482b38710fefae4b525850 0.354   0.040 * 
-140d7576726910b1d055b2352714ea16 0.354   0.040 * 
-573f93ccb1477d3a57c59fbba4c922f4 0.354   0.050 * 
-46d644991a5ff7fb6c75912266ac86b5 0.354   0.040 * 
-135e28a4d6ba3c553fc2e29bf0f81a6f 0.354   0.050 * 
-217205ba689c47e628a62066064ecdb1 0.354   0.045 * 
-2bfc54700ceb8c48498fb31f223fe43e 0.354   0.050 * 
-0f76e9d2980cda8ea0437d194b072538 0.354   0.050 * 
+29ec8a5f0728da4eeb6b8074d9ae5d3a 0.354   0.035 * 
+ecd61ee8041745c43ba5d253e2522fe1 0.354   0.035 * 
+54be43279a482b38710fefae4b525850 0.354   0.045 * 
+140d7576726910b1d055b2352714ea16 0.354   0.045 * 
+573f93ccb1477d3a57c59fbba4c922f4 0.354   0.030 * 
+ac818e84ad89075d71ad9a065486a300 0.354   0.045 * 
+135e28a4d6ba3c553fc2e29bf0f81a6f 0.354   0.045 * 
+217205ba689c47e628a62066064ecdb1 0.354   0.035 * 
+274ac4512c31364146165d2452a041a4 0.354   0.045 * 
 05bba11c21c86921a19b32149eefaeb7 0.354   0.045 * 
-6293ed712a4969da7b48f7de5da14dc6 0.354   0.050 * 
-5b67990781976b6973ac31ad4d43281d 0.354   0.040 * 
-e477e714e462cfac622e4dd6ec150715 0.354   0.045 * 
-f93ea038efac22e044f470cd57d86947 0.354   0.050 * 
-724a2253470587ad5eef163e6b2677de 0.354   0.050 * 
-482b6c78d4bb15834df5a56de8839441 0.349   0.020 * 
-85000b441c3fc8cb3a8737287fb79b9f 0.347   0.025 * 
-78dbbee2546854cb6635c377e71816f5 0.345   0.050 * 
-6f0942f0eace8aa09e2783cd47aba15d 0.342   0.050 * 
+6293ed712a4969da7b48f7de5da14dc6 0.354   0.035 * 
+249b20457895c04d571d3c8b3caaded0 0.354   0.035 * 
+5b67990781976b6973ac31ad4d43281d 0.354   0.035 * 
+d6d16959e87f5464290bafb05a583472 0.354   0.050 * 
+f93ea038efac22e044f470cd57d86947 0.354   0.030 * 
+8b6e5f6f157c96d531b9bc5e9c2d9635 0.353   0.045 * 
+e2099433f3477a4d4bd4c5bc2c9202cb 0.350   0.050 * 
+482b6c78d4bb15834df5a56de8839441 0.349   0.050 * 
+93f7fd4eeb516b393d1b9d7a399722cc 0.348   0.035 * 
+85000b441c3fc8cb3a8737287fb79b9f 0.347   0.040 * 
+accce61bfa96abf87aeef8f762e0a2f4 0.342   0.040 * 
+8add21c7c4a8df14793cb34b5e36a25e 0.341   0.050 * 
+b89eb738355a8c8f6a00a5f0d9a3d08c 0.341   0.050 * 
+30ad0a1db7534920663a334edd1451b7 0.339   0.035 * 
 
- Group not_1  #sps.  32 
+ Group not_1  #sps.  35 
                                   stat p.value   
 6d360c9c285bc318a1e9cbfd2a85a057 0.907   0.005 **
 ec3d78df700e0518a81ed0843c9d1d1c 0.876   0.005 **
@@ -1056,29 +1085,32 @@ ec3d78df700e0518a81ed0843c9d1d1c 0.876   0.005 **
 00735e82b47219838a8213f40796c504 0.830   0.005 **
 07c9441ebcf931a1f7e6f3bab8a3be23 0.824   0.005 **
 6473642f64396126d82d9983348c0214 0.824   0.005 **
-2f6c2b58eb612ebcf4c07fb555b16de9 0.817   0.010 **
+2f6c2b58eb612ebcf4c07fb555b16de9 0.817   0.005 **
 9f50e64e0e8f4064c2f7a668166c53f3 0.816   0.005 **
-86b95cd30bf8e0805cc8d1a75cb8d141 0.810   0.020 * 
+86b95cd30bf8e0805cc8d1a75cb8d141 0.810   0.015 * 
 b4de2cd21ee0083acacaa2f70a3aadf2 0.806   0.005 **
-e03f48c30eaa110ac015253ae2d66842 0.793   0.010 **
-750ffb89094b4f33ce5f8ff6a4a9734e 0.788   0.010 **
-91d355809aeb177f6597bd4b1fe7bebb 0.780   0.045 * 
-bc7e7418ff497ed56541c1b985e1dc06 0.764   0.045 * 
-68fd7320605a645ad627ae32f7d8a416 0.758   0.045 * 
-bf91fbe02982d2cf3c280cd04c1e4f87 0.758   0.025 * 
-56651b47952ee08bb1e8258b0ebf19a4 0.739   0.010 **
-fd0845da70843a7bbc1162c7dd1e9d63 0.726   0.040 * 
+e03f48c30eaa110ac015253ae2d66842 0.793   0.005 **
+750ffb89094b4f33ce5f8ff6a4a9734e 0.788   0.005 **
+6011c7ca88b2973988b09f34f6c8c66e 0.782   0.030 * 
+91d355809aeb177f6597bd4b1fe7bebb 0.780   0.030 * 
+4247ca2a49624ced16c9bafc99b9763d 0.779   0.030 * 
+68fd7320605a645ad627ae32f7d8a416 0.758   0.015 * 
+bf91fbe02982d2cf3c280cd04c1e4f87 0.758   0.020 * 
+56651b47952ee08bb1e8258b0ebf19a4 0.739   0.025 * 
+7105ef3dee9296597342d991eb0b339a 0.732   0.035 * 
 39c8768585bcca4de850af4bbf885151 0.705   0.025 * 
-069b620d8dbb932e02f72deeb5b4ca6d 0.637   0.035 * 
-7ca22f308da3e7739b61b3bb6d99437f 0.630   0.025 * 
-59823d48691bb03caa4f745bf9fb77e2 0.627   0.015 * 
-196814810b2aa4bd4b9fad336a7ab131 0.611   0.015 * 
+069b620d8dbb932e02f72deeb5b4ca6d 0.637   0.015 * 
+7ca22f308da3e7739b61b3bb6d99437f 0.630   0.020 * 
+59823d48691bb03caa4f745bf9fb77e2 0.627   0.050 * 
+196814810b2aa4bd4b9fad336a7ab131 0.611   0.005 **
+a4e5a47290f64ffb99ae1240beb8446c 0.604   0.040 * 
 a886f6a8d2fe4a900dee5b6e6cac8a85 0.597   0.010 **
-101b7ba0c9fca158c41654ddd8f1eb2a 0.582   0.020 * 
+101b7ba0c9fca158c41654ddd8f1eb2a 0.582   0.005 **
 88495c23c44d09018f679a04dd1f55df 0.582   0.035 * 
-03d950813d25264dfc1e5fe6f89c1265 0.567   0.040 * 
-ce5305c44acacb98a7225e7f8a1d7466 0.554   0.035 * 
-0b6ff393e40db63bbaa53196525fe1a6 0.521   0.045 * 
+03d950813d25264dfc1e5fe6f89c1265 0.567   0.035 * 
+e85e720d83a972829c488827ea08a43f 0.521   0.035 * 
+203fb425d95c5ef1c78a71afcbf459d0 0.521   0.035 * 
+3428b0819354fa7b7b1be8e7ab427ffa 0.521   0.050 * 
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1 </code></pre>
 <pre class="r"><code>ITS.taxonomy &lt;- fread(input = &quot;01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv&quot;)
@@ -1133,6 +1165,109 @@ ITS.taxonomy %&gt;% filter(grepl(&quot;6d360c9c285bc318a1e9cbfd2a85a057&quot;, `
 #                    column_to_rownames(&quot;SampleID&quot;) ~ Time_Point, q1.ITS.NMDS.meta, 
 #          dist = &quot;bray&quot;)
 # plot(tmp)</code></pre>
+<pre class="r"><code>require(anchors)
+
+# Load data
+load(&quot;03_Processed_data/ITS_glass_slides.rda&quot;)
+ITS.taxonomy &lt;- as.data.frame(fread(&quot;01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv&quot;)) # import taxonomy file (3 columns --&gt; OTU ID, taxonomy, and confidence)
+rowSums(q1.ITS.rarefied) # check to see if it&#39;s the right dataset, should be around 2400 but not perfectly for every dataset</code></pre>
+<pre><code>   AirT2R2    AirT2R4    AirT2R5    AirT2R6  EnvG_T2R1  EnvG_T2R2  EnvG_T2R3 
+      2400       2401       2399       2405       2399       2395       2404 
+ EnvG_T2R4  EnvG_T2R5  EnvG_T2R6  EnvS_T2R1  EnvS_T2R2  EnvS_T2R3  EnvS_T2R4 
+      2405       2396       2397       2396       2398       2407       2398 
+ EnvS_T2R5  EnvS_T2R6    LDT0R1G    LDT0R2S    LDT0R3G    LDT0R4G    LDT0R4S 
+      2385       2407       2398       2402       2399       2399       2400 
+   LDT0R5G    LDT0R5S    LDT0R6G    LDT0R6S   LDT1R1AS   LDT1R4AG   LDT1R6CG 
+      2402       2403       2397       2398       2402       2402       2400 
+  LDT1R7AS   LDT2R5BG     LOT1A3     LOT1A4     LOT1A5     LOT1A6     LOT1A7 
+      2401       2399       2400       2403       2401       2397       2400 
+    LOT1A8     LOT1B1     LOT1B2     LOT1B5     LOT1B6     LOT1C2     LOT1C3 
+      2404       2401       2388       2388       2397       2402       2404 
+    LOT1C4     LOT1C5     LOT1C6     LOT1C8     LOT2A1     LOT2A2     LOT2A3 
+      2402       2402       2402       2395       2387       2398       2392 
+    LOT2A4     LOT2A5     LOT2A6     LOT2A7     LOT2A8     LOT2B2     LOT2B3 
+      2399       2404       2398       2397       2397       2401       2392 
+    LOT2B5     LOT2B8     LOT2C1     LOT2C2     LOT2C3     LOT2C5     LOT2C6 
+      2403       2392       2404       2402       2385       2393       2397 
+    LOT2C7     LOT2C8     LOT3A1     LOT3A2     LOT3A3     LOT3A4     LOT3A5 
+      2392       2403       2368       2407       2403       2396       2395 
+    LOT3A6     LOT3A8     LOT3B1     LOT3B2     LOT3B3     LOT3B4     LOT3B5 
+      2398       2401       2404       2382       2397       2391       2394 
+    LOT3B7     LOT3B8     LOT3C1     LOT3C2     LOT3C3     LOT3C5     LOT3C6 
+      2391       2398       2394       2395       2396       2393       2391 
+    LOT3C7     LOT3C8     LOT4A1     LOT4A3     LOT4A5     LOT4A7     LOT4A8 
+      2401       2397       2402       2384       2397       2392       2402 
+    LOT4B1     LOT4B3     LOT4B4     LOT4B5     LOT4B6     LOT4B7     LOT4B8 
+      2388       2398       2400       2397       2405       2399       2400 
+    LOT4C1     LOT4C2     LOT4C3     LOT4C4     LOT4C5     LOT4C7     LOT4C8 
+      2397       2396       2401       2396       2400       2396       2392 
+ Soil_T2R1 Soil_T2R10 Soil_T2R11 Soil_T2R12  Soil_T2R2  Soil_T2R3  Soil_T2R4 
+      2390       2400       2400       2398       2382       2396       2399 
+ Soil_T2R5  Soil_T2R6  Soil_T2R7  Soil_T2R8  Soil_T2R9 
+      2393       2390       2400       2399       2399 </code></pre>
+<pre class="r"><code>all.taxa &lt;- q1.ITS.rarefied %&gt;% 
+  rownames_to_column(&quot;New_Sample_ID&quot;) %&gt;% 
+  filter(grepl(&quot;LO&quot;, New_Sample_ID)) %&gt;% 
+  left_join(metadata.together %&gt;% select(New_Sample_ID, Time_Point, Ecosystem)) %&gt;% 
+  mutate(Time_USE = ifelse(Time_Point == 1, &quot;1&quot;, &quot;not_1&quot;), 
+         Eco_Time = paste0(Ecosystem,&quot;_&quot;, Time_USE)) %&gt;% 
+  select(!c(Time_Point, Ecosystem, Time_USE)) %&gt;% 
+  column_to_rownames(&quot;New_Sample_ID&quot;) %&gt;% 
+  aggregate(. ~ Eco_Time, data = ., FUN = mean) %&gt;% # Take the average of the communities for each timepoint
+  column_to_rownames(&quot;Eco_Time&quot;) %&gt;% 
+  t %&gt;% as.data.frame %&gt;% # transpose table so factor names are on top
+  rownames_to_column(&quot;#OTUID&quot;) %&gt;% 
+  left_join(ITS.taxonomy %&gt;% select(c(`#OTUID`, taxonomy))) %&gt;% 
+  column_to_rownames(&quot;#OTUID&quot;) %&gt;% 
+  mutate(taxonomy = str_extract(taxonomy, &quot;g__[:alpha:]*&quot;) %&gt;% # extract genus name and make pretty
+           gsub(&quot;g__&quot;, &quot;&quot;, .) %&gt;% factor(.)) %&gt;% # also make factor
+  aggregate(. ~ taxonomy, data = ., FUN = sum) %&gt;% 
+  column_to_rownames(&quot;taxonomy&quot;) %&gt;% 
+  decostand(., method=&quot;total&quot;, MARGIN=2) %&gt;% # columns now add to one (proportions)
+  rownames_to_column(&quot;Genus&quot;) %&gt;% 
+  pivot_longer(!Genus, names_to = &quot;Eco_Time&quot;, values_to = &quot;Abundance&quot;) # you have to change the column range for a different dataset
+
+
+#call everything below 0.05 (5%) &quot;Other &#39;classification level&#39;&quot;
+keep &lt;- list()
+PERCENTAGE &lt;- 0.02 # fill this out to to the cutoff you want
+
+samp &lt;- unique(all.taxa$Eco_Time)
+
+for (i in 1:length(samp)) {
+  subset &lt;- all.taxa %&gt;% 
+    filter(Eco_Time == samp[i], # take only one eco_time sample at a time to capture any genera that are above the threshold within at least one sample
+           Abundance &gt; PERCENTAGE) # filtering by subset
+  keep[[i]] &lt;- c(subset$Genus %&gt;% as.character) 
+}
+
+keep.unique &lt;- unique(unlist(keep)) %&gt;% 
+  .[!(. %in% c(&quot;unidentified&quot;))] # removing &quot;unidentified&quot; from the list of taxa to keep
+
+
+
+above.threshold &lt;- all.taxa %&gt;% 
+  mutate(Genus = ifelse(Genus %in% keep.unique, Genus, &quot;Other Genera&quot;)) %&gt;% 
+  group_by(Genus, Eco_Time) %&gt;% 
+  summarize(sum = sum(Abundance)) %&gt;% 
+  rename(Relative_Abundance = sum) %&gt;% 
+  mutate(Genus = factor(Genus, levels = c(&quot;Other Genera&quot;, sort(keep.unique))), 
+         Ecosystem = str_extract(string = Eco_Time, pattern = &quot;^[a-zA-Z\ ]*&quot;), # extracting ecosystem names
+         TimePoint = str_extract(string = Eco_Time, pattern = &quot;[not_]*1$&quot;), 
+         TimePoint = ifelse(TimePoint == &quot;_1&quot;, &quot;1&quot;, &quot;Grouped 2, 3, and 4&quot;)) %&gt;% 
+  select(!Eco_Time)
+
+
+# Graph time -- taxa barplot split by timepoint (1 v 2,3,+ 4) and Ecosystem!!
+color = c(&quot;#a9a9a9&quot;, &#39;#e6194b&#39;, &#39;#3cb44b&#39;, &#39;#ffe119&#39;, &#39;#4363d8&#39;, &#39;#f58231&#39;, &#39;#911eb4&#39;, &#39;#46f0f0&#39;, 
+&#39;#f032e6&#39;, &#39;#bcf60c&#39;, &#39;#fabebe&#39;, &#39;#008080&#39;, &#39;#e6beff&#39;) # &#39;#9a6324&#39;, &#39;#fffac8&#39;, &#39;#800000&#39;, &#39;#aaffc3&#39;, &#39;#808000&#39;, &#39;#ffd8b1&#39;, &#39;#000075&#39;, &#39;#808080&#39;, &#39;#ffffff&#39;, &#39;#000000&#39;
+ggplot(above.threshold) +
+  geom_bar(aes(x = TimePoint, y = Relative_Abundance, fill = Genus), stat = &quot;identity&quot;) +
+  labs(x = &quot;Time Point&quot;, y = &quot;Proportion of Total Community (identified to Genus)&quot;) +
+  facet_wrap( ~ Ecosystem, ncol = 2) +
+  theme_test() + 
+  scale_fill_manual(values = color, name = &quot;Genera&quot;) </code></pre>
+<p><img src="05_output_figures/taxa_barplot_timepoints_1_vs_234__fungi-1.png" width="672" /></p>
 </div>
 <div id="alpha-diveristy-of-dispersal-community" class="section level1">
 <h1>Alpha-diveristy of dispersal community</h1>
