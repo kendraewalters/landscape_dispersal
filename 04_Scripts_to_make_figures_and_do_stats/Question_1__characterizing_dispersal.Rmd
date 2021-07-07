@@ -572,7 +572,7 @@ group_names <- c("Grassland_1" = "Grassland, T1",
 
 ggplot(data = indic.otu) + 
   geom_point(aes(x = stat, y = reorder(Taxa_use, -Ranking))) + 
-  facet_col(~ Eco_Time, scales = "free_y", space = "free", strip.position = "right", 
+  facet_col(~ Eco_Time, scales = "free_y", space = "free", 
             labeller = as_labeller(group_names)) + 
  # facet_wrap(~ Eco_Time, ncol = 1, scales = "free_y") + 
   xlab("Indicator Value") + 
@@ -665,6 +665,98 @@ ggplot(above.threshold) +
   scale_fill_manual(values = color, name = "Genera") 
 ```
 
+# Dispersal sources
+```{r dispersal_sources_bacteria}
+load("03_Processed_data/16S_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.sources <- q1.bray.dist.df %>% 
+  select(contains("Env") | contains("Soil") | contains("Air")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Env|Soil|Air", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.sources.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.sources)), 
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.sources.NMDS.meta <- data.frame(q1.sources.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem, Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.sources.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Treatment), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Bacteria, dispersal sources")
+
+# Run the statistics
+soil <- q1.bray.dist.df.sources %>% 
+  select(contains("Soil")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Soil", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  as.matrix
+
+litter <- q1.bray.dist.df.sources %>% 
+  select(contains("Env")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Env", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  as.matrix
+
+adonis(soil ~ Ecosystem, data = q1.sources.NMDS.meta %>% filter(grepl("Soil", New_Sample_ID))) # 0.732
+adonis(litter ~ Ecosystem, data = q1.sources.NMDS.meta %>% filter(grepl("Env", New_Sample_ID))) # 0.001
+
+```
+
+```{r dispersal_sources_fungi}
+load("03_Processed_data/ITS_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.sources <- q1.ITS.bray.dist.df %>% 
+  select(contains("Env") | contains("Soil")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Env|Soil", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.ITS.sources.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.sources)), 
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.sources.NMDS.meta <- data.frame(q1.ITS.sources.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem, Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.ITS.sources.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Treatment), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, dispersal sources")
+
+# Run the statistics
+soil <- q1.ITS.bray.dist.df.sources %>% 
+  select(contains("Soil")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Soil", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  as.matrix
+
+litter <- q1.ITS.bray.dist.df.sources %>% 
+  select(contains("Env")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Env", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  as.matrix
+
+adonis(soil ~ Ecosystem, data = q1.ITS.sources.NMDS.meta %>% filter(grepl("Soil", New_Sample_ID))) # 0.384
+adonis(litter ~ Ecosystem, data = q1.ITS.sources.NMDS.meta %>% filter(grepl("Env", New_Sample_ID))) # 0.002
+
+```
 
 # Alpha-diveristy of dispersal community
 ```{r alpha_diversity_by_ecosystem__bacteria}
