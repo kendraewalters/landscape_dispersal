@@ -1,0 +1,18 @@
+﻿Column_Name,Description
+Old_Sample_ID,The sample ID originally given to that sample when the experiment was planned.
+New_Sample_ID,The current sample ID used for that sample. Some samples changed ID as we ran into issues when the samples were made.
+Sample_Lost?,"Y if something bad happened during sample production, and the sample was no longer usable."
+Random_#_Extractions_Tubes,The random # assigned to that sample when it was extracted with tubes. Note that not all samples were extracted using tubes.
+Random_#_Extractions_Plates,The random # assigned to that sample when it was extracted with plates. Note that not all samples were extracted using plates.
+Substrate,The type of sample.
+Treatment,"The dispersal treatment that the sample was exposed to. Or, if a survey sample, the type of survey material."
+Time_Point,The time point that the sample was collected from the field. 
+Transect,The transect that the sample was collected from. Tower = a site not along the transects. 
+Ecosystem,The ecosystem that the sample was located in.
+Location,The location along the transect where the sample was located.
+Random_#_Flow,The random # assigned to that sample when it was run through the flow cytometer. Note that not all samples were processed for cell abundance. 
+Abundance?,Was the sample processed for cell abundance through flow cytometry?
+Mass_Loss?,Was the sample processed for mass loss measurement?
+Composition?,Was the sample processed for microbial composition?
+Numbers,Please ignore this column; this is a remnant of needing to rename samples
+Notes,Any notes from the lab process

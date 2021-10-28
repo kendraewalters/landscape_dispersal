@@ -1,0 +1,91 @@
+## Script to make the figure: 
+## Figure NMDS Dispersal Communities by Ecosystem Fungi + Bacteria
+## July 10th 2021
+## Kendra E Walters
+
+## Room of ()ments
+require(tidyverse)
+require(data.table)
+require(ggplot2)
+require(vegan)
+
+
+## Bacteria
+
+# Load data
+load("03_Processed_data/16S_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.dispersal <- q1.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.dispersal.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
+                             autotransform = FALSE, k = 2, trymax = 200, 
+                             trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.NMDS.meta <- data.frame(q1.dispersal.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem)) %>% 
+  mutate(Organism = c("Bacteria"))
+
+
+
+## Fungi
+
+# Load data
+load("03_Processed_data/ITS_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.dispersal <- q1.ITS.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.ITS.dispersal.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
+                                 autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.NMDS.meta <- data.frame(q1.ITS.dispersal.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem)) %>% 
+  mutate(Organism = c("Fungi"))
+
+
+
+## Combine them
+NMDS.meta.combined <- q1.NMDS.meta %>% bind_rows(q1.ITS.NMDS.meta)
+
+
+# Create our visualization of dispersal slides + sources
+cols <- c("#508104", "#db8200") # slightly darker set of orange + green
+# cols <- c("#869c66", "#ff9502") # a brighter but more muted orange + green
+# cols <- c("#9cb806", "#f89c12") # like the last one but greener green
+
+
+pdf("../../04_Figures/NMDS_Dispersal_Communities_by_Ecosystem_Fungi_Bacteria.pdf", width = 8, height = 4)
+ggplot(data = NMDS.meta.combined) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) +
+  facet_wrap(~ Organism, 
+             scales = "free") + 
+  theme_test() +
+  scale_color_manual(values = cols, name = "Ecosystem") +
+  theme(strip.background = element_rect(fill = "white"), 
+        strip.text = element_text(size=17, face = "bold", 
+                                  margin = margin(4, 0, 4, 0)),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title.x = element_text(vjust = 0.35, size = 12),
+        axis.title.y = element_text(vjust = 0.35, size = 12), 
+        legend.title = element_text(face = "bold", size = 15), 
+        legend.text = element_text(size = 12)) 
+dev.off()
+

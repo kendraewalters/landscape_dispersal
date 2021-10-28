@@ -1,0 +1,62 @@
+## Script to make the figure: 
+## Figure SourceTracker
+## July 12th 2021
+## Kendra E Walters
+
+## Room of ()ments
+require(tidyverse)
+require(data.table)
+require(ggplot2)
+require(vegan)
+
+## Bacteria
+
+q1.proportions <- as.data.frame(fread("03_Processed_data/16S_glass_slide__dispersal_source_tracker/mixing_proportions.txt")) %>% 
+  rename(Environmental_Grass = EnvG,
+         Environmental_Shrub = EnvS) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID")) %>% 
+  pivot_longer(Environmental_Grass:Unknown, names_to = "Source", values_to = "Proportion") %>% 
+  mutate(Organism = c("Bacteria"))
+
+
+## Fungi 
+
+# Looking at the SourceTracker analysis
+q1.ITS.proportions <- as.data.frame(fread("03_Processed_data/ITS_glass_slide__dispersal_source_tracker/mixing_proportions.txt")) %>% 
+  rename(Environmental_Grass = EnvG,
+         Environmental_Shrub = EnvS) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID")) %>% 
+  pivot_longer(Air:Unknown, names_to = "Source", values_to = "Proportion") %>% 
+  mutate(Organism = c("Fungi"))
+
+
+## Combine
+proportions.combined <- q1.proportions %>% bind_rows(q1.ITS.proportions)
+
+
+## Make graph
+pdf("../../04_Figures/Fig_SourceTracker.pdf", 
+    width = 10, height = 5)
+ggplot(data = proportions.combined) + 
+  geom_boxplot(color = "black", aes(x = Ecosystem, y = Proportion, fill = Source)) + 
+  theme_classic() + 
+  facet_wrap(~ Organism) + 
+  scale_fill_brewer(palette = "Set1") +
+  theme(strip.text = element_text(size = 17, face = "bold", 
+                                  margin = margin(4, 0, 4, 0)),
+        axis.text = element_text(color = "black"),
+        axis.text.x = element_text(colour="black", size = 10), 
+        axis.text.y = element_text(colour="black", size = 10), 
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(vjust = 0.35, size = 12), 
+        legend.title = element_text(face = "bold", size = 15), 
+        legend.text = element_text(size = 12)) 
+dev.off()
+
+
+## The NUMBAS
+q1.proportions %>% 
+  filter(Source == "Soil") %>% 
+  pull(Proportion) %>% median() # 0.3446764

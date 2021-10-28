@@ -1,0 +1,1041 @@
+---
+title: "Question_1__characterizing_dispersal"
+author: "Kendra E. Walters"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    self_contained: no
+    lib_dir: libs
+    code_folding: hide
+    toc: yes
+    toc_float: TRUE
+editor_options: 
+  chunk_output_type: console
+---
+<style type="text/css">
+.main-container { max-width: 1000px; margin-left: 0; margin-right: auto; }
+img{ max-width:200%; height: auto; }
+td, th { padding : 6px }
+</style>
+
+# Purpose
+
+To answer our first overarching question for the landscape dispersal project: Is the rate and composition of microbial dispersal into the soil surface spatially heterogeneous? 
+
+Because vegetation appears to be a primary route through which bacteria disperse, we hypothesized that the taxa dispersing and their dispersal rate onto the soil surface will differ between two ecosystems. In fact, we know that bacterial abundance and composition in one grassland and CSS plant litter differs.
+
+
+```{r setup, message=FALSE}
+require(knitr)
+require(tidyverse)
+require(data.table)
+require(kableExtra)
+require(ggplot2)
+require(gridExtra)
+require(car)
+require(vegan)
+require(magrittr)
+require(indicspecies)
+require(pairwiseAdonis)
+require(conflicted)
+require(FSA)
+
+conflict_prefer("select", "dplyr")
+conflict_prefer("filter", "dplyr")
+
+knitr::opts_knit$set(root.dir = "../")
+
+knitr::opts_chunk$set(comment="", cache=T, warning = F, message = F, fig.path = "05_output_figures/")
+
+
+```
+
+# Abundance on glass slides
+
+First, we'll look at the abundances on the glass slides over time to see if they are acculumulating or at equilibrium. 
+
+```{r boxplot_glass_slide_abundance_by_ecosystem}
+# Load the data
+load("03_Processed_data/flow_cytometry_cleaned.rda")
+load("03_Processed_data/metadata_cleaned.rda")
+
+
+# Left join fights me unless both columns are the same data type
+metadata.together$`Random_#_Flow` <- as.character(metadata.together$`Random_#_Flow`)
+
+
+# Set up a key to change time point into # of days
+days.key <- c("0" = 0, "1" = 12, "2" = 26, "3" = 47, "4" = 54)
+
+
+# Clean up our data to just be what we need for this analysis 
+cell.counts.use <- cleaned.cell.counts %>% left_join(metadata.together) %>% # combine with metadata using Random_#_Flow
+  mutate(Treatment = ifelse(is.na(Treatment), "Death", Treatment)) %>% # add metadata for T0 samples that weren't included in the overall metadata file
+  mutate(Time_Point = ifelse(is.na(Time_Point), 0, Time_Point)) %>% 
+  mutate(Ecosystem = ifelse(grepl("^g", `Random_#_Flow`), "Grassland",
+                            ifelse(grepl("^s", `Random_#_Flow`), "Shrubland", Ecosystem))) %>%
+  select(number_cells_on_glass_slide_cleaned, Treatment, Ecosystem, Time_Point) %>% # reduce to only columns we need
+  filter(Treatment != "Closed") %>% # remove this negative control (should have been removed prior to this script)
+  mutate(Time_as_days = days.key[as.character(Time_Point)]) %>% # make column that lists # of days
+  mutate(cells_per_sq_cm = number_cells_on_glass_slide_cleaned / (7.5 * 2.5))
+
+
+# Plot this as a boxplot to give a general sense of what the abundance on the glass slides are doing
+ggplot(data = cell.counts.use %>% filter(Treatment == "Open")) +
+  geom_boxplot(aes(x = as.factor(Time_Point), y = cells_per_sq_cm)) + 
+  facet_wrap(vars(Ecosystem))
+```
+
+# Immigration rate calculations assuming population growth
+
+Okay, seems like the immigration rate is faster than the death rate for the first three timepoints, and then a plateau is potentially being reached. We can model this increase and plateau using the integral of our population "growth" equation (with just immigration and death). 
+
+dn/dt = i - d*n(t) where n = abundance on glass slides, i = immigration rate, and d = death rate
+
+So the integral is (when forced to go through the origin): 
+n(t) = i/d * (1 - e^(-d*t))
+
+```{r scatterplot_abundance_glass_slides_by_ecosystem}
+# plotting our data with our fancy integral equation going through the origin
+ggplot(data = cell.counts.use %>% filter(Treatment == "Open") %>% 
+  mutate(Time_as_days= as.integer(Time_as_days)), 
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
+  geom_point() + 
+  geom_smooth(method = "nls", formula = "y ~  (Im / d) * (1 - exp(-d * x))", se=F, 
+              method.args = list(start=c(Im=2e5, d=0.034))) +
+  facet_wrap(vars(Ecosystem)) 
+
+
+# Separate into our two ecosystems
+grass.cells <- cell.counts.use %>% filter(Ecosystem == "Grassland")
+shrub.cells <- cell.counts.use %>% filter(Ecosystem == "Shrubland")
+
+
+# Calculating the death rate and immigration rate coefficients
+(nls.shrub <- nls(cells_per_sq_cm ~  Im/d * (1 - exp(-d * Time_as_days)), 
+               data = shrub.cells[shrub.cells$Treatment == "Open", ],
+               start = list(Im = 2e5, d = 0.034)) %>% summary) 
+(nls.grass <- nls(cells_per_sq_cm ~  Im/d * (1 - exp(-d * Time_as_days)), 
+               data = grass.cells[grass.cells$Treatment == "Open", ],
+               start = list(Im = 2e5, d = 0.034)) %>% summary)
+
+# note: use summary(model) to look at standard error, which is HUGE for the death rate and fairly large for the immigration rate
+```
+
+But we don't actually need to have the model guess what the death rate is because we measured death rate with our death rate glass slides. So let's plot that data now and calculate our death rate for the grassland and shrubland. 
+
+```{r scatterplot_death_rate_by_ecosystem}
+# Calculating death rate for the grassland death slides
+intercept.grass <- grass.cells %>% 
+  filter(Treatment == "Death", 
+         Time_as_days == 0) %>% 
+  summarize(mean = mean(log(cells_per_sq_cm))) %>% pull(mean)
+
+r.grass <- lm(I(log(cells_per_sq_cm) - intercept.grass) ~ Time_as_days + 0, 
+               grass.cells %>% filter(Treatment == "Death")) %>% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
+print(paste0("Continuous death rate for grassland cells is ", round(r.grass, 4), "."))
+print(paste0("Daily death rate for grassland cells is " , round(-100*(1 - exp(r.grass * 1)), 2), "% per day."))
+  
+
+# Calculating death rate for the grassland death slides
+intercept.shrub <- shrub.cells %>% 
+  filter(Treatment == "Death", 
+         Time_as_days == 0) %>% 
+  summarize(mean = mean(log(cells_per_sq_cm))) %>% pull(mean)
+
+r.shrub <- lm(I(log(cells_per_sq_cm) - intercept.shrub) ~ Time_as_days + 0, 
+               shrub.cells %>% filter(Treatment == "Death")) %>% coef*-1 # THIS IS THE DEATH RATE!! (we do negative because this is actually describing the continuous rate at which cells survive, not the continuous rate at which cells die)
+print(paste0("Continuous death rate for shrubland cells is ", round(r.shrub, 4), "."))
+print(paste0("Daily death rate for grassland cells is " , round(-100*(1 - exp(r.shrub * 1)), 2), "% per day."))
+
+
+# creating a mini data frame to give our parameters for the linear models (since we are picky about our intercepts here)
+lm.parameters.death <- data.frame("Intercept" = c(intercept.grass, intercept.shrub), 
+                                  "Slope" = c(r.grass[[1]], r.shrub[[1]]), 
+                                  "Ecosystem" = c("Grassland", "Shrubland"))
+
+
+# plotting our death rate data
+ggplot(data = cell.counts.use %>% filter(Treatment == "Death") %>% 
+  mutate(Time_as_days= as.integer(Time_as_days)), 
+       aes(x = Time_as_days, y = log(cells_per_sq_cm))) +
+  geom_point() + 
+  geom_abline(data = lm.parameters.death, aes(intercept = Intercept, slope = -Slope)) + 
+  facet_wrap(vars(Ecosystem))
+
+```
+
+Sweet! Now we can use these death rates to input into our model so we are only asking it to find the estimate for the immigration rate. Note how much smaller the standard errors are for these immigration rates! 
+
+```{r scatterplot_abundance_glass_slides_with_measured_death_rate_by_ecosystem}
+# Calculating the death rate and immigration rate coefficients WITH measured death rates
+(nls.shrub <- nls(cells_per_sq_cm ~  
+                    Im/0.02372169 * (1 - exp(-0.02372169 * Time_as_days)), 
+               data = shrub.cells[shrub.cells$Treatment == "Open", ],
+               start = list(Im = 2e5)) %>% summary) 
+print(paste0("And the 95% confidence intervals for the shrubland are: +/- ", nls.shrub$parameters[[2]] * 1.96))
+
+(nls.grass <- nls(cells_per_sq_cm ~ 
+                    Im/0.03106574 * (1 - exp(-0.03106574 * Time_as_days)), 
+               data = grass.cells[grass.cells$Treatment == "Open", ],
+               start = list(Im = 2e5)) %>% summary)
+print(paste0("And the 95% confidence intervals for the grassland are: +/- ", nls.grass$parameters[[2]] * 1.96))
+
+t = 2.01174
+# z = 1.96 # can use this because n > 30? If so, replace "t" with "z" in the equation.
+n.grass <- grass.cells %>% filter(Treatment == "Open") %>% nrow
+n.shrub <- shrub.cells %>% filter(Treatment == "Open") %>% nrow
+sd.grass <- nls.grass$parameters[[2]] * sqrt(n.grass)
+sd.shrub <- nls.shrub$parameters[[2]] * sqrt(n.shrub)
+
+print("The upper limit of the difference between grassland and shrubland immigration rates is: ")
+(1168.974 - 939.9975) + t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))
+
+print("The lower limit is: ")
+(1168.974 - 939.9975) - t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))
+
+print("The +/- value is: ")
+t * sqrt(((sd.grass ^ 2)/n.grass) + ((sd.shrub ^2)/n.shrub))
+
+
+
+# Calculate % of typical litterbag community
+fread("01_Raw_data/BacterialAbundanceLomaRidgeLitterbagsFromClaudia.txt", 
+                    data.table = FALSE) %>% 
+  filter(timepoint != 0, 
+         moTreatment == "ambient") %>% 
+  mutate(`BACavgcount/g dry weight` = as.numeric(`BACavgcount/g dry weight`), 
+         AbundancePerBag = `DryMass (g)` * `BACavgcount/g dry weight`, 
+         AbundancePer_cm2 = AbundancePerBag / (13 * 14)) %>% # assuming a 15x15cm bag with 1 cm on each of the 3 sealed sides (1 side was created by folding over the 30cm x 15cm nylon sheet)
+  group_by(LitterOrigin) %>% 
+  summarize(mean = mean(AbundancePer_cm2)) %>% 
+  left_join(data.frame("LitterOrigin" = c("grass", "shrub"), 
+                       "immigration_rate" = c(nls.grass$parameters[[1]], nls.shrub$parameters[[1]]))) %>% 
+  mutate(immigration_percent = (immigration_rate / mean)*100) %>% 
+  print(.)
+
+
+# Graph the new curves that we made
+A <- ggplot(data = grass.cells %>% filter(Treatment == "Open") %>% 
+  mutate(Time_as_days= as.integer(Time_as_days)), 
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
+  geom_point() + 
+  geom_smooth(method = "nls", formula = "y ~  (Im / 0.03106574) * (1 - exp(-0.03106574 * x))", se=F, 
+              method.args = list(start=c(Im=2e5))) +
+  ggtitle("Grassland")
+
+B <- ggplot(data = shrub.cells %>% filter(Treatment == "Open") %>% 
+  mutate(Time_as_days= as.integer(Time_as_days)), 
+       aes(x = Time_as_days, y = cells_per_sq_cm)) +
+  geom_point() + 
+  geom_smooth(method = "nls", formula = "y ~  (Im / 0.02372169) * (1 - exp(-0.02372169 * x))", se=F, 
+              method.args = list(start=c(Im=2e5))) +
+  ggtitle("Shrubland")
+
+grid.arrange(A,B, nrow = 1)
+
+```
+
+# Immigration rate calculations assuming equilibrium
+Looking at the first graph of abundance on the glass slides above, it seems that, on and after the third time point, the abundance on the glass slides is at equilibrium. Actually, for the grassland, it looks like abundance dips a little, either driven by higher death rate or lower immigration rate, so we can just use the third timepoint to calculate our immigration rate at equilibrium. 
+
+
+```{r immigration_rate_at_equilibrium}
+# Calculate immigration rate for the grassland 
+imm.grass <- grass.cells %>% filter(Treatment == "Open", Time_Point %in% c("3")) %>% 
+  summarize(mean = mean(cells_per_sq_cm)) * r.grass
+
+print(paste0("The immigration rate for the grassland is ", imm.grass, " cells / cm^2 / day."))
+
+# Calculate immigration rate for the shrubland 
+imm.shrub <- shrub.cells %>% filter(Treatment == "Open", Time_Point %in% c("3")) %>% 
+  summarize(mean = mean(cells_per_sq_cm)) * r.shrub
+
+print(paste0("The immigration rate for the shrubland is ", imm.shrub, " cells / cm^2 / day."))
+```
+
+
+# Death rates by ecosystem
+One potentially interesting question is if death rates (for bacteria) differ by ecosystem. We can answer this question by running an ANCOVA on the abundance in the death slides, to see if there is an interaction between time and ecosystem. 
+```{r death_rates_by_ecosystem}
+mod <- cell.counts.use %>% filter(Treatment == "Death") %>% 
+  mutate(log_abundance_minus_intercept = ifelse(Ecosystem == "Shrubland", 
+                                            log(cells_per_sq_cm) - intercept.shrub, 
+                              ifelse(Ecosystem == "Grassland", 
+                                     log(cells_per_sq_cm) - intercept.grass, NA))) %>% 
+  lm(formula = log_abundance_minus_intercept ~ Time_as_days:Ecosystem + Time_as_days + 0, data = .) %>% # independent of order
+  Anova(type = "II") # MARGINALLY SIGNIFICANT
+
+mod
+
+print(paste0("The r2 for time is: ", 
+             mod$`Sum Sq`[1] / (mod$`Sum Sq`[1] + mod$`Sum Sq`[2] + mod$`Sum Sq`[3])))
+print(paste0("The r2 for time-by-ecosystem interaction is: ", 
+             mod$`Sum Sq`[2] / (mod$`Sum Sq`[1] + mod$`Sum Sq`[2] + mod$`Sum Sq`[3])))
+print(paste0("The r2 for the residuals is: ", 
+             mod$`Sum Sq`[3] / (mod$`Sum Sq`[1] + mod$`Sum Sq`[2] + mod$`Sum Sq`[3])))
+```
+
+# Taxa dying at different rates? 
+Another potentially interesting question is if taxa on the death rate slides die at different rates. We can answer this question by running PERMANOVA on the death rate samples to see if time influences either 16S or ITS composition. Because there are so few samples that sequenced well after timepoint 1, we are grouping 2-4 to run the PERMANOVA. 
+```{r NMDS_taxa_specific_death_rates_bacteria}
+# Load data
+load("03_Processed_data/16S_glass_slides.rda")
+
+tmp <- q1.bray.dist.df %>%  select(starts_with("LD")) %>% 
+                                       select(!("LDT0R5G_oops")) %>% 
+                                       rownames_to_column("SampleID") %>% 
+                                       filter(grepl("LD", SampleID)) %>% 
+                                       filter(!(SampleID == "LDT0R5G_oops")) %>% 
+                                       column_to_rownames("SampleID")
+
+
+# Create our visualization, just for fun
+q1.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df %>% 
+                                       select(starts_with("LD")) %>% 
+                                       select(!("LDT0R5G_oops")) %>% 
+                                       rownames_to_column("SampleID") %>% 
+                                       filter(grepl("LD", SampleID)) %>% 
+                                       filter(!(SampleID == "LDT0R5G_oops")) %>% 
+                                       column_to_rownames("SampleID"))), 
+                   autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+q1.NMDS.meta <- data.frame(q1.NMDS$points[,1:2]) %>% 
+  rownames_to_column("SampleID") %>% 
+  mutate(TimePoint = str_match(SampleID, "T([0-4])")[,2]) %>% 
+  mutate(Ecosystem = str_match(SampleID, "R[0-9][A-C]?([GS])")[,2], 
+         Ecosystem = ifelse(Ecosystem == "G", "Grassland", "Shrubland")) %>% 
+  mutate(TimePoint_grouped = ifelse(grepl("0|1", TimePoint), TimePoint, "2_through_4"))
+
+ggplot(data = q1.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Bacteria, death slides over time")
+
+# Do the PERMANOVA that will test our hypothesis
+q1.bray.dist.df.death <- as.data.frame(as.matrix(q1.bray.dist)) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LD", SampleID)) %>% 
+  filter(!(SampleID == "LDT0R5G_oops")) %>% 
+  mutate(SampleID = str_remove(SampleID, "_dup_new_protocol")) %>% 
+  column_to_rownames("SampleID") %>% 
+  select(starts_with("LD")) %>%
+  select(!("LDT0R5G_oops")) %>% 
+  rename(LDT1R5BG = LDT1R5BG_dup_new_protocol)
+
+      
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)
+
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)
+```
+
+
+```{r NMDS_taxa_specific_death_rates_fungi}
+# Load data
+load("03_Processed_data/ITS_glass_slides.rda")
+
+# Create our visualization, just for fun
+q1.ITS.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df %>% 
+                                           select(starts_with("LD")) %>% 
+                                           rownames_to_column("SampleID") %>% 
+                                           filter(grepl("LD", SampleID)) %>% 
+                                           column_to_rownames("SampleID"))), 
+                       autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+q1.ITS.NMDS.meta <- data.frame(q1.ITS.NMDS$points[,1:2]) %>% 
+  rownames_to_column("SampleID") %>% 
+  mutate(TimePoint = str_match(SampleID, "T([0-4])")[,2]) %>% 
+  mutate(Ecosystem = str_match(SampleID, "R[0-9][A-C]?([GS])")[,2], 
+         Ecosystem = ifelse(Ecosystem == "G", "Grassland", "Shrubland")) %>% 
+  mutate(TimePoint_grouped = ifelse(grepl("0|1", TimePoint), TimePoint, "2_through_4"))
+
+ggplot(data = q1.ITS.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(TimePoint), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, death slides over time")
+
+# Do the PERMANOVA that will test our hypothesis
+q1.bray.dist.df.death <- q1.ITS.bray.dist.df %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LD", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  select(starts_with("LD"))
+
+
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)
+
+adonis(q1.bray.dist.df.death ~ TimePoint_grouped * as.factor(Ecosystem), permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)
+
+```
+
+
+# Dispersal communities by ecosystem
+A key question of this study is - Do different ecosystems (plant communities) have different dispersal communities? To answer this question, we will use a PERMANOVA to see if different ecosystems show different bacterial and fungal communities on the glass slides. However, because variance seems to change through time along with the community composition, we will use a PERMDISP to see if variance could be driving the significant PERMANOVA too. And then, because the pattern over time is clearer with the fungi, we will look to see if one or a few taxa are driving this relationship. 
+
+```{r NMDS_dispersal_communities_by_ecosystem_bacteria}
+# Load data
+load("03_Processed_data/16S_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.dispersal <- q1.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.dispersal.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
+                             autotransform = FALSE, k = 2, trymax = 200, 
+                             trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.NMDS.meta <- data.frame(q1.dispersal.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Bacteria, glass slides by ecosystem")
+
+ggplot(data = q1.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Bacteria, glass slides by ecosystem AND time")
+
+# Do the staaaats!!
+print("These stats are for the BACTERIA")
+
+adonis(q1.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE)
+
+adonis(q1.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
+       data = q1.NMDS.meta, na.rm= TRUE) # interaction is not significant 
+
+library(pairwiseAdonis)
+set.seed(2)
+pairwise.adonis(q1.bray.dist.df.dispersal, q1.NMDS.meta$Time_Point, perm = 1000) # bonferroni correction, the unadjusted p-value = same (relatively, not exact) as output from pairwise.adonis2
+# pairwise.adonis2(q1.bray.dist.df.dispersal ~ Time_Point, data = q1.NMDS.meta) # no correction, I believe
+
+# See if variance may be partially driving the significant time effect on composition
+print("To see if TIME POINT has different variances and may be driving significant time effect on composition")
+betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = "centroid") %>% # no interaction in the PERMANOVA, so we can test each factor independently here
+  anova()
+betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), q1.NMDS.meta$Time_Point, type = "centroid") 
+```
+
+```{r NMDS_dispersal_communities_by_ecosystem_fungi}
+# Load data
+load("03_Processed_data/ITS_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.dispersal <- q1.ITS.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.ITS.dispersal.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.NMDS.meta <- data.frame(q1.ITS.dispersal.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.ITS.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, glass slides by ecosystem")
+
+
+ggplot(data = q1.ITS.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, shape = as.factor(Ecosystem), color = as.factor(Time_Point)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, glass slides by ecosystem AND time")
+
+# Do the staaaats!!
+print("These stats are for the FUNGI")
+
+adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)
+
+adonis(q1.ITS.bray.dist.df.dispersal ~ Ecosystem * Time_Point, permutations = 10000, 
+       data = q1.ITS.NMDS.meta, na.rm= TRUE)
+
+library(pairwiseAdonis)
+set.seed(2)
+pairwise.adonis(q1.ITS.bray.dist.df.dispersal, q1.ITS.NMDS.meta$Time_Point, perm = 1000) # bonferroni correction, the unadjusted p-value = same (relatively, not exact) as output from pairwise.adonis2
+
+# See if variance may be partially driving the significant time effect on composition
+print("To see if TIME POINT has different variances and may be driving significant time e effect on composition")
+betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), q1.ITS.NMDS.meta$Time_Point, type = "centroid") %>% # no interaction in the PERMANOVA, so we can test each factor independently here
+  anova()
+
+# Because the influence of time is more clear with the fungi, let's look to see if a single taxon is driving this
+
+
+# # Option one: import into PRIMER, and plot species that are correlated (above a certain r) with community variation as vectors on their ordinations
+# # These scripts output the files needed to import into PRIMER
+# q1.ITS.rarefied %>% 
+#   rownames_to_column("SampleID") %>% 
+#   filter(grepl("LO", SampleID)) %>% 
+#   write_tsv("~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__rarefied_filtered_for_primer.tsv", col_names = TRUE)
+# 
+# q1.ITS.NMDS.meta %>% 
+#   write_tsv("~/Google Drive/Dispersal_Ch_3/03_GitHub_Data_and_Scripts/landscape_dispersal/03_Processed_data/ITS_glass_slides_q1__NMDS_meta_filtered_for_primer.tsv", col_names = TRUE)
+# 
+# # From PRIMER - NMDS, correlated at 0.68 (Spearman), seems to drive strongly towards T2-4
+# ITS.species <- fread(input = "01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv") %>% 
+#   filter(grepl("6d360", `#OTUID`)) %>% 
+#   select(taxonomy) %>% print #k__Fungi;p__Ascomycota;c__Dothideomycetes;o__Pleosporales;f__Didymosphaeriaceae;g__Paraconiothyrium;s__unidentified
+
+
+## Option 2 (my favorite)
+## try with an indicator species analysis (between T1 and T2-4, because that's all that's significant)
+
+## Setting up key to analyze specific groups of timepoints
+key <- c("1" = "1", "2" = "not_1", "3" = "not_1", "4" = "not_1")
+
+## Splitting our rarefied OTU table into samples from grassland and samples from shrubland
+grassland <- q1.ITS.rarefied %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  filter(grepl("LO", New_Sample_ID)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem)) %>% 
+  filter(Ecosystem == "Grassland") %>% 
+  column_to_rownames("New_Sample_ID") %>% 
+  select(-Ecosystem)
+grassland.timept <- data.frame("New_Sample_ID" = row.names(grassland)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point)) %>% 
+  mutate(Time_Point = key[Time_Point])
+
+
+  
+shrubland <- q1.ITS.rarefied %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  filter(grepl("LO", New_Sample_ID)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem)) %>% 
+  filter(Ecosystem == "Shrubland") %>% 
+  column_to_rownames("New_Sample_ID") %>% 
+  select(-Ecosystem)
+shrubland.timept <- data.frame("New_Sample_ID" = row.names(shrubland)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point)) %>% 
+  mutate(Time_Point = key[Time_Point])
+
+#want: rows = sites
+print("Species indicator analysis for grassland: ")
+multipatt(grassland, grassland.timept$Time_Point, duleg = TRUE) %>% summary
+
+print("Species indicator analysis for shrubland: ")
+multipatt(shrubland, shrubland.timept$Time_Point, duleg = TRUE) %>% 
+  summary
+# I copied the rows with a stat value > 0.8 into a separate file so I can get this in table format
+# then read that table into R again below (I couldn't get tidy to work with the summary output...)
+
+
+## What species are these OTUs: 
+ITS.taxonomy <- fread(input = "01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv")
+indic.otu <- fread("03_Processed_data/ITS_indicator_species_otus.txt") %>% 
+  left_join(ITS.taxonomy, by = c("OTU" = "#OTUID")) %>% 
+  mutate(Family = str_extract(taxonomy, "f__[:alpha:]*"), 
+         Genus = str_extract(taxonomy, "g__[:alpha:]*"), 
+         Class = str_extract(taxonomy, "c__[:alpha:]*"), 
+         Eco_Time = paste0(Ecosystem, "_", TimePoint),
+         Random_Number = 1:nrow(.)) %>% 
+    drop_na(Family) %>%  # Dropping anything that isn't identified to family
+  mutate(Taxa_use = paste0(ifelse(is.na(Genus), Family, Genus), "_", Random_Number))
+
+## MAke a graph of the indicator species analysis
+require(ggforce)
+group_names <- c("Grassland, T1" = "Grassland_1", 
+                 "Grassland, T2,3,4" = "Grassland_not_1", 
+                 "Shrubland, T1" = "Shrubland_1", 
+                 "Shrubland, T2,3,4" = "Shrubland_not_1")
+
+group_names <- c("Grassland_1" = "Grassland, T1", 
+                "Grassland_not_1" = "Grassland, T2,3,4", 
+                "Shrubland_1" = "Shrubland, T1", 
+                 "Shrubland_not_1" = "Shrubland, T2,3,4")
+
+ggplot(data = indic.otu) + 
+  geom_point(aes(x = stat, y = reorder(Taxa_use, -Ranking))) + 
+  facet_col(~ Eco_Time, scales = "free_y", space = "free", 
+            labeller = as_labeller(group_names)) + 
+ # facet_wrap(~ Eco_Time, ncol = 1, scales = "free_y") + 
+  xlab("Indicator Value") + 
+  ylab("Fungi Taxon") + 
+  scale_x_reverse()
+
+
+
+# ## Option 3: do a CAP analysis
+# tmp <- 
+# capscale(formula =  q1.ITS.rarefied %>% 
+#                    rownames_to_column("SampleID") %>% 
+#                    filter(grepl("LO", SampleID)) %>% 
+#                    column_to_rownames("SampleID") ~ Time_Point, q1.ITS.NMDS.meta, 
+#          dist = "bray")
+# plot(tmp)
+
+```
+
+
+```{r taxa_barplot_timepoints_1_vs_234__fungi}
+require(anchors)
+
+# Load data
+load("03_Processed_data/ITS_glass_slides.rda")
+ITS.taxonomy <- as.data.frame(fread("01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv")) # import taxonomy file (3 columns --> OTU ID, taxonomy, and confidence)
+rowSums(q1.ITS.rarefied) # check to see if it's the right dataset, should be around 2400 but not perfectly for every dataset
+
+all.taxa <- q1.ITS.rarefied %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  filter(grepl("LO", New_Sample_ID)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem)) %>% 
+  mutate(Time_USE = ifelse(Time_Point == 1, "1", "not_1"), 
+         Eco_Time = paste0(Ecosystem,"_", Time_USE)) %>% 
+  select(!c(Time_Point, Ecosystem, Time_USE)) %>% 
+  column_to_rownames("New_Sample_ID") %>% 
+  aggregate(. ~ Eco_Time, data = ., FUN = mean) %>% # Take the average of the communities for each timepoint
+  column_to_rownames("Eco_Time") %>% 
+  t %>% as.data.frame %>% # transpose table so factor names are on top
+  rownames_to_column("#OTUID") %>% 
+  left_join(ITS.taxonomy %>% select(c(`#OTUID`, taxonomy))) %>% 
+  column_to_rownames("#OTUID") %>% 
+  mutate(taxonomy = str_extract(taxonomy, "g__[:alpha:]*") %>% # extract genus name and make pretty
+           gsub("g__", "", .) %>% factor(.)) %>% # also make factor
+  aggregate(. ~ taxonomy, data = ., FUN = sum) %>% 
+  column_to_rownames("taxonomy") %>% 
+  decostand(., method="total", MARGIN=2) %>% # columns now add to one (proportions)
+  rownames_to_column("Genus") %>% 
+  pivot_longer(!Genus, names_to = "Eco_Time", values_to = "Abundance") # you have to change the column range for a different dataset
+
+
+#call everything below 0.05 (5%) "Other 'classification level'"
+keep <- list()
+PERCENTAGE <- 0.02 # fill this out to to the cutoff you want
+
+samp <- unique(all.taxa$Eco_Time)
+
+for (i in 1:length(samp)) {
+  subset <- all.taxa %>% 
+    filter(Eco_Time == samp[i], # take only one eco_time sample at a time to capture any genera that are above the threshold within at least one sample
+           Abundance > PERCENTAGE) # filtering by subset
+  keep[[i]] <- c(subset$Genus %>% as.character) 
+}
+
+keep.unique <- unique(unlist(keep)) %>% 
+  .[!(. %in% c("unidentified"))] # removing "unidentified" from the list of taxa to keep
+
+
+
+above.threshold <- all.taxa %>% 
+  mutate(Genus = ifelse(Genus %in% keep.unique, Genus, "Other Genera")) %>% 
+  group_by(Genus, Eco_Time) %>% 
+  summarize(sum = sum(Abundance)) %>% 
+  rename(Relative_Abundance = sum) %>% 
+  mutate(Genus = factor(Genus, levels = c("Other Genera", sort(keep.unique))), 
+         Ecosystem = str_extract(string = Eco_Time, pattern = "^[a-zA-Z\ ]*"), # extracting ecosystem names
+         TimePoint = str_extract(string = Eco_Time, pattern = "[not_]*1$"), 
+         TimePoint = ifelse(TimePoint == "_1", "1", "Grouped 2, 3, and 4")) %>% 
+  select(!Eco_Time)
+
+
+# Graph time -- taxa barplot split by timepoint (1 v 2,3,+ 4) and Ecosystem!!
+color = c("#a9a9a9", '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', 
+'#f032e6', '#bcf60c', '#fabebe', '#008080', '#e6beff') # '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'
+ggplot(above.threshold) +
+  geom_bar(aes(x = TimePoint, y = Relative_Abundance, fill = Genus), stat = "identity") +
+  labs(x = "Time Point", y = "Proportion of Total Community (identified to Genus)") +
+  facet_wrap( ~ Ecosystem, ncol = 2) +
+  theme_test() + 
+  scale_fill_manual(values = color, name = "Genera") 
+```
+
+# Dispersal sources
+```{r dispersal_sources_bacteria}
+load("03_Processed_data/16S_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.sources <- q1.bray.dist.df %>% 
+  select(contains("Env") | contains("Soil") | contains("Air")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Env|Soil|Air", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.sources.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.sources)), 
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.sources.NMDS.meta <- data.frame(q1.sources.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem, Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.sources.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Treatment), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Bacteria, dispersal sources")
+
+# Run the statistics
+soil <- q1.bray.dist.df.sources %>% 
+  select(contains("Soil")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Soil", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  as.matrix
+
+litter <- q1.bray.dist.df.sources %>% 
+  select(contains("Env")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Env", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  as.matrix
+
+adonis(soil ~ Ecosystem, data = q1.sources.NMDS.meta %>% filter(grepl("Soil", New_Sample_ID))) # 0.732
+adonis(litter ~ Ecosystem, data = q1.sources.NMDS.meta %>% filter(grepl("Env", New_Sample_ID))) # 0.001
+
+```
+
+```{r dispersal_sources_fungi}
+load("03_Processed_data/ITS_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.sources <- q1.ITS.bray.dist.df %>% 
+  select(contains("Env") | contains("Soil")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Env|Soil", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.ITS.sources.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.sources)), 
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.sources.NMDS.meta <- data.frame(q1.ITS.sources.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem, Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.ITS.sources.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Treatment), shape = as.factor(Ecosystem)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, dispersal sources")
+
+# Run the statistics
+soil <- q1.ITS.bray.dist.df.sources %>% 
+  select(contains("Soil")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Soil", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  as.matrix
+
+litter <- q1.ITS.bray.dist.df.sources %>% 
+  select(contains("Env")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("Env", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% 
+  as.matrix
+
+adonis(soil ~ Ecosystem, data = q1.ITS.sources.NMDS.meta %>% filter(grepl("Soil", New_Sample_ID))) # 0.384
+adonis(litter ~ Ecosystem, data = q1.ITS.sources.NMDS.meta %>% filter(grepl("Env", New_Sample_ID))) # 0.002
+
+```
+
+# Alpha-diveristy of dispersal community
+```{r alpha_diversity_by_ecosystem__bacteria}
+load("03_Processed_data/16S_glass_slides.rda")
+
+# Calculate alpha diversity! and filter to just glass slides
+alpha.16S <- data.frame("Shannon" = diversity(q1.rarefied, index = "shannon")) %>% 
+  mutate(Richness = specnumber(q1.rarefied), 
+         Simpson = diversity(q1.rarefied, index = "simpson")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  left_join(metadata.together %>% 
+              select(New_Sample_ID, Time_Point, Transect, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID"))
+
+## Calculate average alpha-diversity overall and by ecosystem, testing significance
+print(paste0("The average RICHNESS for BACTERIA is: ", round(mean(alpha.16S$Richness), 0), " OTUs per glass slide (rarefied to 971 sequences)."))
+
+print("And averaged by ecosystem is:")
+aggregate(alpha.16S$Richness, by = list(alpha.16S$Ecosystem), FUN = mean)
+
+anova(lm(Richness ~ Ecosystem, data = alpha.16S))
+```
+
+```{r alpha_diversity_by_ecosystem__fungi}
+load("03_Processed_data/ITS_glass_slides.rda")
+
+# Calculate alpha diversity! and filter to just glass slides
+alpha.ITS <- data.frame("Shannon" = diversity(q1.ITS.rarefied, index = "shannon")) %>% 
+  mutate(Richness = specnumber(q1.ITS.rarefied), 
+         Simpson = diversity(q1.ITS.rarefied, index = "simpson")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  left_join(metadata.together %>% 
+            select(New_Sample_ID, Time_Point, Transect, Ecosystem), 
+          by = c("SampleID" = "New_Sample_ID"))
+
+## Calculate average alpha-diversity overall and by ecosystem, testing significance
+print(paste0("The average RICHNESS for FUNGI is: ", round(mean(alpha.ITS$Richness), 0), " OTUs per glass slide (rarefied to 2400 sequences)."))
+
+print("And averaged by ecosystem is:")
+aggregate(alpha.ITS$Richness, by = list(alpha.ITS$Ecosystem), FUN = mean)
+
+anova(lm(Richness ~ Ecosystem, data = alpha.ITS))
+```
+
+```{r alpha_diversity_by_ecosystem__comparing_fungi_AND_bacteria}
+print("Now we are COMPARING bacteria and fungi (both rarefied to 971 here):")
+
+load("03_Processed_data/16S_glass_slides.rda")
+alpha.compare.16S <- data.frame("Shannon" = diversity(q1.rarefied, index = "shannon")) %>% 
+  mutate(Richness = specnumber(q1.rarefied), 
+         Simpson = diversity(q1.rarefied, index = "simpson")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  left_join(metadata.together %>% 
+              select(New_Sample_ID, Time_Point, Transect, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID")) %>% 
+  mutate(Taxa = "Bacteria")
+
+
+q1.ITS.rarefied.971 <- fread("03_Processed_data/ITS_glass_slides__rarefied_971_rounded.tsv", data.table = FALSE) %>% 
+  column_to_rownames("V1")
+
+alpha.compare <- data.frame("Shannon" = diversity(q1.ITS.rarefied.971, index = "shannon")) %>% 
+  mutate(Richness = specnumber(q1.ITS.rarefied.971), 
+         Simpson = diversity(q1.ITS.rarefied.971, index = "simpson")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  left_join(metadata.together %>% 
+            select(New_Sample_ID, Time_Point, Transect, Ecosystem), 
+          by = c("SampleID" = "New_Sample_ID")) %>% 
+  mutate(Taxa = "Fungi") %>% 
+  bind_rows(alpha.compare.16S)
+
+print(paste0("The average taxa richness for bacteria and fungi are:"))
+aggregate(alpha.compare$Richness, by = list(alpha.compare$Taxa), FUN = mean)
+anova(lm(Richness ~ Taxa, data = alpha.compare))
+
+mod <- anova(lm(Richness ~ Taxa, data = alpha.compare))
+print(paste0("And the r2 for that ANOVA is: ", 
+             mod$`Sum Sq`[1] / (mod$`Sum Sq`[1] + mod$`Sum Sq`[2])))
+```
+
+# Beta-diversity of dispersal community by ecosystem
+We hypothesize that dispersal communities will show higher beta-diversity in the shrubland because the plant community is more heterogeneous in the shrubland. So let's test that with our good friend, PERMDISP!
+
+```{r betadisper_bacteria}
+# Load data
+load("03_Processed_data/16S_glass_slides.rda")
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.dispersal <- q1.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+q1.permdisp.meta <- data.frame("New_Sample_ID" = names(q1.bray.dist.df.dispersal)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Test betadiversity
+betadisper(as.dist(as.matrix(q1.bray.dist.df.dispersal)), 
+           q1.permdisp.meta$Ecosystem, 
+           type = c("centroid")) %>% anova
+```
+
+
+```{r betadisper_fungi}
+# Load data
+glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
+load(glass.slides.ITS)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.dispersal <- q1.ITS.bray.dist.df %>% 
+  select(contains("LO")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  column_to_rownames("SampleID")
+
+q1.ITS.permdisp.meta <- data.frame("New_Sample_ID" = names(q1.ITS.bray.dist.df.dispersal)) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem))
+
+# Test betadiversity
+betadisper(as.dist(as.matrix(q1.ITS.bray.dist.df.dispersal)), 
+           q1.ITS.permdisp.meta$Ecosystem, 
+           type = c("centroid")) %T>% print %>% anova %>% print
+```
+
+# Dispersal sources - Air, Environmental Litter, and Soil
+Let's check out how our dispersal slides compare to the dispersal sources! We'll look at this with an NMDS, and maybe a PERMANOVA, and then with SourceTracker to get % of source communities. 
+
+```{r NMDS_dispersal_sources_bacteria}
+# Load data
+glass.slides.16S <- "03_Processed_data/16S_glass_slides.rda"
+load(glass.slides.16S)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.bray.dist.df.source <- q1.bray.dist.df %>% 
+  select(!(contains("LD"))) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(!(grepl("LD", SampleID))) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID")
+ 
+# Export to make a 3D picture in PRIMER
+write_tsv(q1.bray.dist.df.source %>% 
+            rownames_to_column("SampleID"), "03_Processed_data/16S_glass_slides_q1__bray_dist_dispersal_source.tsv")
+
+write_tsv(data.frame("New_Sample_ID" = row.names(q1.bray.dist.df.source)) %>% 
+  left_join(metadata.together) %>%
+  mutate(SourceOrEcosystem = ifelse(Substrate == "Glass Slide", 
+                                    paste0(Substrate, "_", Ecosystem), 
+                                    Substrate)) %>% 
+  select(New_Sample_ID, SourceOrEcosystem), 
+  "03_Processed_data/16S_glass_slides_q1__bray_dist_dispersal_source_metadata.tsv")
+
+
+
+# Do the NMDS
+q1.source.NMDS <- metaMDS(as.dist(as.matrix(q1.bray.dist.df.source)), 
+                             autotransform = FALSE, k = 3, trymax = 200, trace = 0)
+
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.source.NMDS.meta <- data.frame(q1.source.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem, Treatment)) %>% 
+  mutate(Source_Sink = ifelse(Treatment == "Open" | Treatment == "Environmental Litter",
+                                     paste0(Treatment, "_", Ecosystem),
+                                     Treatment)) 
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.source.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Source_Sink)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1")  +
+  ggtitle("Bacteria, glass slide communities + dispersal sources")
+
+# Doing the stats to test differences among groups
+adonis(q1.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
+       data = q1.source.NMDS.meta, na.rm= TRUE)
+
+pairwise.adonis(q1.bray.dist.df.source, q1.source.NMDS.meta$Source_Sink)
+
+pairwise.adonis2(q1.bray.dist.df.source ~ Source_Sink, data = q1.source.NMDS.meta)
+
+# Looking at the SourceTracker analysis
+q1.proportions <- as.data.frame(fread("03_Processed_data/16S_glass_slide__dispersal_source_tracker/mixing_proportions.txt")) %>% 
+  rename(Environmental_Grass = EnvG,
+         Environmental_Shrub = EnvS) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID")) %>% 
+  pivot_longer(Environmental_Grass:Unknown, names_to = "Source", values_to = "Proportion")
+
+ggplot(data = q1.proportions) + 
+  geom_boxplot(color = "black", aes(x = Ecosystem, y = Proportion, fill = Source)) + 
+  theme_classic() + 
+  scale_fill_brewer(palette = "Set1") +
+  ggtitle("BActeria, Source Tracker dispersal sources")
+
+## Kruskal test (overall) and Dunn test (multiple comparisons at each ecosystem)
+shrubland <- q1.proportions %>% filter(Ecosystem == "Shrubland")
+grassland <- q1.proportions %>% filter(Ecosystem == "Grassland")
+
+kruskal.test(Proportion ~ Source, data = shrubland)
+kruskal.test(Proportion ~ Source, data = grassland)
+
+dunnTest(Proportion ~ Source, data = shrubland, method = "bonferroni")
+dunnTest(Proportion ~ Source, data = grassland, method = "bonferroni")
+```
+
+```{r NMDS_dispersal_sources_fungi}
+# Load data
+glass.slides.ITS <- "03_Processed_data/ITS_glass_slides.rda"
+load(glass.slides.ITS)
+
+# Subset our Bray-Curtis distance matrix to include only samples we want to plot and test
+q1.ITS.bray.dist.df.source <- q1.ITS.bray.dist.df %>% 
+  select(!(contains("LD"))) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(!(grepl("LD", SampleID))) %>% 
+  column_to_rownames("SampleID")
+
+# Do the NMDS
+q1.ITS.source.NMDS <- metaMDS(as.dist(as.matrix(q1.ITS.bray.dist.df.source)), 
+                             autotransform = FALSE, k = 2, trymax = 200, trace = 0)
+
+# Merge with our metatdata and create a new column to specify what we want to look at
+q1.ITS.source.NMDS.meta <- data.frame(q1.ITS.source.NMDS$points[,1:2]) %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Time_Point, Ecosystem, Treatment)) %>% 
+  mutate(Source_Sink = ifelse(Treatment == "Open" | Treatment == "Environmental Litter",
+                                     paste0(Treatment, "_", Ecosystem),
+                                     Treatment))
+
+# Create our visualization of dispersal slides + sources
+ggplot(data = q1.ITS.source.NMDS.meta) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Source_Sink)), size = 4) + 
+  theme_classic() +
+  scale_color_brewer(palette = "Set1") +
+  ggtitle("Fungi, glass slide communities + dispersal sources")
+
+# Doing the stats to test differences among groups
+adonis(q1.ITS.bray.dist.df.source ~ Source_Sink, permutations = 10000, 
+       data = q1.ITS.source.NMDS.meta, na.rm= TRUE)
+
+pairwise.adonis(q1.ITS.bray.dist.df.source, q1.ITS.source.NMDS.meta$Source_Sink)
+
+pairwise.adonis2(q1.ITS.bray.dist.df.source ~ Source_Sink, data = q1.ITS.source.NMDS.meta)
+
+
+# Looking at the SourceTracker analysis
+q1.ITS.proportions <- as.data.frame(fread("03_Processed_data/ITS_glass_slide__dispersal_source_tracker/mixing_proportions.txt")) %>% 
+  rename(Environmental_Grass = EnvG,
+         Environmental_Shrub = EnvS) %>% 
+  left_join(metadata.together %>% select(New_Sample_ID, Ecosystem), 
+            by = c("SampleID" = "New_Sample_ID")) %>% 
+  pivot_longer(Air:Unknown, names_to = "Source", values_to = "Proportion")
+
+ggplot(data = q1.ITS.proportions) + 
+  geom_boxplot(color = "black", aes(x = Ecosystem, y = Proportion, fill = Source)) + 
+  theme_classic() + 
+  scale_fill_brewer(palette = "Set1") +
+  ggtitle("Fungi, Source Tracker dispersal sources")
+
+## Kruskal test (overall) and Dunn test (multiple comparisons at each ecosystem)
+shrubland <- q1.ITS.proportions %>% filter(Ecosystem == "Shrubland")
+grassland <- q1.ITS.proportions %>% filter(Ecosystem == "Grassland")
+
+kruskal.test(Proportion ~ Source, data = shrubland)
+kruskal.test(Proportion ~ Source, data = grassland)
+
+dunnTest(Proportion ~ Source, data = shrubland, method = "bonferroni")
+dunnTest(Proportion ~ Source, data = grassland, method = "bonferroni")
+```

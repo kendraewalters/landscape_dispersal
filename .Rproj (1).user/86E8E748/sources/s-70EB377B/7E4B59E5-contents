@@ -1,0 +1,203 @@
+## Script to make the figure: 
+## Figure Mantel Correlations at Increasing Radii
+## July 12th 2021
+## Kendra E Walters
+
+## Room of ()ments
+require(tidyverse)
+require(data.table)
+require(ggplot2)
+require(ncf)
+require(vegan)
+
+## All Samples -- so this graph does include circles that overlap - even considerable overlap at the larger radii and the inner (closer together) sites
+
+## Bacteria
+
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load("03_Processed_data/16S_glass_slides.rda")
+M.microbial <- q1.bray.dist.df %>% 
+  select(starts_with("LO")) %>% 
+  rename(LOT1A3 = LOT1A3_dup_new_protocol) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  mutate(SampleID = ifelse(SampleID == "LOT1A3_dup_new_protocol", "LOT1A3", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords <- as.data.frame(fread("03_Processed_data/site_locs_coordinates.tsv")) %>%
+  rename(Site = V1)
+
+M.distance <- data.frame("Sample" = row.names(M.microbial)) %>% # start with same names in same order
+  mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>%  # get site ID
+  left_join(site.coords) %>% # join with our coordinates
+  column_to_rownames("Sample") %>%
+  select(x,y) %>% dist(., method = "euclidean") %>% # create Euclidean distance matrix
+  as.matrix
+
+
+### Here we start the loop through our difference distances
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+plant.list <- list.files("03_Processed_data/map/", pattern = "_meter_composition_df.tsv")
+r.list <- list()
+p.list <- list()
+radius.list <- list()
+
+## The radius at which you measured plant composition
+radius <- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4) # COPY THIS FROM THE -- MAP_make_plant_composition_spatial_polygon_file.R
+
+for (i in 1:length(plant.list)) {
+  plants <- fread(paste0("03_Processed_data/map/", plant.list[[i]]), data.table = FALSE) %>% 
+    rename(Site = V1)
+  
+  M.plants <- data.frame("Sample" = row.names(M.microbial)) %>% 
+    mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>% 
+    left_join(plants) %>% 
+    column_to_rownames("Sample") %>% 
+    select(!(Site)) %>% 
+    vegdist() %>% as.matrix
+  
+  # mantel time!!
+  mantel.output <- vegan::mantel(M.microbial, M.plants, permutations = 10000, method = "pearson")
+
+
+  r.list[[i]] <- mantel.output$statistic
+  p.list[[i]] <- mantel.output$signif
+  
+  
+  # ## Trying out this partial Mantel
+  # mantel.output <- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = "pearson", quiet = TRUE)
+  # print(radius[i])
+  # print(mantel.output)
+  # 
+  # r.list[[i]] <- mantel.output$MantelR[["r13.2"]]
+  # p.list[[i]] <- mantel.output$p[[5]]
+  
+}
+
+
+mantel.corr.all.b <- data.frame("r" = unlist(r.list), 
+                              "p" = unlist(p.list), 
+                              "radius" = radius) %>% 
+  mutate(signif = ifelse(p < 0.05, "yes", "no"), 
+         Samples = "all", 
+         Organism = c("Bacteria"))
+
+
+## FUNGI 
+
+## MICROBIAL MATRIX
+# Clean up the Bray-Curtis matrix for bacterial communities
+load("03_Processed_data/ITS_glass_slides.rda")
+M.microbial <- q1.ITS.bray.dist.df %>% 
+  select(starts_with("LO")) %>% 
+  rownames_to_column("SampleID") %>% 
+  filter(grepl("LO", SampleID)) %>% 
+  column_to_rownames("SampleID") %>% as.matrix
+
+
+## DISTANCE MATRIX
+# Load site coordinates and use to make dataframe of coordinates for each sample
+site.coords <- as.data.frame(fread("03_Processed_data/site_locs_coordinates.tsv")) %>% 
+  rename(Site = V1)
+
+M.distance <- data.frame("Sample" = row.names(M.microbial)) %>% # start with same names in same order
+  mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>%  # get site ID
+  left_join(site.coords) %>% # join with our coordinates
+  column_to_rownames("Sample") %>% 
+  select(x,y) %>% dist(., method = "euclidean") %>% # create Euclidean distance matrix
+  as.matrix
+
+
+### Here we start the loop through our difference distances
+
+## PLANT MATRIX
+## reading in plant composition bc and make df of plant composition of each sample
+plant.list <- list.files("03_Processed_data/map/", pattern = "_meter_composition_df.tsv")
+r.list <- list()
+p.list <- list()
+radius.list <- list()
+
+## The radius at which you measured plant composition
+radius <- c(0.1, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4) # COPY THIS FROM THE -- MAP_make_plant_composition_spatial_polygon_file.R
+
+for (i in 1:length(plant.list)) {
+  plants <- fread(paste0("03_Processed_data/map/", plant.list[[i]]), data.table = FALSE) %>% 
+    rename(Site = V1)
+  
+  M.plants <- data.frame("Sample" = row.names(M.microbial)) %>% 
+    mutate(Site = str_extract(Sample, "[ABC][1-8]")) %>% 
+    left_join(plants) %>% 
+    column_to_rownames("Sample") %>% 
+    select(!(Site)) %>% 
+    vegdist() %>% as.matrix
+  
+  ## Partial mantel time!!
+  mantel.output <- partial.mantel.test(M.microbial, M.distance, M.plants, resamp = 10000, method = "pearson", quiet = TRUE)
+  
+  r.list[[i]] <- mantel.output$MantelR[["r13.2"]]
+  p.list[[i]] <- mantel.output$p[[5]]
+}
+
+mantel.corr.all.f <- data.frame("r" = unlist(r.list), 
+                              "p" = unlist(p.list), 
+                              "radius" = radius) %>% 
+  mutate(signif = ifelse(p < 0.05, "yes", "no"), 
+         Samples = "all", 
+         Organism = c("Fungi"))
+
+
+## COMBINE
+mantel.corr.all.combo <- mantel.corr.all.b %>% bind_rows(mantel.corr.all.f)
+
+
+## GRAPH TIME
+pdf("../../04_Figures/Mantel_Correlations_at_Increasing_Radii.pdf", width = 8, height = 4)
+ggplot(data = mantel.corr.all.combo, aes(x = radius, y = r)) +
+  geom_line(aes(linetype = Samples), show.legend = FALSE) + 
+  geom_point(color = "white", size = 5) +
+  geom_point(aes(shape = signif), 
+             colour = "black", size = 5) +
+  facet_wrap(~ Organism, scales = "free_y") +
+  theme_test() + 
+  xlab("Radius (m)") +
+  ylab("Correlation Coefficient (r)") + 
+  theme(strip.background = element_rect(fill = "white"), 
+        strip.text = element_text(size=17, face = "bold", 
+                                  margin = margin(4, 0, 4, 0)),
+        axis.ticks = element_line(colour = "black"),
+        axis.text.x = element_text(colour="black", size = 12), 
+        axis.text.y = element_text(colour="black", size = 12), 
+        axis.title.x = element_text(vjust = 0.35, size = 14),
+        axis.title.y = element_text(vjust = 1, size = 14), 
+        legend.title = element_blank(), 
+        legend.text = element_text(size = 15)) +
+  scale_shape_manual(values=c(1,19), labels = c("P > 0.05", "P < 0.05")) # , guide = "none"
+dev.off()
+
+
+ggplot(data = NMDS.meta.combined) +
+  geom_point(aes(x = MDS1, y = MDS2, color = as.factor(Ecosystem)), size = 4) +
+  facet_wrap(~ Organism, 
+             scales = "free") + 
+  theme_test() +
+  scale_color_manual(values = cols, name = "Ecosystem") +
+  theme(strip.background = element_rect(fill = "white"), 
+        strip.text = element_text(size=17, face = "bold", 
+                                  margin = margin(4, 0, 4, 0)),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title.x = element_text(vjust = 0.35, size = 12),
+        axis.title.y = element_text(vjust = 0.35, size = 12), 
+        legend.title = element_text(face = "bold", size = 15), 
+        legend.text = element_text(size = 12)) 
+dev.off()
+
+
+

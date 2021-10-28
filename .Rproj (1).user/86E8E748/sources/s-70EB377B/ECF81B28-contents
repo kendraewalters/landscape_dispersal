@@ -1,0 +1,213 @@
+## Script to make the figure: 
+##  Figure Fungi Taxa Over Time  
+## July 16th 2021
+## Kendra E Walters
+
+## Room of ()ments
+require(data.table)
+require(ggplot2)
+require(vegan)
+require(anchors)
+require(tidyverse)
+require(conflicted)
+require(egg)
+
+
+conflict_prefer("select", "dplyr")
+conflict_prefer("filter", "dplyr")
+
+## Taxa barplot 
+
+# Load data
+load("03_Processed_data/ITS_glass_slides.rda")
+ITS.taxonomy <- as.data.frame(fread("01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv")) # import taxonomy file (3 columns --> OTU ID, taxonomy, and confidence)
+rowSums(q1.ITS.rarefied) # check to see if it's the right dataset, should be around 2400 but not perfectly for every dataset
+
+all.taxa <- q1.ITS.rarefied %>% 
+  rownames_to_column("New_Sample_ID") %>% 
+  filter(grepl("LO", New_Sample_ID)) %>% 
+  left_join(metadata.together %>% 
+              select(New_Sample_ID, Time_Point, Ecosystem)) %>% 
+  mutate(Time_USE = ifelse(Time_Point == 1, "1", "not_1"), 
+         Eco_Time = paste0(Ecosystem,"_", Time_USE)) %>% 
+  select(!c(Time_Point, Ecosystem, Time_USE)) %>% 
+  column_to_rownames("New_Sample_ID") %>% 
+  aggregate(. ~ Eco_Time, data = ., FUN = mean) %>% # Take the average of the communities for each timepoint
+  column_to_rownames("Eco_Time") %>% 
+  t %>% as.data.frame %>% # transpose table so factor names are on top
+  rownames_to_column("#OTUID") %>% 
+  left_join(ITS.taxonomy %>% select(c(`#OTUID`, taxonomy))) %>% 
+  column_to_rownames("#OTUID") %>% 
+  mutate(taxonomy = str_extract(taxonomy, "g__[:alpha:]*") %>% # extract genus name and make pretty
+           gsub("g__", "", .) %>% factor(.)) %>% # also make factor
+  aggregate(. ~ taxonomy, data = ., FUN = sum) %>% 
+  column_to_rownames("taxonomy") %>% 
+  decostand(., method="total", MARGIN=2) %>% # columns now add to one (proportions)
+  rownames_to_column("Genus") %>% 
+  pivot_longer(!Genus, names_to = "Eco_Time", values_to = "Abundance") # you have to change the column range for a different dataset
+
+
+#call everything below 0.05 (5%) "Other 'classification level'"
+keep <- list()
+PERCENTAGE <- 0.02 # fill this out to to the cutoff you want
+
+samp <- unique(all.taxa$Eco_Time)
+
+for (i in 1:length(samp)) {
+  subset <- all.taxa %>% 
+    filter(Eco_Time == samp[i], # take only one eco_time sample at a time to capture any genera that are above the threshold within at least one sample
+           Abundance > PERCENTAGE) # filtering by subset
+  keep[[i]] <- c(subset$Genus %>% as.character) 
+}
+
+keep.unique <- unique(unlist(keep)) %>% 
+  .[!(. %in% c("unidentified"))] # removing "unidentified" from the list of taxa to keep
+
+
+
+above.threshold <- all.taxa %>% 
+  mutate(Genus = ifelse(Genus %in% keep.unique, Genus, "Other Genera")) %>% 
+  group_by(Genus, Eco_Time) %>% 
+  summarize(sum = sum(Abundance)) %>% 
+  rename(Relative_Abundance = sum) %>% 
+  mutate(Genus = factor(Genus, levels = c("Other Genera", sort(keep.unique))), 
+         Ecosystem = str_extract(string = Eco_Time, pattern = "^[a-zA-Z\ ]*"), # extracting ecosystem names
+         TimePoint = str_extract(string = Eco_Time, pattern = "[not_]*1$"), 
+         TimePoint = ifelse(TimePoint == "_1", "1", "Grouped 2, 3, and 4")) %>% 
+  select(!Eco_Time)
+
+
+# Graph time -- taxa barplot split by timepoint (1 v 2,3,+ 4) and Ecosystem!!
+color = c("#a9a9a9", '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', 
+          '#f032e6', '#bcf60c', '#fabebe', '#008080', '#e6beff') # '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'
+A <- ggplot(above.threshold) +
+  geom_bar(aes(x = TimePoint, y = Relative_Abundance, fill = Genus), stat = "identity") +
+  labs(x = "Time Point", y = "Proportion of Total Community \n (identified to Genus)") +
+  facet_wrap( ~ Ecosystem, ncol = 2) +
+  theme_test() + 
+  scale_fill_manual(values = color, name = "Genera")+ 
+  theme(strip.text = element_text(size = 17, face = "bold", 
+                                  margin = margin(4, 0, 4, 0)),
+        axis.text.x = element_text(colour="black", size = 12), 
+        axis.text.y = element_text(colour="black", size = 12), 
+        axis.ticks = element_line(colour = "black"),
+        axis.title.x = element_text( size = 16), #vjust = 0.35,
+        axis.title.y = element_text( size = 16), #vjust = 0.35,
+        legend.title = element_text(face = "bold", size = 17), 
+        legend.text = element_text(size = 12)) 
+
+## Changes in taxa over time
+above.threshold %>% filter(Genus == "Alternaria", TimePoint == "1") %>% 
+  pull(Relative_Abundance) %>% mean # 0.3727272
+above.threshold %>% filter(Genus == "Alternaria", TimePoint == "Grouped 2, 3, and 4") %>% 
+  pull(Relative_Abundance) %>% mean # 0.545896
+
+above.threshold %>% filter(Genus == "Cladosporium", TimePoint == "1") %>% 
+  pull(Relative_Abundance) %>% mean # 0.1239963
+above.threshold %>% filter(Genus == "Cladosporium", TimePoint == "Grouped 2, 3, and 4") %>% 
+  pull(Relative_Abundance) %>% mean # 0.1685617
+
+above.threshold %>% filter(Genus == "Teichospora", 
+                           TimePoint == "1",
+                           Ecosystem == "Grassland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.005480145
+above.threshold %>% filter(Genus == "Teichospora", 
+                           TimePoint == "Grouped 2, 3, and 4",
+                           Ecosystem == "Grassland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.0002172968
+
+above.threshold %>% filter(Genus == "Caryophylloseptoria", 
+                           TimePoint == "1",
+                           Ecosystem == "Shrubland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.02577519
+above.threshold %>% filter(Genus == "Caryophylloseptoria", 
+                           TimePoint == "Grouped 2, 3, and 4",
+                           Ecosystem == "Shrubland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.0003125402
+
+above.threshold %>% filter(Genus == "Aureobasidium", 
+                           TimePoint == "1",
+                           Ecosystem == "Shrubland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.08071705
+above.threshold %>% filter(Genus == "Aureobasidium", 
+                           TimePoint == "Grouped 2, 3, and 4",
+                           Ecosystem == "Shrubland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.02448845
+
+above.threshold %>% filter(Genus == "Truncatella", 
+                           TimePoint == "1",
+                           Ecosystem == "Shrubland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.03352713
+above.threshold %>% filter(Genus == "Truncatella", 
+                           TimePoint == "Grouped 2, 3, and 4",
+                           Ecosystem == "Shrubland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.007813505
+
+above.threshold %>% filter(Genus == "Seimatosporium", 
+                           TimePoint == "1",
+                           Ecosystem == "Shrubland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.07965116
+above.threshold %>% filter(Genus == "Seimatosporium", 
+                           TimePoint == "Grouped 2, 3, and 4",
+                           Ecosystem == "Shrubland") %>% 
+  pull(Relative_Abundance) %>% mean # 0.01654625
+
+
+
+
+
+
+
+
+
+## Indicator species analysis
+
+## What species are these OTUs: 
+ITS.taxonomy <- fread(input = "01_Raw_data/03_Microbial_Community_Composition/glass_slides__ITS/13_taxonomy_filtered.tsv")
+indic.otu <- fread("03_Processed_data/ITS_indicator_species_otus.txt") %>% 
+  left_join(ITS.taxonomy, by = c("OTU" = "#OTUID")) %>% 
+  mutate(Family = str_extract(taxonomy, "f__[:alpha:]*"), 
+         Genus = str_extract(taxonomy, "g__[:alpha:]*"), 
+         Class = str_extract(taxonomy, "c__[:alpha:]*"), 
+         Eco_Time = paste0(Ecosystem, "_", TimePoint),
+         Random_Number = 1:nrow(.)) %>% 
+  drop_na(Family) %>%  # Dropping anything that isn't identified to family
+  mutate(Taxa_use = paste0(ifelse(is.na(Genus), Family, Genus), "_", Random_Number), 
+         Taxa_use = str_remove(Taxa_use, "[gf]__"))
+
+## MAke a graph of the indicator species analysis
+require(ggforce)
+group_names <- c("Grassland, T1" = "Grassland_1", 
+                 "Grassland, T2,3,4" = "Grassland_not_1", 
+                 "Shrubland, T1" = "Shrubland_1", 
+                 "Shrubland, T2,3,4" = "Shrubland_not_1")
+
+group_names <- c("Grassland_1" = "Grassland, T1", 
+                 "Grassland_not_1" = "Grassland, T2,3,4", 
+                 "Shrubland_1" = "Shrubland, T1", 
+                 "Shrubland_not_1" = "Shrubland, T2,3,4")
+
+
+B <- ggplot(data = indic.otu) + 
+  geom_point(aes(x = stat, y = reorder(Taxa_use, -Ranking))) + 
+  facet_col(~ Eco_Time, scales = "free_y", space = "free", 
+            labeller = as_labeller(group_names)) + 
+  # facet_wrap(~ Eco_Time, ncol = 1, scales = "free_y") +   
+  # scale_y_discrete(labels = str_remove(., "_[1-9]*")) + 
+  xlab("Indicator Value") + 
+  ylab("Fungi Taxon") + 
+  scale_x_reverse() + 
+  theme(strip.text = element_text(size = 17, face = "bold", 
+                                  margin = margin(4, 0, 4, 0)),
+        axis.text.x = element_text(colour="black", size = 12), 
+        axis.text.y = element_text(colour="black", size = 10), 
+        axis.ticks = element_line(colour = "black"),
+        axis.title.x = element_text( size = 16), #vjust = 0.35,
+        axis.title.y = element_text( size = 16)) #vjust = 0.35,
+
+
+## COMBINE
+pdf("../../04_Figures/Fig_Fungi_Taxa_Over_Time.pdf", 
+    width = 12, height = 7)
+ggarrange(A, B, ncol = 2, labels = c("A)", "B)"))
+dev.off()
